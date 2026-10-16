@@ -1162,24 +1162,29 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
 /* END TPM MATERIALS WORKSPACE V2 */
 
 
-/* Materials UX refinement — clear green/red states, robust search, consistent selects. */
+/* Materials UX refinement: consistent, accessible red/green action semantics and table-first filters. */
 :root{--mat-success:#167746;--mat-success-tint:#e7f5ec;--mat-success-line:#a7d7b8;--mat-danger:#b42335;--mat-danger-tint:#fff0f2;--mat-danger-line:#ebbac1}
-.mat-toolbar{gap:13px}.mat-searchrow{gap:10px 14px;align-items:flex-end}
+.mat-toolbar{gap:13px}
+.mat-searchrow{gap:10px 14px;align-items:flex-end}
 .mat-field{flex-direction:column;align-items:stretch;gap:5px;min-width:120px;font-weight:730;font-size:11px;color:#53606d;position:relative;letter-spacing:.008em}
+.mat-field label{font-weight:720}
 .mat-field select,.mat-field input[type=search],.mat-pager select{min-height:39px;border:1px solid #cbd4dd;border-radius:5px;background-color:#fff;color:#273540;font-size:12.5px;font-weight:620;padding:8px 33px 8px 11px;box-shadow:0 1px 2px #202c3909;transition:border-color .15s,box-shadow .15s}
 .mat-field select,.mat-pager select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%235c6772' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-position:right 11px center;background-repeat:no-repeat}
 .mat-field select:hover,.mat-field input[type=search]:hover,.mat-pager select:hover{border-color:#aab6c1}
 .mat-field select:focus-visible,.mat-field input[type=search]:focus-visible,.mat-pager select:focus-visible{outline:none;border-color:#7d0040;box-shadow:0 0 0 3px #7d00401c}
 .mat-field--search{flex:1 1 320px;min-width:230px;max-width:430px}
 .mat-searchcontrol{display:flex;align-items:stretch;position:relative;min-width:0}
-.mat-field .mat-searchcontrol input[type=search]{width:100%;padding-right:79px;padding-left:32px;appearance:none;-webkit-appearance:none}
+.mat-field .mat-searchcontrol input[type=search]{width:100%;padding-right:79px;appearance:none;-webkit-appearance:none}
 .mat-field .mat-searchcontrol input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none}
 .mat-search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#79848f;font-size:13px;pointer-events:none}
+.mat-field .mat-searchcontrol input[type=search]{padding-left:32px}
 .mat-search-clear{position:absolute;right:5px;top:5px;bottom:5px;border:1px solid #ebbac1!important;border-radius:3px;background:var(--mat-danger-tint)!important;color:var(--mat-danger)!important;font-size:11px;font-weight:760;padding:3px 9px;white-space:nowrap}
 .mat-search-clear:hover{background:#ffe2e6!important;border-color:#d99aa4!important}
 .mat-filter-reset{min-height:39px;align-self:flex-end;border:1px solid #cad0d6;border-radius:4px;background:#f9fafb;color:#505d69;padding:9px 12px;font-size:11.5px;font-weight:750;white-space:nowrap}
 .mat-filter-reset:hover{border-color:#9faab4;background:#f1f3f5}
-.mat-table thead th{font-size:11.5px}.mat-table tbody td{font-size:12.5px}
+.mat-filter-active{font-size:10px;font-weight:770;color:#7d0040}
+.mat-table thead th{font-size:11.5px}
+.mat-table tbody td{font-size:12.5px}
 .mat-table input[type=checkbox]{accent-color:var(--mat-success);width:17px;height:17px}
 .mat-table tbody tr.mat-selected{background:#f0faf3}
 .mat-table tbody tr.mat-selected td:first-child{box-shadow:inset 3px 0 var(--mat-success)}
@@ -1187,9 +1192,12 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
 .mat-mark{display:inline-grid;place-items:center;min-width:19px;height:19px;font-size:12px;font-weight:900;border-radius:4px;line-height:1;border:1px solid transparent}
 .mat-status--yes{color:var(--mat-success)}.mat-status--yes .mat-mark{background:var(--mat-success-tint);border-color:var(--mat-success-line);color:var(--mat-success)}
 .mat-status--no{color:var(--mat-danger)}.mat-status--no .mat-mark{background:var(--mat-danger-tint);border-color:var(--mat-danger-line);color:var(--mat-danger)}
+.mat-status--neutral{color:#697582}.mat-status--neutral .mat-mark{background:#f0f2f4;border-color:#dce1e5;color:#687683}
+.mat-mark-legend{display:flex;gap:13px;align-items:center;flex-wrap:wrap}
 .mat-status-legend{padding:8px 16px;background:#fbfcfd;border-top:1px solid #e8ecf0;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.mat-mark-legend{display:flex;gap:13px;align-items:center;flex-wrap:wrap}.mat-status-legend small{font-size:10.5px;color:#7e8891}
-.mat-toolbar-detail{font-size:11.5px;color:#66727c}.mat-toolbar-detail strong{color:#303b43}
+.mat-status-legend small{font-size:10.5px;color:#7e8891}
+.mat-toolbar-detail{font-size:11.5px;color:#66727c}
+.mat-toolbar-detail strong{color:#303b43}
 .mat-empty .mat-empty-reset{margin-top:14px;border:1px solid #c4cbd3;border-radius:4px;background:#fff;padding:7px 12px;color:#5c6570;font-size:11px;font-weight:750}
 .mat-bulk .mat-primary,.mat-bulk .mat-primary:hover{background:var(--mat-success);border-color:var(--mat-success);color:#fff}
 .mat-bulk .mat-release,.mat-bulk .mat-release:hover{background:var(--mat-danger-tint);border-color:var(--mat-danger-line);color:var(--mat-danger)}
@@ -1199,11 +1207,15 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
 .mat-confirm-action--danger,.dialog-preview .dialog-actions .mat-confirm-action--danger{background:var(--mat-danger-tint);border-color:var(--mat-danger-line);color:var(--mat-danger)}
 .mat-confirm-action--danger:hover,.dialog-preview .dialog-actions .mat-confirm-action--danger:hover{background:#ffe0e5;border-color:#d49fa9;color:#9d2030}
 .mat-confirm-action--success:hover,.dialog-preview .dialog-actions .mat-confirm-action--success:hover{background:#105c37;border-color:#105c37;color:#fff}
-.mat-confirm-banner{display:flex;align-items:flex-start;gap:10px}.mat-confirm-banner .mat-mark{margin-top:2px}
-.mat-pager label{display:flex;align-items:center;gap:7px}.mat-pager select{min-height:34px;padding:5px 31px 5px 9px}
+.mat-confirm-banner{display:flex;align-items:flex-start;gap:10px}
+.mat-confirm-banner .mat-mark{margin-top:2px}
+.mat-bulk .mat-primary:disabled,.mat-bulk .mat-release:disabled{opacity:.45}
+.mat-pager label{display:flex;align-items:center;gap:7px}
+.mat-pager select{min-height:34px;padding:5px 31px 5px 9px}
 .mat-search-help{font-size:10px;color:#7a858f;margin-top:2px;max-width:80ch}
 @media(max-width:670px){.mat-field--search{max-width:none;min-width:0;width:100%}.mat-searchrow .mat-field:not(.mat-field--search){flex:1 1 145px}.mat-searchrow{flex-direction:row;align-items:flex-end}.mat-filter-reset{align-self:flex-end}.mat-status-legend{padding:8px 12px}.mat-search-help{margin-top:0}}
 @media(max-width:390px){.mat-searchrow .mat-field:not(.mat-field--search){flex:1 1 100%;width:100%}.mat-filter-reset{width:100%}}
+
 
 /* Materials allocation mode: make selection/action controls visibly locked until editing is enabled. */
 .mat-manager--viewing .mat-panel-head{background:linear-gradient(95deg,#edf0f2,#f5f6f8);border-bottom-color:#dce1e5}
@@ -1224,8 +1236,7 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
 .mat-manager--viewing .mat-toolbar .mat-scope,.mat-manager--viewing .mat-searchrow .mat-field input,.mat-manager--viewing .mat-searchrow .mat-field select{background-color:#fff}
 .mat-manager--viewing .mat-table thead th:first-child,.mat-manager--viewing .mat-table tbody td:first-child{background:#edf0f3!important;border-right:1px solid #e0e4e8;text-align:center}
 .mat-manager--viewing .mat-table tbody tr:nth-child(even) td:first-child{background:#e9edf1!important}
-.mat-manager--viewing .mat-table input[type=checkbox]:disabled{appearance:none;-webkit-appearance:none;display:inline-block;vertical-align:middle;width:18px;height:18px;background:linear-gradient(135deg,transparent calc(50% - 1.35px),#82909d calc(50% - 1.35px),#82909d calc(50% + 1.35px),transparent calc(50% + 1.35px)),#e5e9ed;border:1.5px solid #b0bac4;border-radius:3px;box-shadow:inset 0 0 0 2px #f1f3f5;opacity:1;cursor:not-allowed;pointer-events:none}
-@media (forced-colors:active){.mat-manager--viewing .mat-table input[type=checkbox]:disabled{background:linear-gradient(135deg,transparent 43%,CanvasText 44% 56%,transparent 57%),Canvas;border-color:GrayText}}
+.mat-manager--viewing .mat-table input[type=checkbox]:disabled{appearance:none;-webkit-appearance:none;display:inline-block;vertical-align:middle;width:17px;height:17px;background:#dce1e6;border:2px solid #bac3cb;border-radius:3px;box-shadow:inset 0 0 0 2px #e9edf0;opacity:.8;cursor:not-allowed;pointer-events:none}
 .mat-manager--viewing .mat-tablewrap{border-top-color:#dfe4e8}
 .mat-bulk--locked{background:linear-gradient(98deg,#e9edf0,#f0f2f5);border-top:1px solid #d9dfe5;box-shadow:none;color:#66727d}
 .mat-bulk--locked strong{color:#54616c}
@@ -1236,6 +1247,85 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
 .mat-bulk--locked .mat-bulk-disabled-action:hover{background:#e0e4e8!important}
 .mat-manager--viewing .mat-toolbar-detail span:last-child{font-weight:750;color:#7a8690}
 @media(max-width:670px){.mat-mode-banner{padding:11px 12px;flex-wrap:wrap}.mat-mode-tag{margin-left:43px}.mat-bulk--locked{align-items:stretch}.mat-bulk--locked .actions,.mat-bulk--locked .mat-bulk-disabled-action{width:100%}}
+
+/* TPM production scalability: dense registers and operator exploration */
+.prod-v2{display:grid;gap:14px;min-width:0}
+.prod-compact-intro{margin-bottom:0}
+.prod-v2 .tab-panel-head{padding:13px 18px}
+.prod-v2 .tab-panel-body{padding:15px 17px}
+.prod-v2 .prod-register .tab-panel-body{padding:0}
+.prod-v2 .prod-stage-zone .tab-stage-grid{gap:10px}
+.prod-state-note{display:flex;gap:9px;align-items:flex-start;padding:9px 13px;border:1px solid #e5d8df;background:linear-gradient(100deg,#fcf7f9,#f7f8fa);font-size:11.5px;line-height:1.5;color:#635766}
+.prod-state-note strong{color:#713851}
+.prod-inline-summary{display:flex;flex-wrap:wrap;gap:7px 14px;font-size:12px;color:#53616e;align-items:center}
+.prod-inline-summary strong{font-variant-numeric:tabular-nums;color:#29333e}
+.prod-people{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.prod-person{border:1px solid #dfe3e8;background:#fff;border-radius:5px;padding:13px;text-align:left;display:flex;flex-direction:column;gap:10px;color:#303945;cursor:pointer;min-width:0;transition:border-color .15s,background .15s,box-shadow .15s}
+.prod-person:hover{border-color:#a98497;background:#fffafd}
+.prod-person:focus-visible{outline:2px solid #7d0040;outline-offset:2px}
+.prod-person.is-selected{border-color:#a84b7c;box-shadow:inset 0 3px #902557;background:linear-gradient(145deg,#fff,#fcf6f9)}
+.prod-person-top{display:flex;align-items:center;gap:9px;min-width:0}
+.prod-avatar{display:grid;place-items:center;width:33px;height:33px;flex:none;border-radius:4px;background:#eee6ed;color:#783858;font-size:11px;font-weight:850}
+.prod-person-name{font-weight:830;font-size:13px;line-height:1.45;min-width:0}
+.prod-person-role{color:#7d8792;font-weight:550;font-size:11px}
+.prod-person-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.prod-person-stats div{border-top:1px solid #eef0f2;padding-top:8px;min-width:0}
+.prod-person-stats strong{display:block;font-size:16px;color:#26313b;font-weight:800;font-variant-numeric:tabular-nums}
+.prod-person-stats span{font-size:10.5px;color:#78838c}
+.prod-person-foot{font-size:11px;font-weight:730;color:#874566;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.prod-filterbar{display:grid;grid-template-columns:minmax(180px,2.15fr) repeat(3,minmax(105px,1fr));gap:10px 12px;padding:13px 16px;background:#f7f8fa;border-bottom:1px solid #e2e6eb;align-items:end}
+.prod-filterbar--station{grid-template-columns:minmax(180px,2fr) repeat(2,minmax(115px,1fr))}
+.prod-control{display:flex;flex-direction:column;gap:5px;font-size:11px;color:#586571;font-weight:730;min-width:0}
+.prod-control input,.prod-control select{font-family:inherit;background:#fff;border:1px solid #cdd4da;border-radius:4px;height:37px;padding:0 10px;max-width:100%;width:100%;font-size:12px;color:#2f3b47;min-width:0}
+.prod-control input:focus,.prod-control select:focus{outline:2px solid #a9577e;outline-offset:1px;border-color:#a9577e}
+.prod-table-status{display:flex;flex-wrap:wrap;justify-content:space-between;gap:9px 15px;padding:9px 16px;font-size:11px;color:#67737f;border-bottom:1px solid #eaedf0}
+.prod-table-status strong{color:#35414e}
+.prod-tablewrap{overflow-x:auto;max-width:100%;scrollbar-gutter:stable;overscroll-behavior-inline:contain}
+.prod-table{width:100%;min-width:810px;border-collapse:collapse;font-size:11.5px;text-align:left;font-variant-numeric:tabular-nums}
+.prod-table th{background:#f0f2f4;padding:10px 13px;font-size:10px;letter-spacing:.012em;color:#596674;white-space:nowrap;font-weight:800;border-bottom:1px solid #dfe4e9}
+.prod-table td{padding:9px 13px;border-bottom:1px solid #edf0f3;color:#46525e;white-space:nowrap;vertical-align:middle}
+.prod-table tbody tr:nth-child(even){background:#fafbfc}
+.prod-table tbody tr:hover{background:#fbf3f7}
+.prod-table tbody tr:last-child td{border-bottom:0}
+/* Keep record identity visible while horizontally exploring wide production tables. */
+.prod-table th:first-child,.prod-table td:first-child{position:sticky;left:0;z-index:1;background:#fff;box-shadow:1px 0 0 #e7ebef}
+.prod-table th:first-child{z-index:2;background:#f0f2f4}
+.prod-table tbody tr:nth-child(even) td:first-child{background:#fafbfc}
+.prod-table tbody tr:hover td:first-child{background:#fbf3f7}
+.prod-scroll-hint{display:none;padding:6px 13px;background:#f7f9fa;color:#647587;font-size:10px;border-bottom:1px solid #e1e6eb}
+.prod-table .prod-row-id{font-size:11px;color:#7b3157;font-weight:820}
+.prod-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:3px 7px;border:1px solid #d7dfe6;background:#f5f7f9;border-radius:3px;color:#61707e;font-weight:750}
+.prod-tag.good{border-color:#badcc6;background:#ecf8ef;color:#167746}
+.prod-tag.review{border-color:#ebd5ae;background:#fff7e9;color:#895810}
+.prod-tag.orig{border-color:#d3dce6;background:#f2f5f8;color:#516579}
+.prod-row-link{font-size:11px;font-weight:780;color:#863459;background:transparent;border:0;cursor:pointer;padding:5px 3px;text-decoration:underline;text-decoration-color:#d4aebf;text-underline-offset:3px}
+.prod-row-link:hover,.prod-row-link:focus-visible{color:#5a163b}
+.prod-pager{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:#fafbfc;padding:10px 16px;border-top:1px solid #e6eaee;color:#687583;font-size:11px}
+.prod-pager .actions{display:flex;align-items:center;flex-wrap:wrap;gap:7px}
+.prod-pager select{border:1px solid #cdd4da;background:white;padding:7px 9px;border-radius:3px;color:#344151;font-size:11px}
+.prod-pager button{background:#fff;color:#334353;font-weight:740;border:1px solid #cdd5dc;border-radius:3px;padding:7px 11px;font-size:11px;cursor:pointer}
+.prod-pager button:disabled{opacity:.4;cursor:not-allowed}
+.prod-pager button:not(:disabled):hover{border-color:#995474;color:#783758}
+.prod-pager button:focus-visible{outline:2px solid #8a365e;outline-offset:2px}
+.prod-empty{padding:28px;text-align:center;font-size:12px;color:#7c8793}
+.prod-timing details{border:1px solid #dde2e7;background:white;border-radius:4px;overflow:hidden}
+.prod-timing summary{display:flex;align-items:center;justify-content:space-between;gap:13px;cursor:pointer;padding:13px 16px;color:#33414e;font-weight:750;font-size:12px;background:linear-gradient(95deg,#f3f4f6,#f9fafb)}
+.prod-timing summary .prod-muted{font-weight:550;color:#86919b;font-size:11px}
+.prod-timing .prod-timing-inner{padding:14px}
+.prod-timing .tab-stat-grid{margin-bottom:12px}
+.prod-v2 .prod-origin-note{font-size:10.5px;line-height:1.6;color:#737d87;padding:9px 13px;background:#f8f9fb;border-top:1px solid #e8ecef}
+.prod-detail-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.prod-detail-fields div{border:1px solid #e4e8ec;background:#f8f9fa;padding:11px;min-width:0}
+.prod-detail-fields dt{font-size:10px;color:#6b7883;margin-bottom:5px}
+.prod-detail-fields dd{margin:0;font-size:13px;font-weight:750;color:#34404b;overflow-wrap:anywhere}
+.prod-kpi-line{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.prod-kpi{border:1px solid #e0e4e8;padding:12px 14px;background:linear-gradient(135deg,#fff,#f9fafb);border-radius:4px;box-shadow:inset 3px 0 #87546b}
+.prod-kpi:nth-child(2){box-shadow:inset 3px 0 #627d95}.prod-kpi:nth-child(3){box-shadow:inset 3px 0 #318c79}
+.prod-kpi label{display:block;font-size:10.5px;color:#78838d;margin-bottom:4px}
+.prod-kpi strong{font-size:22px;color:#27333e;font-weight:830;font-variant-numeric:tabular-nums}
+@media(max-width:1050px){.prod-filterbar{grid-template-columns:repeat(2,minmax(0,1fr))}.prod-filterbar--station{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.prod-scroll-hint{display:block}.prod-people{grid-template-columns:1fr}.prod-person{gap:7px}.prod-person-stats{display:flex;gap:18px}.prod-person-stats div{flex:1}.prod-kpi-line{grid-template-columns:1fr 1fr}.prod-filterbar,.prod-filterbar--station{grid-template-columns:1fr 1fr;padding:12px}.prod-control--search{grid-column:1/-1}.prod-detail-fields{grid-template-columns:1fr}.prod-timing summary{align-items:flex-start}}
+@media(max-width:380px){.prod-filterbar,.prod-filterbar--station{grid-template-columns:1fr}.prod-kpi-line{grid-template-columns:1fr}.prod-person-stats{gap:10px}.prod-pager{align-items:flex-start}}
 
 </style></head><body data-variant="C"><svg width="0" height="0" style="position:absolute;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><symbol id="side-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-8h6v8"/></symbol>
 <symbol id="side-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6M17 14a5 5 0 0 1 4 5v1"/></symbol>
@@ -1755,7 +1845,8 @@ function matFiltered(){
   if(matState.sort==='id-desc')return b.id.localeCompare(a.id);
   const key=matState.sort==='wide'?'width':matState.kind==='coil'?'lf':'length';
   const av=Number(a[key]),bv=Number(b[key]);const az=a[key]===null||a[key]===undefined||!Number.isFinite(av),bz=b[key]===null||b[key]===undefined||!Number.isFinite(bv);
-  if(az!==bz)return az?1:-1;return (matState.sort==='largest'?bv-av:av-bv)||a.id.localeCompare(b.id)
+  if(az!==bz)return az?1:-1;
+  return (matState.sort==='largest'?bv-av:av-bv)||a.id.localeCompare(b.id)
  });
  return list;
 }
@@ -1771,7 +1862,7 @@ function matInventoryTable(){
  const from=(matState.page-1)*matState.pageSize,items=all.slice(from,from+matState.pageSize);
  const selectedVisible=items.length>0&&items.every(x=>matState.selected.has(x.id));
  const isAllocated=matState.scope==='allocated';
- const checkbox=(row)=>`<input type="checkbox" data-mat-check="${safe(row.id)}" aria-label="${matState.edit?`Select ${safe(row.id)}`:`Selection locked for ${safe(row.id)}; enable Edit allocations`}" ${matState.selected.has(row.id)?'checked':''} ${!matState.edit?'disabled':''}/>`;
+ const checkbox=(row)=>`<input type="checkbox" data-mat-check="${safe(row.id)}" aria-label="Select ${safe(row.id)}" ${matState.selected.has(row.id)?'checked':''} ${!matState.edit?'disabled':''}/>`;
  const headings=matState.kind==='coil'?['Coil','Available LF','Width','Work #','Pattern','Gage','Type','Heat','Job status']:['Mesh #','Length (LF)','Mesh type','Material','Role','Width','Heat','Received','Job status'];
  const visibleRows=items.map(row=>{
  const fields=matState.kind==='coil'?[`<strong class="mat-item-no">${safe(row.id)}</strong>`,row.lf===null?'<span class="mat-muted">Not recorded</span>':`<span class="mat-lf">${matFmtLF(row.lf)}</span>`,row.width===null?'—':`${Number(row.width).toFixed(3)} in`,matReadable(row.work),matReadable(row.pattern),matReadable(row.gage),`<span class="mat-type ${row.type==='Blank'?'blank':''}">${safe(row.type||'Unclassified')}</span>`,matReadable(row.heat),matStatus(isAllocated)]:[`<strong class="mat-item-no">${safe(row.id)}</strong>`,row.length===null?'<span class="mat-muted">Not recorded</span>':`<span class="mat-lf">${matFmtLF(row.length)}</span>`,matReadable(row.mesh),matReadable(row.type),matReadable(row.role),row.width===null?'—':`${Number(row.width).toFixed(3)} in`,matReadable(row.heat),matReadable(row.date_received),matStatus(isAllocated)];
@@ -1780,7 +1871,7 @@ function matInventoryTable(){
  const count=matSelectionSummary();
  const availableText=matState.scope==='allocated'?'Assigned to this job':matState.scope==='compatible'?'Unallocated · part-width matches (preview)':'Unallocated inventory · all widths';
  return `<div class="mat-toolbar-detail" role="status" aria-live="polite"><span><strong>${num(all.length)}</strong> ${matState.kind==='coil'?'coils':'mesh rolls'} · ${availableText}${matState.search?` · Search: <strong>${safe(matState.search)}</strong>`:''}</span><span>${matState.edit?`${num(matState.selected.size)} selected · Selection applies to the active search`:'Selection locked · viewing only'}</span></div>
- <div class="mat-tablewrap"><table class="mat-table" aria-label="${matState.kind==='coil'?'Coil':'Mesh'} inventory" style="min-width:${matState.kind==='coil'?890:930}px"><thead><tr><th style="width:43px"><input type="checkbox" data-mat-checkall aria-label="${matState.edit?`Select all ${items.length} visible rows`:`Selection locked; enable Edit allocations`}" ${selectedVisible?'checked':''} ${!matState.edit||!items.length?'disabled':''}/></th>${headings.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${visibleRows||`<tr><td colspan="${headings.length+1}"><div class="mat-empty"><strong>No matching inventory</strong>Try a different search, width, perforation, or role filter.<div><button type="button" class="mat-empty-reset" data-mat-act="reset-filters">Reset filters</button></div></div></td></tr>`}</tbody></table></div>
+ <div class="mat-tablewrap"><table class="mat-table" aria-label="${matState.kind==='coil'?'Coil':'Mesh'} inventory" style="min-width:${matState.kind==='coil'?890:930}px"><thead><tr><th style="width:43px"><input type="checkbox" data-mat-checkall aria-label="Select all visible rows" ${selectedVisible?'checked':''} ${!matState.edit||!items.length?'disabled':''}/></th>${headings.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${visibleRows||`<tr><td colspan="${headings.length+1}"><div class="mat-empty"><strong>No matching inventory</strong>Try a different search, width, perforation, or role filter.<div><button type="button" class="mat-empty-reset" data-mat-act="reset-filters">Reset filters</button></div></div></td></tr>`}</tbody></table></div>
  <div class="mat-pager"><span>Showing ${all.length?from+1:0}–${Math.min(from+items.length,all.length)} of ${num(all.length)} records · ${matState.page} of ${maxPage} pages</span><div class="actions"><label>Rows <select data-mat-input="pagesize"><option ${matState.pageSize===20?'selected':''}>20</option><option ${matState.pageSize===50?'selected':''}>50</option><option ${matState.pageSize===100?'selected':''}>100</option></select></label><button type="button" data-mat-act="prev" ${matState.page===1?'disabled':''}>← Previous</button><button type="button" data-mat-act="next" ${matState.page===maxPage?'disabled':''}>Next →</button></div></div>
  <div class="mat-status-legend"><div class="mat-mark-legend">${matStatus(true,'Allocated','Not allocated')}${matStatus(false,'Allocated','Not allocated')}</div><small>Checks mean assigned to this job; X means not currently assigned.</small></div>
  ${matState.edit?`<div class="mat-bulk"><div><strong>${count.count} ${matState.kind==='coil'?'coils':'mesh rolls'} selected</strong><p>${count.unknown?`${matFmtLF(count.known)} known · ${count.unknown} without LF records`:matFmtLF(count.known)} · Selection stays on the current filter</p></div><div class="actions"><button class="btn sm" data-mat-act="clear" ${!count.count?'disabled':''}>Clear</button>${isAllocated&&matState.kind==='coil'?`<button class="btn sm" data-mat-act="used-preview" ${!(count.count===1&&Number(count.data[0]?.lf)>0&&Number(count.data[0]?.width)>0&&Number(count.data[0]?.gage)>0)?'disabled title="Select one coil with recorded LF, width, and gauge"':''}>Enter as Used</button>`:''}<button class="btn sm ${isAllocated?'mat-release':'mat-primary'}" data-mat-act="review" ${!count.count?'disabled':''}>${isAllocated?'✕ Deallocate selected':'✓ Allocate selected'} (${count.count})</button></div></div>`:`<div class="mat-bulk mat-bulk--locked" aria-label="Material allocation actions locked"><div><strong class="mat-bulk-locked-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Allocation actions locked</strong><p>Enable Edit allocations above to select and ${isAllocated?'deallocate':'allocate'} material.</p></div><div class="actions"><button class="btn sm mat-bulk-disabled-action" type="button" disabled aria-label="${isAllocated?'Deallocate selected':'Allocate selected'} — enable Edit allocations first">${isAllocated?'✕ Deallocate selected':'✓ Allocate selected'}</button></div></div>`}`;
@@ -1926,4 +2017,59 @@ document.addEventListener('input',event=>{const input=event.target.closest('[dat
 if(new URLSearchParams(location.search).get('view')==='materials')navigate('materials');
 </script>
 
+<!-- TPM production scalability and operator drill-down preview -->
+<script>
+// Production scale testing. Original source records are preserved and never mutated.
+// All additional rows are explicitly marked synthetic demonstration entries.
+const prodState={person:'J. Morales',dataset:'demo',search:'',status:'all',sort:'newest',page:1,pageSize:25,stage:'all',stageSearch:'',stageSort:'newest',stagePage:1,stageSize:25};
+const prodOriginal=h.people.flatMap((person)=>person.departments.flatMap((department)=>department.sessions.map((session,index)=>({
+ id:`REC-${person.person.replace(/[^A-Z]/gi,'').toUpperCase()}-${index+1}`,person:person.person,stage:department.name,from:session.from,to:session.to,tubes:session.tubes,seconds:session.seconds,kind:'original',status:'Recorded'
+}))));
+function prodSpread(total,size){const weight=Array.from({length:size},(_,i)=>2+(i*7)%9),sum=weight.reduce((a,b)=>a+b,0);let used=0;return weight.map((w,i)=>{const n=i===size-1?total-used:Math.floor(total*w/sum);used+=n;return n})}
+function prodDate(day,hr,min){return new Date(2026,9,10+day,hr,min,0).toISOString()}
+const prodDemoPeople=h.people.flatMap((person,index)=>{
+ const dept=person.departments[0],tubes=prodSpread(Number(person.tubes||0),36),seconds=prodSpread(Number(dept.seconds||0),36);
+ return tubes.map((n,i)=>{const day=Math.floor(i/6),hour=6+(i%6)*2+(index%2),minute=(i*17+index*11)%60;const from=new Date(2026,9,10+day,hour,minute);const to=new Date(from.getTime()+seconds[i]*1000);return {
+ id:`SIM-${['MILL','CUT','INSP'][index]}-${String(i+1).padStart(3,'0')}`,person:person.person,stage:dept.name,
+ from:from.toISOString(),to:to.toISOString(),tubes:n,seconds:seconds[i],kind:'demo',status:i%13===8?'Sample review':'Sample complete'
+ }})
+});
+const prodDemoStages=h.stages.slice(0,3).flatMap((stage,index)=>{
+ const counts=prodSpread(Number(stage.done||0),32);let start=0;
+ return counts.map((qty,i)=>{
+ const first=start+1;start+=qty;const day=Math.floor(i/6),hour=6+(i%6)*2;const from=new Date(2026,9,10+day,hour,(i*13+index*7)%60);const to=new Date(from.getTime()+(16+i%6*8)*60000);
+ return {id:`SIM-${String(stage.key).toUpperCase()}-${String(i+1).padStart(3,'0')}`,stage:stage.label,person:[j.mill_op,j.cutoff_op,j.inspector_name][index]||'Unassigned',from:from.toISOString(),to:to.toISOString(),tubes:qty,first,last:start,kind:'demo',status:i%15===11?'Sample review':'Sample complete'}
+ })
+});
+const prodTimestamp=(x)=>stamp(x);
+const prodRowStatus=r=>r.kind==='original'?'<span class="prod-tag orig">Recorded</span>':r.status==='Sample review'?'<span class="prod-tag review">! Sample review</span>':'<span class="prod-tag good">✓ Sample complete</span>';
+const prodQueryMatch=(row,query)=>{const tokens=(query||'').trim().toLowerCase().split(/\s+/).filter(Boolean);if(!tokens.length)return true;const raw=[row.id,row.person,row.stage,row.status,row.tubes,prodTimestamp(row.from),prodTimestamp(row.to)].join(' ').toLowerCase();const hay=raw.replace(/[^a-z0-9]+/g,' '),dense=raw.replace(/[^a-z0-9]/g,'');return tokens.every(term=>{const normalized=term.replace(/[^a-z0-9]+/g,' '),compact=term.replace(/[^a-z0-9]/g,'');return hay.includes(normalized)||(compact&&dense.includes(compact))})};
+const prodSortRows=(rows,sort)=>rows.sort((a,b)=>sort==='oldest'?new Date(a.from)-new Date(b.from):sort==='tubes'?b.tubes-a.tubes||new Date(b.from)-new Date(a.from):new Date(b.from)-new Date(a.from));
+function prodPeopleRows(){const records=prodState.dataset==='original'?prodOriginal:prodDemoPeople;return prodSortRows(records.filter(r=>(prodState.person==='all'||r.person===prodState.person)&&(prodState.status==='all'||r.status===prodState.status)&&prodQueryMatch(r,prodState.search)),prodState.sort)}
+function prodStageRows(){return prodSortRows(prodDemoStages.filter(r=>(prodState.stage==='all'||r.stage===prodState.stage)&&prodQueryMatch(r,prodState.stageSearch)),prodState.stageSort)}
+const prodSelect=(items,value)=>items.map(([val,label])=>`<option value="${safe(val)}" ${val===value?'selected':''}>${safe(label)}</option>`).join('');
+const prodPersonOption=h.people.map(p=>[p.person,p.person]);
+const prodPager=(total,page,size,name)=>{const pages=Math.max(1,Math.ceil(total/size)),from=total?(page-1)*size+1:0,end=Math.min(page*size,total);return `<div class="prod-pager"><span>Showing ${from}–${end} of <strong>${num(total)}</strong> records · Page ${page} of ${pages}</span><div class="actions"><label>Rows <select aria-label="Rows per page" data-prod-select="${name}-size">${prodSelect([10,25,50,100].map(x=>[String(x),String(x)]),String(size))}</select></label><button type="button" data-prod-act="${name}-prev" ${page===1?'disabled':''}>← Previous</button><button type="button" data-prod-act="${name}-next" ${page>=pages?'disabled':''}>Next →</button></div></div>`};
+const prodTable=(headers,body)=>`<div class="prod-scroll-hint">Swipe table sideways to view all columns →</div><div class="prod-tablewrap" role="region" tabindex="0" aria-label="Scrollable production data table"><table class="prod-table"><thead><tr>${headers.map(h=>`<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${body||`<tr><td colspan="${headers.length}" class="prod-empty">No matching records. Change the filters or clear your search.</td></tr>`}</tbody></table></div>`;
+function prodPeopleResults(){const rows=prodPeopleRows(),max=Math.max(1,Math.ceil(rows.length/prodState.pageSize));prodState.page=Math.max(1,Math.min(prodState.page,max));const display=rows.slice((prodState.page-1)*prodState.pageSize,prodState.page*prodState.pageSize);const body=display.map(r=>`<tr><td><button type="button" class="prod-row-link" data-prod-detail="${safe(r.id)}">${safe(r.id)}</button></td><td><strong>${safe(r.person)}</strong></td><td>${safe(r.stage)}</td><td>${safe(prodTimestamp(r.from))}</td><td>${safe(prodTimestamp(r.to))}</td><td><strong>${num(r.tubes)}</strong></td><td>${dur(r.seconds)}</td><td>${prodRowStatus(r)}</td></tr>`).join('');return `<div class="prod-table-status"><span><strong>${num(rows.length)} sessions</strong> matching filters · ${prodState.dataset==='demo'?'Synthetic scale-test rows':'Original fixture rows'}</span><span>${prodState.dataset==='demo'?'108 synthetic sessions across 3 operators':'7 original session records available'}</span></div>${prodTable(['Session / ID','Operator','Station','Started','Finished','Tubes','Duration','Status'],body)}${prodPager(rows.length,prodState.page,prodState.pageSize,'people')}`}
+function prodStationResults(){const rows=prodStageRows(),max=Math.max(1,Math.ceil(rows.length/prodState.stageSize));prodState.stagePage=Math.max(1,Math.min(prodState.stagePage,max));const display=rows.slice((prodState.stagePage-1)*prodState.stageSize,prodState.stagePage*prodState.stageSize);const body=display.map(r=>`<tr><td><button type="button" class="prod-row-link" data-prod-detail="${safe(r.id)}">${safe(r.id)}</button></td><td><strong>${safe(r.stage)}</strong></td><td>${safe(r.person)}</td><td>${safe(prodTimestamp(r.from))}</td><td>${num(r.first)}–${num(r.last)}</td><td><strong>${num(r.tubes)}</strong></td><td>${prodRowStatus(r)}</td></tr>`).join('');return `<div class="prod-table-status"><span><strong>${num(rows.length)} event groups</strong> matching filters</span><span>32 example entries per station · 96 total</span></div>${prodTable(['Event group','Station','Assigned operator','Timestamp','Example tube range','Tubes','State'],body)}${prodPager(rows.length,prodState.stagePage,prodState.stageSize,'stage')}`}
+function prodCards(){return `<div class="prod-people">${h.people.map(p=>{const dept=p.departments[0],selected=prodState.person===p.person,initials=p.person.split(' ').map(n=>n[0]).join('');return `<button type="button" class="prod-person ${selected?'is-selected':''}" data-prod-person="${safe(p.person)}" aria-pressed="${selected}"><div class="prod-person-top"><span class="prod-avatar">${safe(initials)}</span><span><span class="prod-person-name">${safe(p.person)}</span><br/><span class="prod-person-role">${safe(dept.name)}</span></span></div><div class="prod-person-stats"><div><strong>${num(p.tubes)}</strong><span>Source tube records</span></div><div><strong>${dur(dept.seconds)}</strong><span>Source time recorded</span></div></div><div class="prod-person-foot"><span>${dept.sessions.length} original · 36 mock sessions</span><span>View activity →</span></div></button>`}).join('')}</div>`}
+function productionLarge(){const intro=tabIntro('Production / Work records','Production activity','Track completed station counts and explore high-volume employee and station logs without losing individual records.','3 stations · 3 operators');const stageCards=`<div class="tab-stage-grid">${h.stages.slice(0,3).map((st,i)=>tabStage(st,i).replace('class="premium-stage"',`class="premium-stage" role="button" tabindex="0" aria-label="Open ${safe(st.label)} station details"`)).join('')}</div>`;const stats=tm.map((entry,i)=>tabStat(entry[0],entry[1],entry[2],['wine','slate','teal','amber','slate','wine'][i])).join('');return `<div class="tab-workspace prod-v2">${intro}
+<div class="prod-state-note"><span aria-hidden="true">◇</span><div><strong>Volume-testing preview:</strong> Original production counts and 7 recorded worker sessions are preserved. The 108 extra operator sessions and 96 station event groups below are generated examples to test how this interface behaves when production history grows; they are not TPM records.</div></div>
+${tabPanel('factory','Station completion','Original job roll-up · click a station to see its counts',stageCards,{right:`${num(j.quantity)} tubes ordered`})}
+<div class="prod-kpi-line"><div class="prod-kpi"><label>Workforce in source</label><strong>${h.people.length} operators</strong></div><div class="prod-kpi"><label>Original worker sessions</label><strong>${prodOriginal.length} recorded</strong></div><div class="prod-kpi"><label>Scale-test capacity</label><strong>${num(prodDemoPeople.length+prodDemoStages.length)} rows</strong></div></div>
+${tabPanel('users','Operators & contributions','Select an operator to inspect detailed sessions; aggregate metrics remain from the original source.',prodCards(),{right:'3 operators'})}
+<section class="tab-panel prod-register" aria-label="Employee work sessions"><div class="tab-panel-head"><div class="tab-panel-ident"><span class="tab-panel-icon">${icon('users')}</span><div><h3>Employee work sessions</h3><p>Morales, Givens and Patel · searchable log built for many entries</p></div></div><span class="tab-header-side">${prodState.dataset==='demo'?'Scale-test data':'Original records'}</span></div><div class="prod-filterbar"><label class="prod-control prod-control--search">Search sessions<input type="search" data-prod-input="search" value="${safe(prodState.search)}" placeholder="ID, employee, station, date or tubes…" autocomplete="off" aria-label="Search employee work sessions"></label><label class="prod-control">Operator<select data-prod-select="person">${prodSelect([['all','All operators'],...prodPersonOption],prodState.person)}</select></label><label class="prod-control">Dataset<select data-prod-select="dataset">${prodSelect([['demo','Scale test · 36 per person'],['original','Original recorded sessions']],prodState.dataset)}</select></label><label class="prod-control">Sort<select data-prod-select="sort">${prodSelect([['newest','Newest first'],['oldest','Oldest first'],['tubes','Most tubes']],prodState.sort)}</select></label></div><div class="prod-table-status" style="padding:7px 16px;background:#fff"><span>Source records remain available in the Dataset dropdown.</span><button type="button" class="prod-row-link" data-prod-act="people-reset">Reset filters</button></div><div id="prod-people-results">${prodPeopleResults()}</div><div class="prod-origin-note">Time and tube totals on operator cards come from the source roll-up. Demonstration rows are illustrative test slices; don't add them to the source session figures.</div></section>
+<section class="tab-panel prod-register" aria-label="Station event register"><div class="tab-panel-head"><div class="tab-panel-ident"><span class="tab-panel-icon">${icon('factory')}</span><div><h3>Station activity register</h3><p>Mill, Cutoff and Inspection · 32 example entries for each stage</p></div></div><span class="tab-header-side">96 mock events</span></div><div class="prod-filterbar prod-filterbar--station"><label class="prod-control prod-control--search">Search station events<input type="search" data-prod-input="stage-search" value="${safe(prodState.stageSearch)}" placeholder="Event ID, stage, operator or date…" autocomplete="off" aria-label="Search station activity"></label><label class="prod-control">Stage<select data-prod-select="stage">${prodSelect([['all','All stations'],...h.stages.slice(0,3).map(x=>[x.label,x.label])],prodState.stage)}</select></label><label class="prod-control">Sort<select data-prod-select="stage-sort">${prodSelect([['newest','Newest first'],['oldest','Oldest first'],['tubes','Most tubes']],prodState.stageSort)}</select></label></div><div id="prod-station-results">${prodStationResults()}</div><div class="prod-origin-note">Event groups and tube ranges here are generated for stress testing; they are not additional events extracted from the production database.</div></section>
+<div class="prod-timing"><details><summary><span>Timing checkpoints <span class="prod-muted">· all 6 original measurements</span></span><span aria-hidden="true">⌄</span></summary><div class="prod-timing-inner"><div class="tab-stat-grid three">${stats}</div><div class="tab-timing-note"><strong>Timing context:</strong> Running and attended overlap; elapsed is wall-clock time. Production gaps are inferred, not confirmed employee breaks. Do not sum these durations.</div></div></details></div>
+<div class="tab-footline">Production counts and original session records remain unchanged. All new scale-test sessions and events are fictional preview data.</div></div>`}
+function prodRefresh(section){if(section==='people'){const target=document.getElementById('prod-people-results');if(target)target.innerHTML=prodPeopleResults()}else{const target=document.getElementById('prod-station-results');if(target)target.innerHTML=prodStationResults()}}
+function prodDetail(id){const row=prodOriginal.concat(prodDemoPeople,prodDemoStages).find(x=>x.id===id);if(!row)return;const fields=[['Entry ID',row.id],['Data origin',row.kind==='original'?'Original fixture session':'Generated scale-test example'],['Operator',row.person],['Station',row.stage],['Started',prodTimestamp(row.from)],['Finished',prodTimestamp(row.to)],['Tubes in row',num(row.tubes)],['Duration',row.seconds==null?'Sample event group':dur(row.seconds)],['Status',row.status]];if(row.first!=null)fields.push(['Sample tube range',num(row.first)+' – '+num(row.last)]);modal('Production record detail',`${safe(row.id)} · ${row.kind==='demo'?'Fictional scale-test data':'Recorded fixture session'}`,`<dl class="prod-detail-fields">${fields.map(([k,v])=>`<div><dt>${safe(k)}</dt><dd>${safe(v)}</dd></div>`).join('')}</dl><div class="prod-origin-note" style="margin-top:14px">${row.kind==='demo'?'This record is generated solely to test a large register. It does not exist in TPM.':'This row comes from the original mock job history fixture.'}</div>`,`<button class="btn" type="button" data-op="close-dialog">Close</button>`)}
+renderers.C.production=productionLarge;
+let prodTimer=0;
+document.addEventListener('click',event=>{const person=event.target.closest('[data-prod-person]');if(person){event.preventDefault();prodState.person=person.dataset.prodPerson;prodState.page=1;navigate('production');return}const el=event.target.closest('[data-prod-act]');if(el){event.preventDefault();const action=el.dataset.prodAct;if(action==='people-reset'){prodState.person='all';prodState.dataset='demo';prodState.search='';prodState.sort='newest';prodState.page=1;navigate('production');return}if(action.startsWith('people-')){prodState.page+=action.endsWith('next')?1:-1;prodRefresh('people');return}if(action.startsWith('stage-')){prodState.stagePage+=action.endsWith('next')?1:-1;prodRefresh('stage');return}}const entry=event.target.closest('[data-prod-detail]');if(entry){event.preventDefault();prodDetail(entry.dataset.prodDetail)}},true);
+document.addEventListener('change',event=>{const el=event.target.closest('[data-prod-select]');if(!el)return;const field=el.dataset.prodSelect;const value=el.value;const map={person:'person',dataset:'dataset',sort:'sort',stage:'stage','stage-sort':'stageSort','people-size':'pageSize','stage-size':'stageSize'};if(!map[field])return;prodState[map[field]]=field.endsWith('size')?Number(value):value;if(field==='dataset'||field==='person'||field==='sort'||field==='people-size')prodState.page=1;else prodState.stagePage=1;prodRefresh(field.startsWith('stage')?'stage':'people');if(field==='person'||field==='dataset')navigate('production')},true);
+document.addEventListener('input',event=>{const el=event.target.closest('[data-prod-input]');if(!el)return;const isStation=el.dataset.prodInput==='stage-search';prodState[isStation?'stageSearch':'search']=el.value;if(isStation)prodState.stagePage=1;else prodState.page=1;clearTimeout(prodTimer);prodTimer=setTimeout(()=>prodRefresh(isStation?'stage':'people'),90)},true);
+if(new URLSearchParams(location.search).get('view')==='production')navigate('production');
+</script>
 </body></html>
