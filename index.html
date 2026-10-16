@@ -687,6 +687,148 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
 @media(max-width:650px){.c-top .c-utility{min-height:43px}.c-top .premium-job-hero{gap:13px;padding-top:17px;padding-bottom:12px}.c-top .premium-job-hero .compact-titleline h1{font-size:24px}.c-top .premium-job-hero .compact-meta{font-size:11.5px}.c-top .premium-job-hero .compact-company{margin-top:7px}.c-top .premium-job-hero .compact-facts{grid-template-columns:repeat(3,minmax(0,1fr));gap:0}.c-top .premium-job-hero .compact-facts>div{grid-column:auto;padding:10px 9px}.c-top .premium-job-hero .compact-facts strong{font-size:12px}.c-top .premium-job-hero .compact-facts strong small{font-size:10px}.c-top .premium-job-hero .compact-facts .fact-label{font-size:10px}.c-top .premium-job-tabs button{gap:7px;font-size:12px;padding:8px 10px}.c-top .premium-job-tabs button svg{width:14px;height:14px}.c-body .journey-shell{padding:14px 12px 0}.c-body .overview-density{gap:12px}.c-body .compact-stack{gap:12px}.c-body .compact-section-card:not(.order-record-panel)>.card-body{padding:12px}.c-body .compact-kpi{padding:10px}.c-body .compact-kpi:nth-child(3){border-left:0;border-top:1px solid #e3e6ea}.c-body .compact-kpi:nth-child(4){border-top:1px solid #e3e6ea}}
 @media(max-width:410px){.c-top .premium-job-hero .compact-titleline h1{font-size:22px}.c-top .premium-job-hero .compact-titleline{gap:9px}.c-top .premium-job-hero .compact-facts>div{padding:9px 8px}.c-top .premium-job-hero .compact-facts strong{font-size:11px}.c-top .premium-job-hero .compact-facts strong small{font-size:9px}.c-top .premium-job-tabs button{padding:8px 10px}}
 /* END TPM Premium Workspace */
+
+/* --------------------------------------------------------------------------
+   TPM chromatic refinement: light underline tabs, graphite/wine gradient,
+   subtle semantic color on production stages (not order record sections).
+   All legacy editor semantics and layout measurements are preserved.
+   -------------------------------------------------------------------------- */
+:root{
+ --tpm-wine:#7d0040;
+ --tpm-mist:#f7f8fa;
+ --tpm-slate:#4b647b;
+ --tpm-teal:#28776a;
+}
+.c-top{
+ background:
+   radial-gradient(ellipse 65% 125% at 100% 10%,rgba(138,39,82,.28) 0%,transparent 76%),
+   linear-gradient(112deg,#252d36 0%,#2b303a 49%,#382b38 79%,#452638 100%);
+ border-bottom:0;
+ box-shadow:0 3px 16px rgba(35,27,35,.075);
+}
+.c-top .c-utility{border-bottom-color:rgba(232,220,232,.12)}
+.c-top .premium-job-hero{padding:25px 0 23px}
+.c-top .premium-job-hero .premium-eyebrow{color:#e3aac5}
+.c-top .premium-job-hero .premium-line{background:linear-gradient(90deg,#d2729e,#f2bbcf)}
+.c-top .premium-job-hero .compact-titleline h1{color:#fff;font-weight:740}
+.c-top .premium-job-hero .compact-company{color:#f4f1f4}
+.c-top .premium-job-hero .compact-meta{color:#bfc1cc}
+.c-top .premium-job-hero .compact-facts{
+ background:linear-gradient(120deg,rgba(255,255,255,.085),rgba(246,217,233,.052) 64%,rgba(173,82,127,.095));
+ border:1px solid rgba(245,224,239,.23);
+ border-radius:6px;
+ box-shadow:inset 0 1px rgba(255,255,255,.04),0 4px 22px rgba(19,18,29,.09);
+ position:relative;
+ overflow:hidden;
+}
+.c-top .premium-job-hero .compact-facts::before{
+ content:'';position:absolute;left:0;right:0;top:0;height:2px;
+ background:linear-gradient(90deg,rgba(191,126,158,.7),rgba(241,206,225,.65),rgba(215,143,181,.3));
+ pointer-events:none;
+}
+.c-top .premium-job-hero .compact-facts>div{padding:14px 17px}
+.c-top .premium-job-hero .compact-facts>div+div{border-left-color:rgba(247,228,239,.18)}
+.c-top .premium-job-hero .compact-facts .fact-label{color:#c2bac8}
+.c-top .premium-job-hero .compact-facts strong{color:#fff}
+.c-top .premium-job-hero .premium-report-action{border-color:rgba(244,223,237,.38);background:rgba(255,255,255,.04);color:#f1e7ef}
+.c-top .premium-job-hero .premium-report-action:hover{border-color:#d8b5ca;background:rgba(255,255,255,.11)}
+.c-top .premium-job-hero .premium-print-action{background:linear-gradient(180deg,#fafafa,#e9eaed);border-color:#e1e3e7}
+/* Tabs: remove boxed pills, return to a tidy horizontal workspace tab row. */
+.c-top .premium-tab-band{
+ position:relative;
+ background:linear-gradient(180deg,#fdfdfe 0%,#f6f7f9 100%);
+ border-top:1px solid rgba(255,255,255,.18);
+ border-bottom:1px solid #d7dce1;
+ box-shadow:0 2px 5px rgba(28,34,42,.045);
+}
+.c-top .premium-job-tabs{
+ display:flex;align-items:stretch;gap:4px;
+ padding:0;margin:0;
+ border:0;background:transparent;
+ overflow-x:auto;overflow-y:hidden;
+ scrollbar-width:thin;scrollbar-color:#bec3c9 transparent;
+}
+.c-top .premium-job-tabs button{
+ min-height:51px;
+ padding:14px clamp(15px,1.65vw,24px) 12px;
+ flex:0 0 auto;
+ border:0;border-bottom:3px solid transparent;
+ border-radius:0;
+ background:transparent;
+ color:#5e6570;
+ font-size:13px;font-weight:620;line-height:1.3;
+ letter-spacing:0;
+ box-shadow:none;
+ transition:background .18s,color .18s,border-color .18s;
+}
+.c-top .premium-job-tabs button svg{display:none}
+.c-top .premium-job-tabs button:hover{background:rgba(125,0,64,.038);border-color:rgba(125,0,64,.22);color:#642044}
+.c-top .premium-job-tabs button[aria-current=page]{
+ background:linear-gradient(180deg,rgba(125,0,64,.015),rgba(125,0,64,.075));
+ color:#7d0040;
+ border-bottom-color:#7d0040;
+ font-weight:760;
+ box-shadow:none;
+}
+.c-top .premium-job-tabs button[aria-current=page]::after{content:none}
+/* Production flow: harmonized burgundy/slate/teal status accents. */
+.c-body .journey-shell{background:linear-gradient(160deg,#fff 0%,#fff 75%,#fdfbfc 100%);border-color:#dfe3e9}
+.c-body .premium-stage{
+ --stage-accent:#8d2454;--stage-wash:#f6ebf0;--stage-edge:#e9d9e1;
+ background:linear-gradient(145deg,#fff 0%,#fbf6f8 100%);
+ border-color:var(--stage-edge);
+ border-radius:6px;
+ box-shadow:inset 0 1px rgba(255,255,255,.82);
+}
+.c-body .premium-stage:nth-child(2){
+ --stage-accent:#55728a;--stage-wash:#eaf0f5;--stage-edge:#dfe7ee;
+ background:linear-gradient(145deg,#fff 0%,#f5f8fb 100%);
+}
+.c-body .premium-stage:nth-child(3){
+ --stage-accent:#2d8777;--stage-wash:#e7f3ef;--stage-edge:#d7e8e2;
+ background:linear-gradient(145deg,#fff 0%,#f3faf7 100%);
+}
+.c-body .premium-stage::before{background:var(--stage-accent);height:3px}
+.c-body .premium-stage .progress>span{background:var(--stage-accent)}
+.c-body .premium-stage-no,.c-body .premium-stage .avatar{background:var(--stage-wash);color:var(--stage-accent)}
+.c-body .premium-stage-pct{color:var(--stage-accent);font-weight:770}
+.c-body .premium-stage:hover{background:#fff;border-color:var(--stage-accent);box-shadow:0 6px 20px rgba(31,46,56,.07)}
+.c-body .stage-detail-link{color:var(--stage-accent)}
+.c-body .journey-context{background:linear-gradient(120deg,#f9f0f5,#f2e8ef);color:#75244c;border-color:#e9d6e1}
+/* KPI strip has barely-there tonal shifts, not separate brightly colored cards. */
+.c-body .compact-kpi-grid{border-color:#e0e4e9;background:#fdfdfe;box-shadow:inset 0 1px 0 #fff}
+.c-body .compact-kpi:nth-child(1){background:linear-gradient(150deg,#fbf4f8 0%,#fff 100%);border-top:2px solid #a46685}
+.c-body .compact-kpi:nth-child(2){background:linear-gradient(150deg,#f2f6f9 0%,#fff 100%);border-top:2px solid #8096aa}
+.c-body .compact-kpi:nth-child(3){background:linear-gradient(150deg,#fcf7f3 0%,#fff 100%);border-top:2px solid #c2a082}
+.c-body .compact-kpi:nth-child(4){background:linear-gradient(150deg,#f0f8f5 0%,#fff 100%);border-top:2px solid #64a094}
+.c-body .compact-kpi:nth-child(1) strong{color:#763b58}
+.c-body .compact-kpi:nth-child(2) strong{color:#40586b}
+.c-body .compact-kpi:nth-child(3) strong{color:#75533f}
+.c-body .compact-kpi:nth-child(4) strong{color:#206f5d}
+/* Complementary functional backgrounds on shortcuts, alerts and notes. */
+.c-body .premium-quick.compact-sidecard.card{border-top:2px solid #91627a;background:linear-gradient(160deg,#fff 0%,#fdfbfd 100%)}
+.c-body .compact-quick-grid .quick-link{background:linear-gradient(160deg,#fff,#faf8fa);border-color:#e7e3e8}
+.c-body .compact-quick-grid .quick-link:hover{background:linear-gradient(120deg,#f9edf3,#fff);border-color:#d5b5c4}
+.c-body .compact-alert{background:linear-gradient(130deg,#fff9f4 0%,#fffdfb 100%);border-color:#f0dcc8}
+.c-body .compact-notes{background:linear-gradient(140deg,#f6f8fa,#fcfcfd);border-color:#e2e6eb}
+/* Keep all four Order Record groups neutral and square as previously approved. */
+.c-body .order-record-panel .record-group{background:#f3f4f5}
+.c-body .order-record-panel .record-group .compact-record-head{background:rgba(88,98,108,.075)}
+@media(max-width:930px){
+ .c-top .premium-job-tabs button{padding:13px 17px 11px;min-height:47px}
+}
+@media(max-width:650px){
+ .c-top .premium-job-hero{padding:20px 0 17px}
+ .c-top .premium-job-tabs{gap:0}
+ .c-top .premium-job-tabs button{min-height:45px;padding:12px 16px 10px;font-size:12.5px}
+ .c-top .premium-job-hero .compact-facts>div{padding:12px 9px}
+}
+@media(max-width:410px){
+ .c-top .premium-job-hero .compact-facts>div{padding:11px 8px}
+ .c-top .premium-job-tabs button{padding:11px 14px 9px;font-size:12px}
+}
+/* END TPM chromatic refinement */
+
 </style></head><body data-variant="C"><svg width="0" height="0" style="position:absolute;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><symbol id="side-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-8h6v8"/></symbol>
 <symbol id="side-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6M17 14a5 5 0 0 1 4 5v1"/></symbol>
 <symbol id="side-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 7 9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10"/></symbol>
@@ -765,13 +907,15 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
         </div>
       </div>
     </div>
-    <nav data-nav class="c-tabs premium-job-tabs" aria-label="Job views">
-      <button type="button" data-route="overview" aria-current="false"><svg aria-hidden="true"><use href="#side-grid"></use></svg><span>Overview</span></button>
-      <button type="button" data-route="production" aria-current="false"><svg aria-hidden="true"><use href="#factory"></use></svg><span>Production</span></button>
-      <button type="button" data-route="scrap" aria-current="false"><svg aria-hidden="true"><use href="#side-list"></use></svg><span>Scrap</span></button>
-      <button type="button" data-route="materials" aria-current="false"><svg aria-hidden="true"><use href="#side-box"></use></svg><span>Materials</span></button>
-      <button type="button" data-route="report" aria-current="false"><svg aria-hidden="true"><use href="#side-file"></use></svg><span>Job report</span></button>
-      <button type="button" data-route="history" aria-current="false"><svg aria-hidden="true"><use href="#side-bars"></use></svg><span>History</span></button>
+  </div>
+  <div class="premium-tab-band">
+    <nav data-nav class="c-tabs premium-job-tabs wrap" aria-label="Job views">
+      <button type="button" data-route="overview" aria-current="false"><span>Overview</span></button>
+      <button type="button" data-route="production" aria-current="false"><span>Production</span></button>
+      <button type="button" data-route="scrap" aria-current="false"><span>Scrap</span></button>
+      <button type="button" data-route="materials" aria-current="false"><span>Materials</span></button>
+      <button type="button" data-route="report" aria-current="false"><span>Job report</span></button>
+      <button type="button" data-route="history" aria-current="false"><span>History</span></button>
     </nav>
   </div>
 </header><main class="wrap c-body" id="view"></main>
