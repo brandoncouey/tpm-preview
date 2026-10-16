@@ -2081,9 +2081,9 @@ function matCommitUsed(){const pending=matState.pending;if(!pending||pending.act
 function matApplyAction(){const pending=matState.pending;if(!pending)return;let changed=0;
  if(pending.action==='Allocate'){
   if(pending.kind==='coil'){
-   const known=new Set(m.allocated_coils.map(x=>x.coil_no));pending.records.forEach(x=>{if(known.has(x.id))return;known.add(x.id);m.allocated_coils.push({coil_no:x.id,work:x.work,date_received:x.date_received,weight:x.weight,width:x.width,gage:x.gage,pattern:x.pattern,type:x.type,lf:x.lf});m.alloc_coil_heat.push({heat:x.heat});changed++});
+   const known=new Set(m.allocated_coils.map(x=>x.coil_no));pending.records.forEach(x=>{if(known.has(x.id))return;known.add(x.id);m.allocated_coils.push({coil_no:x.id,work:x.work,po:x.po??null,date_received:x.date_received,weight:x.weight,width:x.width,gage:x.gage,pattern:x.pattern,type:x.type,lf:x.lf});m.alloc_coil_heat.push({heat:x.heat});changed++});
   }else{
-   const known=new Set(m.allocated_mesh.map(x=>x.mesh_no));pending.records.forEach(x=>{if(known.has(x.id))return;known.add(x.id);m.allocated_mesh.push({mesh_no:x.id,heat:x.heat,mesh:x.mesh,type:x.type,date_received:x.date_received,role:x.role,width:x.width,length:x.length});changed++});
+   const known=new Set(m.allocated_mesh.map(x=>x.mesh_no));pending.records.forEach(x=>{if(known.has(x.id))return;known.add(x.id);m.allocated_mesh.push({mesh_no:x.id,heat:x.heat,po:x.po??null,mesh:x.mesh,type:x.type,date_received:x.date_received,role:x.role,width:x.width,length:x.length});changed++});
   }
  }else{
   if(pending.kind==='coil'){
