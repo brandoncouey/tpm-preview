@@ -1063,6 +1063,104 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
 @media(max-width:520px){.tab-intro{align-items:flex-start;flex-direction:column;gap:8px}.tab-intro h2{font-size:20px}.tab-intro .tab-context{font-size:10px}.tab-stat-grid,.tab-stat-grid.three{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.tab-stat{padding:12px}.tab-stat .tab-stat-value{font-size:21px}.tab-panel-head{padding:12px 13px;align-items:flex-start}.tab-panel-body{padding:12px 13px}.tab-panel-icon{height:28px;width:28px}.tab-panel-head h3{font-size:13px}.tab-compact-register{grid-template-columns:1fr}.tab-event{grid-template-columns:27px 1fr;gap:10px;padding:13px}.tab-event time{grid-column:2;text-align:left;margin-top:-5px}.tab-material-allocation-bar,.tab-report-intro{align-items:flex-start;flex-direction:column;gap:9px}}
 /* END TPM FIVE-TAB CONSISTENT WORKSPACE */
 
+
+/* TPM MATERIALS WORKSPACE V2 */
+.mat-workspace{display:flex;flex-direction:column;gap:16px;min-width:0;--mat-wine:#7d0040;--mat-ink:#293139;--mat-line:#e2e5e9;--mat-muted:#757e86;font-size:13px}
+.mat-workspace .mat-hero{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:19px 23px;background:linear-gradient(105deg,#fff 0%,#faf8fa 57%,#f5edf2 100%);border:1px solid #e5dfe5;border-left:4px solid var(--mat-wine);border-radius:5px}
+.mat-eyebrow{font-size:10px;font-weight:850;letter-spacing:.085em;text-transform:uppercase;color:var(--mat-wine)}
+.mat-hero h2{font-size:23px;letter-spacing:-.035em;font-weight:800;line-height:1.24;margin-top:5px}
+.mat-hero p{color:#65717a;font-size:12px;margin-top:5px;max-width:76ch;line-height:1.58}
+.mat-softlabel{font-size:10px;letter-spacing:.075em;text-transform:uppercase;font-weight:850;color:#71808d}
+.mat-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
+.mat-stat{background:linear-gradient(155deg,#fff,#fbfbfc);border:1px solid var(--mat-line);border-radius:5px;padding:14px 16px;min-width:0;position:relative;overflow:hidden}
+.mat-stat::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:#6d737b}
+.mat-stat--wine::before{background:#912b5d}.mat-stat--teal::before{background:#2d8777}.mat-stat--slate::before{background:#627a92}.mat-stat--amber::before{background:#b08a50}
+.mat-stat .mat-stat-num{display:block;font-size:24px;font-weight:820;letter-spacing:-.045em;color:#242c34;margin:6px 0 3px;font-variant-numeric:tabular-nums;line-height:1.25;overflow-wrap:anywhere}
+.mat-stat small{color:#737d86;font-size:11px;display:block;line-height:1.5}
+.mat-context{background:#f1f4f6;border:1px solid #dfe5e9;border-radius:4px;display:flex;gap:12px;align-items:flex-start;padding:11px 15px;font-size:11.5px;color:#5c6670;line-height:1.56}
+.mat-context strong{color:#303b45}
+.mat-badge{display:inline-flex;align-items:center;padding:3px 8px;background:#f1f3f6;border:1px solid #e1e4e8;border-radius:4px;font-size:10px;font-weight:800;color:#626e78;white-space:nowrap}
+.mat-panel{background:#fff;border:1px solid #e2e5e9;border-radius:5px;overflow:hidden;min-width:0}
+.mat-panel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;background:linear-gradient(94deg,#f1f2f4 0%,#f7f7f9 68%,#faf5f8 100%);border-bottom:1px solid #e0e3e8;padding:13px 17px}
+.mat-panel-head h3{font-size:15px;font-weight:780;letter-spacing:-.024em;color:#30383f}
+.mat-panel-head p{font-size:11px;color:#747c84;line-height:1.55;margin-top:3px}
+.mat-head-left{display:flex;align-items:center;gap:11px;min-width:0}
+.mat-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:5px;background:#e9e5e8;border:1px solid #ded6dc;flex:none;color:#74264d}
+.mat-icon svg{width:17px;height:17px}
+.mat-panel-body{padding:15px 17px}
+.mat-trace-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mat-tabs{display:flex;gap:4px;border-bottom:1px solid #e3e6eb;min-width:0;overflow-x:auto;margin:0 17px}
+.mat-tabs button{font-size:12px;font-weight:750;min-height:42px;padding:10px 16px 9px;color:#6e7881;background:transparent;border:none;border-bottom:3px solid transparent;white-space:nowrap}
+.mat-tabs button[aria-selected="true"]{border-bottom-color:var(--mat-wine);color:var(--mat-wine)}
+.mat-tabs button:hover{background:#faf6f8}
+.mat-toolbar{padding:14px 17px 12px;display:flex;flex-direction:column;gap:12px}
+.mat-toolbar-top{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.mat-scope{display:flex;gap:4px;padding:3px;background:#f0f2f5;border:1px solid #e3e7eb;border-radius:5px;flex-wrap:wrap}
+.mat-scope button{border:0;background:transparent;color:#646f7a;padding:7px 12px;border-radius:3px;font-size:11.5px;font-weight:750;white-space:nowrap}
+.mat-scope button[aria-pressed="true"]{background:#fff;color:#722647;box-shadow:0 1px 4px #161f2b16}
+.mat-searchrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mat-field{display:flex;align-items:center;gap:7px;color:#66717d;font-size:11px;font-weight:650}
+.mat-field input,.mat-field select{min-height:35px;min-width:0;border:1px solid #d9dfe4;background:#fff;color:#35404a;border-radius:4px;padding:7px 9px;font-size:12px}
+.mat-field input[type=search]{width:min(310px,100%)}
+.mat-field input:focus-visible,.mat-field select:focus-visible{outline:2px solid #923b6b66;outline-offset:1px}
+.mat-toolbar-detail{font-size:11px;color:#7a818a;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px}
+.mat-tablewrap{overflow:auto;width:100%;max-height:570px;border-top:1px solid #e6e8ec;scrollbar-width:thin}
+.mat-table{border-collapse:separate;border-spacing:0;width:100%;font-size:12px;min-width:760px;text-align:left}
+.mat-table thead th{position:sticky;top:0;background:#f5f6f8;z-index:2;padding:11px 12px;font-weight:750;color:#586470;border-bottom:1px solid #e0e4e8;letter-spacing:0;text-transform:none;font-size:11px}
+.mat-table tbody td{padding:10px 12px;border-bottom:1px solid #eff0f2;color:#4a5560;vertical-align:middle;white-space:nowrap}
+.mat-table tbody tr:nth-child(even){background:#fcfcfd}
+.mat-table tbody tr:hover{background:#faf6f8}
+.mat-table tbody tr.mat-selected{background:#fbf0f6}
+.mat-table tbody tr.mat-selected td:first-child{box-shadow:inset 3px 0 #7d0040}
+.mat-table tbody tr:last-child td{border-bottom:0}
+.mat-table input[type=checkbox]{accent-color:#7d0040;width:16px;height:16px;vertical-align:middle;cursor:pointer}
+.mat-table a,.mat-table .mat-item-no{color:#692341;font-weight:800;font-variant-numeric:tabular-nums}
+.mat-type{display:inline-flex;padding:3px 8px;font-size:10px;font-weight:750;border:1px solid #e0e5e9;border-radius:3px;color:#627180;background:#f5f7f9}
+.mat-type.blank{background:#fbf2e6;border-color:#eadcc4;color:#926f35}
+.mat-lf{font-variant-numeric:tabular-nums;font-weight:770;color:#35414c}
+.mat-muted{color:#92999f;font-size:11px}
+.mat-empty{padding:35px 20px;text-align:center;color:#707b84;font-size:12px}
+.mat-empty strong{display:block;color:#404b54;font-size:14px;margin-bottom:4px}
+.mat-pager{border-top:1px solid #e9ebef;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:#737e89}
+.mat-pager .actions{gap:6px}
+.mat-pager select{padding:6px 8px;min-height:31px;border:1px solid #dfe3e8;background:#fff;border-radius:4px}
+.mat-pager button{border:1px solid #dae0e6;background:white;border-radius:4px;padding:6px 10px;font-size:11px;font-weight:750;color:#596570;min-height:31px}
+.mat-pager button:disabled{opacity:.38}
+.mat-bulk{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:11px;flex-wrap:wrap;border-top:1px solid #d4dce4;padding:12px 17px;background:linear-gradient(95deg,#f9fafb,#f2f4f6);box-shadow:0 -6px 18px #202a3410}
+.mat-bulk strong{font-size:12px;color:#303840}.mat-bulk p{font-size:10.5px;color:#747e85;margin-top:2px}
+.mat-bulk .btn{min-height:35px;border-radius:4px}
+.mat-bulk .mat-primary{color:#fff;background:#7d0040;border-color:#7d0040}
+.mat-bulk .mat-release{color:#4e5560;background:#fff;border-color:#c4cbd3}
+.mat-bulk button:disabled{opacity:.45;cursor:not-allowed}
+.mat-toolbar .mat-edit-trigger{min-height:35px;background:#fff;border:1px solid #bec6cf;color:#34414e;font-weight:800;border-radius:4px;font-size:12px;padding:8px 12px}
+.mat-toolbar .mat-edit-trigger svg{color:#7d0040;width:14px;height:14px}
+.mat-toolbar .mat-done{background:#f4f5f7;border-color:#d2d8df}
+.mat-flow{display:flex;align-items:stretch;gap:14px;flex-wrap:wrap}
+.mat-flow>div{flex:1;min-width:170px;border:1px solid #e2e7eb;background:#f8f9fa;padding:11px 13px;border-radius:4px}
+.mat-flow strong{display:block;font-size:13px;color:#303943;font-weight:820;margin-top:4px}
+.mat-flow small{font-size:11px;color:#78818b;line-height:1.45;display:block;margin-top:3px}
+.mat-note{color:#66717b;background:#f7f8fa;border:1px solid #e4e7ea;border-radius:4px;padding:11px 13px;line-height:1.55;font-size:11px}
+.mat-used-wrap{display:flex;flex-direction:column;gap:13px}
+.mat-used-headline{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.mat-used-headline h3{font-size:16px;font-weight:800}
+.mat-used-headline p{color:#717b84;font-size:11px;max-width:80ch;margin-top:4px;line-height:1.55}
+.mat-used-summary{display:flex;gap:8px;flex-wrap:wrap}
+.mat-used-summary span{font-size:10.5px;background:#edf1f4;color:#64717d;border:1px solid #e1e5e9;border-radius:3px;padding:5px 8px;font-weight:750}
+.mat-preview-banner{background:#f9f4f7;border:1px solid #ead9e3;border-left:3px solid #8f456a;padding:10px 13px;color:#6b5661;font-size:11px;line-height:1.5}
+.mat-demo-audit{font-size:11px;padding:9px 12px;border:1px solid #e5e7eb;background:#fff}
+.mat-demo-audit summary{cursor:pointer;font-weight:750;color:#555f6a}
+.mat-demo-audit ul{list-style:none;padding:8px 2px 2px;margin:0}
+.mat-demo-audit li{padding:7px 0;border-bottom:1px solid #eff0f1}
+.mat-demo-audit li:last-child{border:0}
+.mat-confirm-list{max-height:160px;overflow:auto;margin:12px 0;padding:10px 13px;background:#f6f7f9;border:1px solid #e4e7ea;border-radius:4px;color:#4d5660;line-height:1.7;font-size:12px}
+.mat-confirm-note{display:flex;flex-direction:column;gap:6px;color:#65707b;font-weight:750;font-size:11px;margin-top:10px}
+.mat-confirm-note textarea{border:1px solid #d3d9df;border-radius:4px;padding:10px;min-height:66px;font-size:12px;resize:vertical}
+@media(max-width:1100px){.mat-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.mat-trace-grid{grid-template-columns:1fr}}
+@media(max-width:670px){.mat-workspace{gap:12px}.mat-hero{padding:15px;align-items:flex-start;flex-direction:column}.mat-hero h2{font-size:20px}.mat-stat{padding:11px 12px}.mat-stat .mat-stat-num{font-size:20px}.mat-toolbar{padding:12px}.mat-tabs{margin:0 12px}.mat-toolbar-top{align-items:flex-start}.mat-searchrow{flex-direction:column;align-items:stretch}.mat-field{flex-wrap:wrap}.mat-field input[type=search]{width:100%}.mat-scope{width:100%}.mat-scope button{flex:1;font-size:10px;padding:7px 7px}.mat-panel-head{padding:12px}.mat-bulk{padding:10px 12px}.mat-flow>div{min-width:100%}.mat-used-headline{flex-direction:column}.mat-stats{gap:8px}}
+@media(max-width:390px){.mat-stats{grid-template-columns:1fr 1fr}.mat-stat .mat-stat-num{font-size:18px}.mat-panel-head h3{font-size:13px}.mat-pager{justify-content:center;text-align:center}.mat-toolbar .mat-edit-trigger{width:100%}}
+@media print{.mat-bulk,.mat-toolbar,.mat-pager,.mat-preview-banner{display:none}.mat-tablewrap{max-height:none;overflow:visible}}
+/* END TPM MATERIALS WORKSPACE V2 */
+
 </style></head><body data-variant="C"><svg width="0" height="0" style="position:absolute;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><symbol id="side-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-8h6v8"/></symbol>
 <symbol id="side-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6M17 14a5 5 0 0 1 4 5v1"/></symbol>
 <symbol id="side-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 7 9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10"/></symbol>
@@ -1537,4 +1635,186 @@ window.addEventListener('popstate',()=>navigate(new URLSearchParams(location.sea
   sync();
 })();
 </script>
+
+<script>
+// TPM materials workspace: source-informed mock, no live inventory writes.
+// Existing Orders.vue uses CoilAllocation.vue + MeshAllocation.vue + JobMaterialsUsed.vue.
+const matState = {kind:'coil', scope:'allocated', perforation:'all', role:'all', search:'', sort:'id', page:1, pageSize:20, edit:false, selected:new Set(), pending:null, audit:[]};
+const matAuditKey=localPreviewKey+'-materials-audit-v2';
+try{matState.audit=JSON.parse(localStorage.getItem(matAuditKey)||'[]');if(!Array.isArray(matState.audit))matState.audit=[]}catch(e){matState.audit=[]}
+// Distinct fictional inventory for scale testing, not fetched from TPM or a supplier.
+const matCoilPool=Array.from({length:186},(_,i)=>{
+ const width=[4.625,4.625,4.625,5.025,4.25,6.0,4.625,5.5][i%8];
+ const type=i%5===0?'Blank':'Perforated';
+ const lf=Math.round((185+(i*53)%970)*100)/100;
+ return {id:'C-'+String(12000+i).padStart(5,'0'),coil_no:'C-'+String(12000+i).padStart(5,'0'),heat:'H-'+(74110+Math.floor(i/3)),work:'W-'+(29420+Math.floor(i/4)),width,gage:i%4===0?'0.090':'0.083',pattern:type==='Blank'?'Blank':'60° staggered',type,lf,weight:Math.round(lf*3.2),date_received:`2026-10-${String(1+(i%15)).padStart(2,'0')}`};
+});
+const matMeshPool=Array.from({length:82},(_,i)=>{
+ const role=['Top Filter','Bottom Filter','Inner Drainage','Outer Drainage'][i%4];
+ const len=Math.round((155+(i*29)%390)*10)/10;
+ return {id:'MSH-'+String(3100+i),mesh_no:'MSH-'+String(3100+i),heat:'MH-'+(93000+Math.floor(i/3)),mesh:i%3===0?'40 × 40':i%3===1?'20 × 20':'60 × 60',type:i%5===0?'316L SS woven':'304 SS woven',role,width:(i%4===0?4.625:5.025),length:len,date_received:`2026-10-${String(1+(i%14)).padStart(2,'0')}`};
+});
+const matFmtLF=(value)=>value===null||value===undefined||!Number.isFinite(Number(value))?'—':Number(value).toLocaleString('en-US',{maximumFractionDigits:2})+' LF';
+const matStockRows=()=>matState.kind==='coil'?m.allocated_coils.map((row,i)=>({id:row.coil_no,coil_no:row.coil_no,heat:m.alloc_coil_heat[i]?.heat??'—',work:row.work??'—',width:row.width??null,gage:row.gage??null,pattern:row.pattern??null,type:row.type??null,lf:row.lf??null,weight:row.weight??null,date_received:row.date_received??null})):m.allocated_mesh.map(row=>({id:row.mesh_no,mesh_no:row.mesh_no,heat:row.heat,mesh:row.mesh,type:row.type,role:row.role??null,width:row.width??null,length:row.length??null,date_received:row.date_received??null}));
+const matAvailableRows=()=>{
+ const assigned=new Set(matStockRows().map(x=>x.id));
+ return (matState.kind==='coil'?matCoilPool:matMeshPool).filter(x=>!assigned.has(x.id));
+};
+function matFiltered(){
+ let list=matState.scope==='allocated'?matStockRows():matAvailableRows();
+ if(matState.scope==='compatible')list=list.filter(x=>matState.kind==='coil'?Number(x.width)===Number(j.strip?.replace(/[a-z ]/gi,'')):Number(x.width)===Number(j.strip?.replace(/[a-z ]/gi,'')));
+ if(matState.kind==='coil'&&matState.perforation!=='all')list=list.filter(x=>String(x.type||'').toLowerCase()===matState.perforation);
+ if(matState.kind==='mesh'&&matState.role!=='all')list=list.filter(x=>x.role===matState.role);
+ const q=matState.search.trim().toLowerCase();if(q)list=list.filter(x=>[x.id,x.work,x.heat,x.mesh,x.type,x.role,x.pattern].some(v=>String(v??'').toLowerCase().includes(q)));
+ if(matState.sort!=='id')list=list.slice().sort((a,b)=>{const key=matState.sort==='wide'?'width':matState.kind==='coil'?'lf':'length';const av=Number(a[key]),bv=Number(b[key]);const az=a[key]===null||a[key]===undefined||!Number.isFinite(av),bz=b[key]===null||b[key]===undefined||!Number.isFinite(bv);if(az!==bz)return az?1:-1;return (matState.sort==='largest'?bv-av:av-bv)||a.id.localeCompare(b.id)});
+ return list;
+}
+function matSelectionSummary(){const ids=matState.selected;const data=matFiltered().filter(x=>ids.has(x.id));const known=data.filter(x=>Number.isFinite(Number(matState.kind==='coil'?x.lf:x.length))&&x[matState.kind==='coil'?'lf':'length']!==null);return {data,count:data.length,known:known.reduce((sum,x)=>sum+Number(matState.kind==='coil'?x.lf:x.length),0),unknown:data.length-known.length};}
+const matStat=(label,value,hint,tone='slate')=>`<div class="mat-stat mat-stat--${tone}"><span class="mat-softlabel">${safe(label)}</span><strong class="mat-stat-num">${safe(value)}</strong><small>${safe(hint)}</small></div>`;
+const matPanel=(title,subtitle,content,iconName='factory',trailing='')=>`<section class="mat-panel"><div class="mat-panel-head"><div class="mat-head-left"><span class="mat-icon">${icon(iconName)}</span><div><h3>${safe(title)}</h3><p>${safe(subtitle)}</p></div></div>${trailing?`<span class="mat-badge">${safe(trailing)}</span>`:''}</div>${content}</section>`;
+const matReadable=(value)=>value===null||value===undefined||value===''?'—':safe(value);
+function matDataTable(headers,rows,minWidth=570){return `<div class="mat-tablewrap"><table class="mat-table" style="min-width:${minWidth}px"><thead><tr>${headers.map(x=>`<th>${safe(x)}</th>`).join('')}</tr></thead><tbody>${rows.length?rows.map(a=>`<tr>${a.map((v,i)=>`<td>${i===0?`<span class="mat-item-no">${safe(v)}</span>`:safe(v)}</td>`).join('')}</tr>`).join(''):`<tr><td colspan="${headers.length}" class="mat-empty">No recorded entries in this fixture.</td></tr>`}</tbody></table></div>`}
+function matInventoryTable(){
+ const all=matFiltered(),maxPage=Math.max(1,Math.ceil(all.length/matState.pageSize));matState.page=Math.min(Math.max(1,matState.page),maxPage);
+ const from=(matState.page-1)*matState.pageSize,items=all.slice(from,from+matState.pageSize);
+ const selectedVisible=items.length>0&&items.every(x=>matState.selected.has(x.id));
+ const isAllocated=matState.scope==='allocated';
+ const checkbox=(row)=>`<input type="checkbox" data-mat-check="${safe(row.id)}" aria-label="Select ${safe(row.id)}" ${matState.selected.has(row.id)?'checked':''} ${!matState.edit?'disabled':''}/>`;
+ const headings=matState.kind==='coil'?['Coil','Available LF','Width','Work #','Pattern','Gage','Type','Heat']:['Mesh #','Length (LF)','Mesh type','Material','Role','Width','Heat','Received'];
+ const visibleRows=items.map(row=>{
+ const fields=matState.kind==='coil'?[`<strong class="mat-item-no">${safe(row.id)}</strong>`,row.lf===null?'<span class="mat-muted">Not recorded</span>':`<span class="mat-lf">${matFmtLF(row.lf)}</span>`,row.width===null?'—':`${Number(row.width).toFixed(3)} in`,matReadable(row.work),matReadable(row.pattern),matReadable(row.gage),`<span class="mat-type ${row.type==='Blank'?'blank':''}">${safe(row.type||'Unclassified')}</span>`,matReadable(row.heat)]:[`<strong class="mat-item-no">${safe(row.id)}</strong>`,row.length===null?'<span class="mat-muted">Not recorded</span>':`<span class="mat-lf">${matFmtLF(row.length)}</span>`,matReadable(row.mesh),matReadable(row.type),matReadable(row.role),row.width===null?'—':`${Number(row.width).toFixed(3)} in`,matReadable(row.heat),matReadable(row.date_received)];
+ return `<tr class="${matState.selected.has(row.id)?'mat-selected':''}"><td>${checkbox(row)}</td>${fields.map(x=>`<td>${x}</td>`).join('')}</tr>`
+ }).join('');
+ const count=matSelectionSummary();
+ const availableText=matState.scope==='allocated'?'Assigned to this job':matState.scope==='compatible'?'Unallocated · part-width matches (preview)':'Unallocated inventory · all widths';
+ return `<div class="mat-toolbar-detail"><span>${num(all.length)} ${matState.kind==='coil'?'coils':'mesh rolls'} · ${availableText}</span><span>${num(matState.selected.size)} selected · Selection applies to the active search</span></div>
+ <div class="mat-tablewrap"><table class="mat-table" aria-label="${matState.kind==='coil'?'Coil':'Mesh'} inventory" style="min-width:${matState.kind==='coil'?890:930}px"><thead><tr><th style="width:43px"><input type="checkbox" data-mat-checkall aria-label="Select all visible rows" ${selectedVisible?'checked':''} ${!matState.edit||!items.length?'disabled':''}/></th>${headings.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${visibleRows||`<tr><td colspan="${headings.length+1}"><div class="mat-empty"><strong>No matching inventory</strong>Try a different search, width, perforation, or role filter.</div></td></tr>`}</tbody></table></div>
+ <div class="mat-pager"><span>Showing ${all.length?from+1:0}–${Math.min(from+items.length,all.length)} of ${num(all.length)} records · ${matState.page} of ${maxPage} pages</span><div class="actions"><label>Rows <select data-mat-input="pagesize"><option ${matState.pageSize===20?'selected':''}>20</option><option ${matState.pageSize===50?'selected':''}>50</option><option ${matState.pageSize===100?'selected':''}>100</option></select></label><button type="button" data-mat-act="prev" ${matState.page===1?'disabled':''}>← Previous</button><button type="button" data-mat-act="next" ${matState.page===maxPage?'disabled':''}>Next →</button></div></div>
+ ${matState.edit?`<div class="mat-bulk"><div><strong>${count.count} ${matState.kind==='coil'?'coils':'mesh rolls'} selected</strong><p>${count.unknown?`${matFmtLF(count.known)} known · ${count.unknown} without LF records`:matFmtLF(count.known)} · Selection stays on the current filter</p></div><div class="actions"><button class="btn sm" data-mat-act="clear" ${!count.count?'disabled':''}>Clear</button>${isAllocated&&matState.kind==='coil'?`<button class="btn sm" data-mat-act="used-preview" ${!(count.count===1&&Number(count.data[0]?.lf)>0&&Number(count.data[0]?.width)>0&&Number(count.data[0]?.gage)>0)?'disabled title="Select one coil with recorded LF, width, and gauge"':''}>Enter as Used</button>`:''}<button class="btn sm ${isAllocated?'mat-release':'mat-primary'}" data-mat-act="review" ${!count.count?'disabled':''}>${isAllocated?'Deallocate selected':'Allocate selected'} (${count.count})</button></div></div>`:''}`;
+}
+function matManagement(){
+ const isCoil=matState.kind==='coil',assigned=isCoil?m.allocated_coils.length:m.allocated_mesh.length;
+ const filters=isCoil?`<label class="mat-field">Perforation <select data-mat-input="perforation"><option value="all" ${matState.perforation==='all'?'selected':''}>All types</option><option value="blank" ${matState.perforation==='blank'?'selected':''}>Blank only</option><option value="perforated" ${matState.perforation==='perforated'?'selected':''}>Perforated only</option></select></label>`:`<label class="mat-field">Mesh role <select data-mat-input="role">${['all','Top Filter','Bottom Filter','Inner Drainage','Outer Drainage'].map(x=>`<option value="${safe(x)}" ${matState.role===x?'selected':''}>${x==='all'?'All roles':safe(x)}</option>`).join('')}</select></label>`;
+ const scopes=[['allocated','Allocated'],['compatible',isCoil?'Part-specific widths':'Part-matching mesh'],['all',isCoil?'All material widths':'All mesh']];
+ return `<section class="mat-panel" id="mat-manager"><div class="mat-panel-head"><div class="mat-head-left"><span class="mat-icon">${icon('layers')}</span><div><h3>Allocate & deallocate inventory</h3><p>Search, filter, then select multiple records. Allocations only—not production usage.</p></div></div><span class="mat-badge">${assigned} ${isCoil?'coils':'mesh rolls'} allocated</span></div>
+ <div class="mat-tabs" role="tablist" aria-label="Material type"><button role="tab" type="button" data-mat-act="kind" data-value="coil" aria-selected="${isCoil}">Steel coils <span class="mat-badge">${m.allocated_coils.length}</span></button><button role="tab" type="button" data-mat-act="kind" data-value="mesh" aria-selected="${!isCoil}">Mesh rolls <span class="mat-badge">${m.allocated_mesh.length}</span></button></div>
+ <div class="mat-toolbar"><div class="mat-toolbar-top"><div class="mat-scope" aria-label="Inventory list scope">${scopes.map(([id,label])=>`<button type="button" data-mat-act="scope" data-value="${id}" aria-pressed="${matState.scope===id}">${safe(label)}</button>`).join('')}</div><button type="button" class="mat-edit-trigger ${matState.edit?'mat-done':''}" data-mat-act="edit">${matState.edit?'Done editing':`${icon('edit')} Edit allocations`}</button></div>
+ <div class="mat-searchrow"><label class="mat-field">Search <input type="search" id="mat-inventory-search" data-mat-input="search" placeholder="${isCoil?'Coil #, work #, heat':'Mesh #, type, role, heat'}" value="${safe(matState.search)}" autocomplete="off"/></label>${filters}<label class="mat-field">Sort <select data-mat-input="sort"><option value="id" ${matState.sort==='id'?'selected':''}>Inventory number</option><option value="largest" ${matState.sort==='largest'?'selected':''}>Most LF first</option><option value="smallest" ${matState.sort==='smallest'?'selected':''}>Least LF first</option><option value="wide" ${matState.sort==='wide'?'selected':''}>Width</option></select></label></div>
+ ${matState.edit?'<div class="mat-preview-banner"><strong>Edit mode.</strong> Select one or many rows; the action bar appears beneath the table. Confirmations simulate the original immediate allocate/deallocate workflow. No TPM APIs are called.</div>':''}
+ ${matInventoryTable()}</div></section>`;
+}
+function matPlanningCoverage(){
+ const coils=matStockRowsFor('coil'),mesh=matStockRowsFor('mesh');
+ const known=(rows)=>rows.filter(x=>x.lf!==null&&x.lf!==undefined&&Number.isFinite(Number(x.lf)));
+ const classified=coils.filter(x=>x.type==='Blank'||x.type==='Perforated');
+ const blanks=known(classified.filter(x=>x.type==='Blank'));const perfs=known(classified.filter(x=>x.type==='Perforated'));
+ const meshLengths=mesh.filter(x=>x.length!==null&&x.length!==undefined&&Number.isFinite(Number(x.length)));
+ const frac=(group,total)=>total===0?'Not recorded':matFmtLF(group.reduce((sum,x)=>sum+Number(x.lf),0));
+ return `<details class="mat-demo-audit" style="background:#fdfdfe"><summary>Planning coverage · perforated, blank, and mesh footage (as on the original TPM page)</summary><div class="mat-flow" style="margin-top:10px"><div><span class="mat-softlabel">Perforated LF assigned</span><strong>${frac(perfs,classifedCount('Perforated',coils))}</strong><small>${classifedCount('Perforated',coils)-perfs.length} records without measured LF · partial if missing</small></div><div><span class="mat-softlabel">Blank LF assigned</span><strong>${frac(blanks,classifedCount('Blank',coils))}</strong><small>${classifedCount('Blank',coils)-blanks.length} records without measured LF · partial if missing</small></div><div><span class="mat-softlabel">Mesh LF assigned</span><strong>${meshLengths.length?matFmtLF(meshLengths.reduce((n,x)=>n+Number(x.length),0)):'Not recorded'}</strong><small>${mesh.length-meshLengths.length} mesh records lack length</small></div></div><p class="mat-note" style="margin-top:10px">Live TPM uses /api/weight_show and /api/meshtotal_show for required LF, allocated totals and shortage. The preview cannot reliably compute shortages while original source coils lack width, gauge or weight measurements.</p></details>`;
+}
+function classifedCount(type,rows){return rows.filter(x=>x.type===type).length}
+function matStockRowsFor(kind){const old=matState.kind;matState.kind=kind;const rows=matStockRows();matState.kind=old;return rows}
+function matUsedRecords(){
+ const usedSteelRows=m.used_coils.map((row,i)=>[row.coil_no,m.used_coil_heat[i]?.heat??'—',row.work??'—',m.used_coil_tubes[i]?.first_tube||'—',m.used_coil_tubes[i]?.last_tube||'—',m.used_coil_tubes[i]?.count??'—',stamp(row.date_used),'Not recorded']);
+ const usedMeshRows=m.used_mesh.map(row=>[row.mesh_no,row.heat??'—',row.mesh??'—',row.type??'—',row.length===undefined?'Not recorded':matFmtLF(row.length)]);
+ const tubeLog=m.tube_data.map(x=>[x.id,x.coil,x.mill_check?'✓':'—',x.cutoff_check?'✓':'—',x.insp_check?'✓':'—',stamp(x.mill_time),stamp(x.cutoff_time),stamp(x.insp_time)]);
+ const usedPanels=`<div class="mat-trace-grid">${matPanel('Coils allocated','Present assignments; not proof of production consumption',matDataTable(['Coil','Heat','Work #','Received','Weight'],m.allocated_coils.map((x,i)=>[x.coil_no,m.alloc_coil_heat[i]?.heat??'—',x.work,stamp(x.date_received),x.weight==null?'—':num(x.weight)])), 'layers',m.allocated_coils.length+' assigned')}${matPanel('Coils used','Permanent traceability; original used-coil records',matDataTable(['Coil','Heat','Work #','First tube','Last tube','Tubes','Used date','Raw LF used'],usedSteelRows,810), 'factory',m.used_coils.length+' recorded')}</div>
+ <div class="mat-trace-grid">${matPanel('Mesh allocated','Mesh currently assigned to this job',matDataTable(['Mesh','Heat','Spec','Type','Length'],m.allocated_mesh.map(x=>[x.mesh_no,x.heat,x.mesh,x.type,x.length==null?'—':matFmtLF(x.length)])), 'layers',m.allocated_mesh.length+' assigned')}${matPanel('Mesh used','Mesh consumed in recorded production',matDataTable(['Mesh','Heat','Spec','Type','Used LF'],usedMeshRows), 'factory',m.used_mesh.length+' recorded')}</div>
+ ${matPanel('Tube traceability','Only the records supplied in this fictional preview—not all production tubes',matDataTable(['Tube','Source coil','Mill','Cutoff','Inspection','Mill time','Cutoff time','Inspection time'],tubeLog,960),'check',`${m.tube_data.length} sample rows`)}`;
+ return `<div class="mat-used-wrap"><div class="mat-used-headline"><div><span class="mat-eyebrow">RECORDED MATERIAL HISTORY · READ ONLY</span><h3>What this job actually used</h3><p>Used-coil records and tube history remain separate from stock allocations, even if an allocation is later released.</p></div><div class="mat-used-summary"><span>${m.used_coils.length} used coils</span><span>${m.used_mesh.length} used mesh records</span><span>${m.tube_data.length} tube samples</span></div></div>${usedPanels}</div>`;
+}
+function matAuditView(){return `<details class="mat-demo-audit"><summary>Preview-only allocation history ${matState.audit.length?`(${matState.audit.length})`:''} · not a TPM audit log</summary><ul>${matState.audit.length?matState.audit.slice(0,10).map(x=>`<li><strong>${safe(x.action)} ${x.count} ${safe(x.kind)}${x.count===1?'':'s'}</strong> · ${safe(x.when)}<div class="mat-muted">${safe(x.ids.join(', '))}${x.note?' · Note: '+safe(x.note):''}</div></li>`).join(''):'<li>No mock allocation actions yet.</li>'}</ul></details>`}
+function matPage(){
+ const allocated=matStockRows(),known=allocated.filter(x=>x[matState.kind==='coil'?'lf':'length']!==null&&Number.isFinite(Number(x[matState.kind==='coil'?'lf':'length'])));
+ const coilRows=m.allocated_coils.map(c=>c.lf).filter(x=>x!==null&&x!==undefined&&Number.isFinite(Number(x)));
+ const allocatedLF=coilRows.reduce((n,x)=>n+Number(x),0),unknownCoils=m.allocated_coils.length-coilRows.length;
+ const baseStats=[
+ ['Order LF reference',matFmtLF(j.lf_mat),'Order-level LF value in this fictional fixture','wine'],
+ ['Allocated steel LF',`${coilRows.length?matFmtLF(allocatedLF):'Not recorded'}`,`${unknownCoils?unknownCoils+' assigned coil(s) missing LF':m.allocated_coils.length+' coil(s) with LF values'}${coilRows.length&&unknownCoils?' · partial total':''}`,'slate'],
+ ['Tube footage produced',matFmtLF(j.total_tube),'Recorded finished-tube footage; not raw coil withdrawal','teal'],
+ ['Raw stock LF consumed','Not recorded',`Used-coil records lack consumed LF · ${Number(s.totals.feet).toFixed(1)} LF separately recorded as scrap`,'amber']
+ ];
+ return `<div class="mat-workspace"><header class="mat-hero"><div><span class="mat-eyebrow">MATERIALS / JOB #${safe(j.job)}</span><h2>Material planning & usage</h2><p>Allocate coils and mesh in bulk, understand linear footage, and trace what production actually used.</p></div><span class="mat-badge">${safe(j.part)} · ${num(j.quantity)} tubes</span></header>
+ <div class="mat-stats">${baseStats.map(x=>matStat(...x)).join('')}</div>
+ <div class="mat-context"><span style="font-size:16px;color:#8f416a">ⓘ</span><div><strong>These LF values mean different things.</strong> Order LF is a planning reference; allocated LF depends on recorded coil dimensions and weight; the 12,096 LF represents tube output. Raw coil withdrawal isn't in this fixture, so it cannot be calculated reliably from tube count or added to scrap. The <strong>${Number(s.totals.feet).toFixed(1)} LF scrap</strong> is a separate recorded loss.</div></div>
+ ${matManagement()}
+ ${matPlanningCoverage()}
+ <div class="mat-flow"><div><span class="mat-softlabel">01 · Set aside</span><strong>${m.allocated_coils.length} coils + ${m.allocated_mesh.length} mesh</strong><small>Stock assignments can be changed in bulk.</small></div><div><span class="mat-softlabel">02 · Material used</span><strong>${m.used_coils.length} used-coil records</strong><small>Consumption records stay intact after releasing stock.</small></div><div><span class="mat-softlabel">03 · Tube trace</span><strong>${m.tube_data.length} sample tube records</strong><small>Use production history for complete tube counts.</small></div></div>
+ ${matUsedRecords()}
+ ${matPanel('Material & weight totals','Original job-level reference data; all fields retained',`<div class="mat-panel-body">${tabFields(jobGroups.weights)}</div>`,'factory')}
+ ${matAuditView()}
+ <div class="mat-note"><strong>Inventory behavior in TPM:</strong> Steel filters include allocated/all-width/part-width and blank/perforated. Mesh supports allocated/all/part-match and role layers. Selection and changes run via the existing allocation endpoints in Laravel, not this preview. The 186 coil and 82 mesh inventory options here are generated solely to test high-volume UI.</div></div>`;
+}
+function matRender(keepFocus=false){if(!document.querySelector('#view .mat-workspace'))return;const focus=document.activeElement;if(keepFocus&&focus?.id==='mat-inventory-search'){
+ const at=typeof focus.selectionStart==='number'?focus.selectionStart:null;
+ document.getElementById('view').innerHTML=matPage();
+ const input=document.getElementById('mat-inventory-search');if(input){input.focus();if(at!==null)input.setSelectionRange(at,at)}return;
+ }document.getElementById('view').innerHTML=matPage();}
+function matResetSelection(){matState.selected.clear();matState.page=1;}
+const matOriginalC=renderers.C.materials;
+renderers.C.materials=()=>matPage();
+// Reuse the existing navigation wrapper (and its preview tools, sidebar and status guards).
+let matSearchTimer=null;
+function matChangeOption(key,value){if(key==='search'){matState.search=value;matState.page=1;matState.selected.clear();clearTimeout(matSearchTimer);matSearchTimer=setTimeout(()=>matRender(true),125);return}
+ if(key==='pagesize'){matState.pageSize=Number(value)||20;matState.page=1;matRender();return}
+ matState[key]=value;matResetSelection();matRender();}
+function matConfirmAction(){const summary=matSelectionSummary();if(!matState.edit||!summary.count)return;
+ const action=matState.scope==='allocated'?'Deallocate':'Allocate';const ids=summary.data.map(x=>x.id);
+ matState.pending={action,kind:matState.kind,records:summary.data.map(x=>({...x}))};
+ const existingUsage=summary.data.filter(x=>matState.kind==='coil'?m.used_coils.some(c=>c.coil_no===x.id):m.used_mesh.some(c=>c.mesh_no===x.id)).length;
+ const items=`<div class="mat-confirm-list">${ids.slice(0,12).map(id=>`<div>${safe(id)}</div>`).join('')}${ids.length>12?`<div>… and ${ids.length-12} more</div>`:''}</div>`;
+ modal(`${action} ${summary.count} ${matState.kind==='coil'?'coil':'mesh'}${summary.count===1?'':'s'}`,`Job #${j.job} · simulated bulk inventory action`,`<div class="mat-note"><strong>${action==='Allocate'?'Set aside inventory':'Release assignments'}</strong> for this job. ${summary.unknown?`${summary.unknown} item(s) have no footage value in the mock.`:`${matFmtLF(summary.known)} selected.`} ${existingUsage?`${existingUsage} item(s) also appear in historical used records; those records will remain unchanged.`:''} Actual TPM changes require backend allocation checks.</div>${items}<label class="mat-confirm-note">Reason or notes (preview only)<textarea id="mat-confirm-note" placeholder="Optional reason or production note..."></textarea></label>`,`<button class="btn" data-mat-act="cancel-confirm">Cancel</button><button class="btn ${action==='Allocate'?'save-action':''}" data-mat-act="confirm" style="${action==='Deallocate'?'background:#f4f5f7;border:1px solid #bfc9d2;color:#303a43;':''}">${action==='Allocate'?'Confirm allocation':'Confirm deallocation'}</button>`);
+}
+function matOpenEnterAsUsed(){
+ const selection=matSelectionSummary();if(matState.kind!=='coil'||matState.scope!=='allocated'||selection.count!==1)return;
+ const coil=selection.data[0];const max=Number(coil.lf),width=Number(coil.width),gage=Number(coil.gage);
+ if(!(max>0&&width>0&&gage>0))return;
+ matState.pending={action:'Enter as Used',kind:'coil',records:[{...coil}]};
+ modal('Enter as Used · '+coil.id,`Job #${j.job} · existing TPM steel-coil workflow`,`<div class="mat-note"><strong>Legacy behavior:</strong> Enter a linear-foot amount, convert it to equivalent steel weight (LF × width × 12 × gauge × 0.29), then TPM sends that weight to /api/Enter_as_Used. This is <strong>not</strong> the same as a verified raw-material consumption log. The mock will record the preview entry only, without altering source stock or usage totals.</div><div class="dialog-field" style="margin-top:14px"><label for="mat-used-lf">Linear feet · maximum ${safe(max.toFixed(2))} LF</label><input id="mat-used-lf" type="number" inputmode="decimal" min="0.01" step="0.01" max="${max}" placeholder="0.00"/></div><div class="mat-note" style="margin-top:12px" id="mat-used-weight">Enter linear feet to preview the equivalent pounds.</div>`,`<button class="btn" data-mat-act="cancel-confirm">Cancel</button><button class="btn save-action" data-mat-act="confirm-used">Save mock conversion</button>`)
+}
+function matCommitUsed(){const pending=matState.pending;if(!pending||pending.action!=='Enter as Used')return;const row=pending.records[0],lf=Number(document.getElementById('mat-used-lf')?.value),max=Number(row.lf),width=Number(row.width),gage=Number(row.gage);if(!Number.isFinite(lf)||lf<=0||lf>max){toast(`Enter more than 0 and no more than ${max.toFixed(2)} LF.`,'warning');return}const lbs=Math.round(lf*width*12*gage*.29*100)/100;matState.audit.unshift({action:'Enter as Used (preview)',kind:'coil',count:1,ids:[row.id],note:`${lf.toFixed(2)} LF ≈ ${lbs.toFixed(2)} lbs; no stock/usage write`,when:new Date().toLocaleString('en-US')});try{localStorage.setItem(matAuditKey,JSON.stringify(matState.audit.slice(0,30)))}catch(e){}matState.pending=null;matState.selected.clear();closeModal();navigate('materials');toast('Weight conversion recorded in preview history only.','success')}
+function matApplyAction(){const pending=matState.pending;if(!pending)return;let changed=0;
+ if(pending.action==='Allocate'){
+  if(pending.kind==='coil'){
+   const known=new Set(m.allocated_coils.map(x=>x.coil_no));pending.records.forEach(x=>{if(known.has(x.id))return;known.add(x.id);m.allocated_coils.push({coil_no:x.id,work:x.work,date_received:x.date_received,weight:x.weight,width:x.width,gage:x.gage,pattern:x.pattern,type:x.type,lf:x.lf});m.alloc_coil_heat.push({heat:x.heat});changed++});
+  }else{
+   const known=new Set(m.allocated_mesh.map(x=>x.mesh_no));pending.records.forEach(x=>{if(known.has(x.id))return;known.add(x.id);m.allocated_mesh.push({mesh_no:x.id,heat:x.heat,mesh:x.mesh,type:x.type,date_received:x.date_received,role:x.role,width:x.width,length:x.length});changed++});
+  }
+ }else{
+  if(pending.kind==='coil'){
+   const ids=new Set(pending.records.map(x=>x.id));for(let i=m.allocated_coils.length-1;i>=0;i--)if(ids.has(m.allocated_coils[i].coil_no)){m.allocated_coils.splice(i,1);m.alloc_coil_heat.splice(i,1);changed++}
+  }else{
+   const ids=new Set(pending.records.map(x=>x.id));for(let i=m.allocated_mesh.length-1;i>=0;i--)if(ids.has(m.allocated_mesh[i].mesh_no)){m.allocated_mesh.splice(i,1);changed++}
+  }
+ }
+ if(changed){matState.audit.unshift({action:pending.action,kind:pending.kind,count:changed,ids:pending.records.map(x=>x.id),note:document.getElementById('mat-confirm-note')?.value.trim().slice(0,500)||'',when:new Date().toLocaleString('en-US')});matState.audit=matState.audit.slice(0,30);try{localStorage.setItem(matAuditKey,JSON.stringify(matState.audit))}catch(e){}previewSessionChanges++;persist()}
+ matState.pending=null;matResetSelection();closeModal();navigate('materials');toast(`${changed} ${pending.kind}${changed===1?'':'s'} ${pending.action==='Allocate'?'allocated':'deallocated'} in this browser only.`,'success');
+}
+const matOriginalResetMock=resetMock;
+resetMock=function(){const old=matState.audit.length;matOriginalResetMock();if(!localStorage.getItem(localPreviewKey)){matState.audit=[];matState.edit=false;matResetSelection();try{localStorage.removeItem(matAuditKey)}catch(e){}}};
+document.addEventListener('click',event=>{
+ const el=event.target.closest('[data-mat-act]');if(!el)return;
+ event.preventDefault();event.stopPropagation();
+ const op=el.dataset.matAct;
+ if(op==='kind'){matState.kind=el.dataset.value;matState.scope='allocated';matState.search='';matState.perforation='all';matState.role='all';matResetSelection();matRender();return}
+ if(op==='scope'){matState.scope=el.dataset.value;matResetSelection();matRender();return}
+ if(op==='edit'){if(!matState.edit&&previewStatus==='shipped'){toast('Shipped jobs do not allow new material allocations in this preview.','warning');return}matState.edit=!matState.edit;matResetSelection();matRender();return}
+ if(op==='next'){matState.page++;matRender();return}if(op==='prev'){matState.page--;matRender();return}
+ if(op==='clear'){matState.selected.clear();matRender();return}if(op==='review'){matConfirmAction();return}if(op==='used-preview'){matOpenEnterAsUsed();return}
+ if(op==='cancel-confirm'){matState.pending=null;closeModal();return}if(op==='confirm'){matApplyAction();return}if(op==='confirm-used'){matCommitUsed();return}
+},true);
+document.addEventListener('change',event=>{
+ const input=event.target.closest('[data-mat-input]');if(input&&input.dataset.matInput!=='search'){matChangeOption(input.dataset.matInput,input.value);return}
+ const check=event.target.closest('[data-mat-check]');if(check&&matState.edit){if(check.checked)matState.selected.add(check.dataset.matCheck);else matState.selected.delete(check.dataset.matCheck);matRender();return}
+ if(event.target.matches('[data-mat-checkall]')&&matState.edit){const items=matFiltered().slice((matState.page-1)*matState.pageSize,matState.page*matState.pageSize);items.forEach(row=>{if(event.target.checked)matState.selected.add(row.id);else matState.selected.delete(row.id)});matRender();return}
+},true);
+document.addEventListener('input',event=>{const input=event.target.closest('[data-mat-input="search"]');if(input)matChangeOption('search',input.value);
+ if(event.target.id==='mat-used-lf'){
+ const p=matState.pending;if(!p||p.action!=='Enter as Used')return;const coil=p.records[0],lf=Number(event.target.value);const msg=document.getElementById('mat-used-weight');if(msg){const valid=lf>0&&lf<=Number(coil.lf);const weight=lf*Number(coil.width)*12*Number(coil.gage)*.29;msg.textContent=valid?`Weight equivalent: ${weight.toFixed(2)} lbs (preview only)`:event.target.value?'Enter LF greater than zero and no more than available coil LF.':'Enter linear feet to preview the equivalent pounds.'}
+ }
+},true);
+// The initial `navigate()` ran in the previous script; rerender Materials when loaded directly.
+if(new URLSearchParams(location.search).get('view')==='materials')navigate('materials');
+</script>
+
 </body></html>
