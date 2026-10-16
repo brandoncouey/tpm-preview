@@ -598,6 +598,95 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
  .order-record-panel .record-edit-action.btn{min-height:34px}
 }
 /* END TPM Order Record neutral section styling. */
+
+/* TPM Premium Workspace — cleaner job identity, polished tab row, restrained cards. */
+:root{--tpm-header-bg:#292e34;--tpm-header-accent:#b7648e;--tpm-ui-outline:#dfe3e8}
+.c-top{background:var(--tpm-header-bg);border-bottom:0;box-shadow:0 5px 22px rgba(23,28,35,.09)}
+.c-top .c-utility{min-height:42px;border-bottom:1px solid rgba(255,255,255,.085);color:#c9cdd3}
+.c-top .c-crumbs{color:#bec3ca;font-size:12px;gap:9px}
+.c-top .c-crumbs strong{color:#fff;font-weight:650}
+.c-top .crumb-mark{color:#717a84}
+.c-top .mock-note{color:#d4b6c4;font-size:10px;letter-spacing:.085em}
+.c-top .mock-dot{background:#e1a1bc}
+.c-top .mock-separator{color:#8e8a95}
+.c-top .premium-job-hero{display:grid;grid-template-columns:minmax(310px,1.12fr) minmax(385px,1fr);align-items:center;gap:clamp(20px,3.1vw,52px);padding:26px 0 25px}
+.c-top .premium-job-hero .premium-eyebrow{color:#e5adc9;letter-spacing:.09em;font-weight:750;font-size:10px}
+.c-top .premium-job-hero .premium-line{background:#d97baa;width:20px}
+.c-top .premium-job-hero .premium-dot{color:#a28c99;padding:0 2px}
+.c-top .premium-job-hero .compact-titleline{gap:13px;margin-top:11px;align-items:center}
+.c-top .premium-job-hero .compact-titleline h1{color:#fff;font-size:clamp(24px,1.3vw + 10px,29px);font-weight:730;letter-spacing:-.045em;line-height:1.17}
+.c-top .premium-job-hero .compact-titleline h1 span{color:#e7e9ed;font-weight:620}
+.c-top .premium-job-hero .compact-titleline .status{border:1px solid #d4a663;box-shadow:none;border-radius:5px;padding:5px 9px;font-size:11px}
+.c-top .premium-job-hero .compact-company{color:#f4f5f7;font-size:15px;line-height:1.3;margin-top:10px;font-weight:650}
+.c-top .premium-job-hero .compact-meta{color:#afb7c0;font-size:12px;line-height:1.55;margin-top:4px;max-width:75ch}
+.c-top .premium-job-hero .midsep{color:#77808c;padding:0 7px}
+.c-top .premium-hero-aside{min-width:0;display:flex;flex-direction:column;align-items:stretch;gap:12px}
+.c-top .premium-job-hero .compact-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:0;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.12);border-radius:9px;align-items:stretch;text-align:left}
+.c-top .premium-job-hero .compact-facts>div{min-width:0;display:flex;flex-direction:column;justify-content:center;border:0;border-radius:0;background:transparent;padding:12px 16px}
+.c-top .premium-job-hero .compact-facts>div+div{border-left:1px solid rgba(255,255,255,.14)}
+.c-top .premium-job-hero .compact-facts .fact-label{color:#a6adb7;font-size:11px;letter-spacing:0;line-height:1.25;font-weight:550;text-transform:none}
+.c-top .premium-job-hero .compact-facts strong{color:#f8f8fa;font-size:14px;font-weight:700;line-height:1.3;letter-spacing:-.02em;margin-top:5px;overflow-wrap:anywhere}
+.c-top .premium-job-hero .compact-facts strong small{color:#c8cbd2;font-weight:500;font-size:11px}
+.c-top .premium-job-hero .compact-header-actions{display:flex;justify-content:flex-end;align-items:center;flex-direction:row;gap:8px}
+.c-top .premium-job-hero .compact-header-actions .btn{height:34px;min-height:34px;border-radius:5px;font-size:12px;font-weight:630;padding:7px 11px;box-shadow:none}
+.c-top .premium-job-hero .premium-report-action{background:transparent;color:#e1e3e7;border:1px solid #646d77}
+.c-top .premium-job-hero .premium-report-action:hover{background:#414a54;border-color:#84909d;color:#fff}
+.c-top .premium-job-hero .premium-print-action{background:#e8ebee;color:#29323b;border:1px solid #e8ebee}
+.c-top .premium-job-hero .premium-print-action:hover{background:#fff;border-color:#fff;color:#1e2832}
+.c-top .premium-job-hero .compact-header-actions svg{width:14px;height:14px}
+.c-top .premium-job-tabs{display:flex;align-items:center;gap:5px;padding:8px 0 9px;margin:0;border:0;border-top:1px solid rgba(255,255,255,.095);background:transparent;overflow-x:auto;white-space:nowrap;scrollbar-width:thin;scrollbar-color:#6c727a transparent}
+.c-top .premium-job-tabs button{display:inline-flex;align-items:center;justify-content:center;gap:9px;flex:0 0 auto;min-height:39px;border:1px solid transparent;border-radius:6px;background:transparent;color:#b9c1ca;padding:9px 15px;font-size:12.5px;font-weight:600;letter-spacing:0;transition:background .14s ease,color .14s ease,border-color .14s ease;position:relative}
+.c-top .premium-job-tabs button svg{width:15px;height:15px;opacity:.72}
+.c-top .premium-job-tabs button:hover{background:rgba(255,255,255,.075);border-color:rgba(255,255,255,.07);color:#fff}
+.c-top .premium-job-tabs button:hover svg{opacity:1}
+.c-top .premium-job-tabs button[aria-current=page]{color:#fff;background:rgba(125,0,64,.42);border-color:rgba(226,154,194,.34);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
+.c-top .premium-job-tabs button[aria-current=page]::after{content:'';position:absolute;bottom:-9px;left:12px;right:12px;height:2px;border-radius:3px;background:#cf7ca5}
+.c-top .premium-job-tabs button[aria-current=page] svg{color:#efbfd7;opacity:1}
+.c-body{padding-top:20px;background:transparent}
+/* Refined surfaces—premium, but no return to bulky nested cards. */
+.c-body .journey-shell{border:1px solid #e1e4e8;background:#fff;border-radius:9px;box-shadow:0 3px 14px rgba(27,40,52,.035);overflow:hidden;padding:18px 18px 0}
+.c-body .journey-heading{border-bottom:1px solid #e8ebef;padding:0 0 13px;align-items:center}
+.c-body .journey-heading h2{color:#222930;font-size:18px;font-weight:720}
+.c-body .journey-context{font-weight:650;border:1px solid #eedce5}
+.c-body .premium-stage{background:#fbfcfd;border-color:#e5e8ec;border-radius:7px;box-shadow:none;padding:15px}
+.c-body .premium-stage::before{background:#8f1c53;height:2px;left:14px;right:14px}
+.c-body .premium-stage:hover{background:#fff;box-shadow:0 6px 20px rgba(49,58,68,.075)}
+.c-body .premium-stage-no{background:#f0e7ec;border-radius:5px}
+.c-body .journey-footer{border-top:1px solid #e9ebee;padding:12px 3px 13px;margin-top:14px}
+.c-body .overview-density{gap:16px;margin-top:16px}
+.c-body .compact-stack{gap:16px}
+.c-body .compact-section-card.card,.c-body .compact-sidecard.card{border:1px solid var(--tpm-ui-outline);border-radius:8px;background:#fff;box-shadow:0 2px 13px rgba(29,38,48,.026)}
+.c-body .compact-section-card:not(.order-record-panel)>.card-head{background:linear-gradient(180deg,#fafbfc,#fff);border-bottom:1px solid #e8ebef;padding:16px 18px 13px}
+.c-body .compact-section-card:not(.order-record-panel)>.card-body{padding:15px 18px}
+.c-body .compact-section-card .card-head h2{color:#2d353d}
+.c-body .compact-kpi-grid{border:1px solid #e5e8ec;border-radius:7px;overflow:hidden;background:#f8f9fa;gap:0}
+.c-body .compact-kpi{background:transparent;border:0;border-radius:0;padding:12px 14px;min-width:0}
+.c-body .compact-kpi+.compact-kpi{border-left:1px solid #e3e6ea}
+.c-body .compact-kpi strong{color:#252e37}
+.c-body .compact-sidecard{padding:16px 18px}
+.c-body .compact-sidecard h3{color:#27313b}
+.c-body .compact-quick-grid .quick-link{border-radius:5px;background:#fcfcfd;border-color:#e9ebee}
+.c-body .compact-quick-grid .quick-link:hover{background:#f7edf3;border-color:#e4c9d6}
+.c-body .compact-mini{border-radius:5px}
+.c-body .compact-alert{border-radius:5px;background:#fffbfd}
+.c-body .compact-notes{border-radius:5px}
+/* Retain the requested squared, unified gray Order Record and neutral Edit controls. */
+.c-body .order-record-panel.card{background:transparent;border:0;border-radius:0;box-shadow:none}
+.c-body .order-record-panel>.card-head{background:transparent;border:0;padding:1px 0 14px}
+.c-body .order-record-panel>.card-body{padding:0;background:transparent}
+/* The remaining views get coordinated, low-contrast card and table headers. */
+.c-body .view-banner{margin:0 0 17px;align-items:end}
+.c-body .view-banner h2{font-size:21px;font-weight:720;letter-spacing:-.03em}
+.c-body .view-banner .caption{font-size:12.5px}
+.c-body>.card,.c-body>.c-section>.card,.c-body .c-detail-bands>.card,.c-body .report-grid>.card,.c-body .c-section.split>.card{border-radius:8px;border-color:#e2e5e9;box-shadow:0 2px 12px rgba(33,40,52,.028)}
+.c-body .card-head h2{font-weight:700}
+.c-body table th{background:#f3f5f7;color:#505c68;font-size:11.5px}
+@media(max-width:1450px){.c-top .premium-job-hero{grid-template-columns:minmax(260px,1fr) minmax(340px,.95fr);gap:22px}}
+@media(max-width:1190px){.c-top .premium-job-hero{grid-template-columns:1fr;gap:15px;padding:22px 0 16px}.c-top .premium-hero-aside{gap:10px}.c-top .premium-job-hero .compact-header-actions{justify-content:flex-start}.c-top .premium-job-hero .compact-facts{width:min(100%,680px)}}
+@media(max-width:930px){.c-top .premium-job-hero{padding-top:19px;padding-bottom:14px}.c-top .premium-job-tabs{padding:7px 0;gap:3px}.c-top .premium-job-tabs button{min-height:38px;padding:8px 12px}}
+@media(max-width:650px){.c-top .c-utility{min-height:43px}.c-top .premium-job-hero{gap:13px;padding-top:17px;padding-bottom:12px}.c-top .premium-job-hero .compact-titleline h1{font-size:24px}.c-top .premium-job-hero .compact-meta{font-size:11.5px}.c-top .premium-job-hero .compact-company{margin-top:7px}.c-top .premium-job-hero .compact-facts{grid-template-columns:repeat(3,minmax(0,1fr));gap:0}.c-top .premium-job-hero .compact-facts>div{grid-column:auto;padding:10px 9px}.c-top .premium-job-hero .compact-facts strong{font-size:12px}.c-top .premium-job-hero .compact-facts strong small{font-size:10px}.c-top .premium-job-hero .compact-facts .fact-label{font-size:10px}.c-top .premium-job-tabs button{gap:7px;font-size:12px;padding:8px 10px}.c-top .premium-job-tabs button svg{width:14px;height:14px}.c-body .journey-shell{padding:14px 12px 0}.c-body .overview-density{gap:12px}.c-body .compact-stack{gap:12px}.c-body .compact-section-card:not(.order-record-panel)>.card-body{padding:12px}.c-body .compact-kpi{padding:10px}.c-body .compact-kpi:nth-child(3){border-left:0;border-top:1px solid #e3e6ea}.c-body .compact-kpi:nth-child(4){border-top:1px solid #e3e6ea}}
+@media(max-width:410px){.c-top .premium-job-hero .compact-titleline h1{font-size:22px}.c-top .premium-job-hero .compact-titleline{gap:9px}.c-top .premium-job-hero .compact-facts>div{padding:9px 8px}.c-top .premium-job-hero .compact-facts strong{font-size:11px}.c-top .premium-job-hero .compact-facts strong small{font-size:9px}.c-top .premium-job-tabs button{padding:8px 10px}}
+/* END TPM Premium Workspace */
 </style></head><body data-variant="C"><svg width="0" height="0" style="position:absolute;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><symbol id="side-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-8h6v8"/></symbol>
 <symbol id="side-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6M17 14a5 5 0 0 1 4 5v1"/></symbol>
 <symbol id="side-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 7 9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10"/></symbol>
@@ -657,23 +746,33 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
       <button type="button" class="tpm-mobile-menu" data-shell-open aria-label="Open TPM navigation" aria-controls="tpm-sidebar" aria-expanded="false"><svg aria-hidden="true"><use href="#side-menu"></use></svg></button><div class="c-crumbs"><span>Orders</span><span class="crumb-mark">/</span><span>Started</span><span class="crumb-mark">/</span><strong>Job #990100</strong></div>
       <span class="mock-note"><span class="mock-dot"></span> DESIGN PREVIEW <span class="mock-separator">·</span> FICTIONAL JOB DATA</span>
     </div>
-    <div class="compact-hero">
+    <div class="compact-hero premium-job-hero">
       <div class="compact-hero-main">
-        <div class="premium-eyebrow"><span class="premium-line"></span> MANUFACTURING ORDER <span class="premium-dot">·</span> MILL #3</div>
+        <div class="premium-eyebrow"><span class="premium-line"></span> ORDER WORKSPACE <span class="premium-dot">/</span> IN PRODUCTION</div>
         <div class="compact-titleline"><h1>Job <span>#990100</span></h1><span class="status"><span class="dot"></span> Started</span></div>
         <div class="compact-company">Atlas Filtration</div>
         <div class="compact-meta">Perforated stainless screen tube <span class="midsep">·</span> Part AF-1250-083 <span class="midsep">·</span> PO-44781</div>
       </div>
-      <div class="compact-facts">
-        <div><span class="fact-label">ORDER QTY</span><strong>1,800 <small>tubes</small></strong></div>
-        <div><span class="fact-label">DUE DATE</span><strong>Oct 18, 2026</strong></div>
-        <div><span class="fact-label">MILL</span><strong>Mill #3</strong></div>
-      </div>
-      <div class="compact-header-actions">
-        <button class="btn" data-print><svg aria-hidden="true"><use href="#print"></use></svg> Print preview</button>
+      <div class="premium-hero-aside">
+        <div class="compact-facts" aria-label="Job summary">
+          <div><span class="fact-label">Order quantity</span><strong>1,800 <small>tubes</small></strong></div>
+          <div><span class="fact-label">Due date</span><strong>Oct 18, 2026</strong></div>
+          <div><span class="fact-label">Assigned mill</span><strong>Mill #3</strong></div>
+        </div>
+        <div class="compact-header-actions">
+          <button class="btn premium-report-action" type="button" data-route="report"><svg aria-hidden="true"><use href="#side-file"></use></svg> View report</button>
+          <button class="btn premium-print-action" type="button" data-print><svg aria-hidden="true"><use href="#print"></use></svg> Print preview</button>
+        </div>
       </div>
     </div>
-    <nav data-nav class="c-tabs" aria-label="Job views"><button type="button" data-route="overview" aria-current="false">Overview</button><button type="button" data-route="production" aria-current="false">Production</button><button type="button" data-route="scrap" aria-current="false">Scrap</button><button type="button" data-route="materials" aria-current="false">Materials</button><button type="button" data-route="report" aria-current="false">Job report</button><button type="button" data-route="history" aria-current="false">History</button></nav>
+    <nav data-nav class="c-tabs premium-job-tabs" aria-label="Job views">
+      <button type="button" data-route="overview" aria-current="false"><svg aria-hidden="true"><use href="#side-grid"></use></svg><span>Overview</span></button>
+      <button type="button" data-route="production" aria-current="false"><svg aria-hidden="true"><use href="#factory"></use></svg><span>Production</span></button>
+      <button type="button" data-route="scrap" aria-current="false"><svg aria-hidden="true"><use href="#side-list"></use></svg><span>Scrap</span></button>
+      <button type="button" data-route="materials" aria-current="false"><svg aria-hidden="true"><use href="#side-box"></use></svg><span>Materials</span></button>
+      <button type="button" data-route="report" aria-current="false"><svg aria-hidden="true"><use href="#side-file"></use></svg><span>Job report</span></button>
+      <button type="button" data-route="history" aria-current="false"><svg aria-hidden="true"><use href="#side-bars"></use></svg><span>History</span></button>
+    </nav>
   </div>
 </header><main class="wrap c-body" id="view"></main>
   </div>
@@ -885,9 +984,10 @@ function updateHero(){
  if(badge){badge.innerHTML=`<span class="dot"></span> ${safe(statusLabel(previewStatus))}`;badge.style.background=previewStatus==='shipped'?'#eaf8ed':previewStatus==='completed'?'#e9f5fc':previewStatus==='not_started'?'#dfe3e8':'#fff7e6';badge.style.color=previewStatus==='shipped'?'#1c7d43':previewStatus==='completed'?'#1871a0':previewStatus==='not_started'?'#525a63':'#956003'}
  const meta=document.querySelector('.compact-meta');if(meta)meta.innerHTML=`${safe(j.part_description)} <span class="midsep">·</span> Part ${safe(j.part)} <span class="midsep">·</span> ${safe(j.po)}`;
  const co=document.querySelector('.compact-company');if(co)co.textContent=j.customer_name;
- const facts=document.querySelector('.compact-facts');if(facts)facts.innerHTML=`<div><span class="fact-label">ORDER QTY</span><strong>${num(j.quantity)} <small>tubes</small></strong></div><div><span class="fact-label">DUE DATE</span><strong>${safe(stamp(j.due))}</strong></div><div><span class="fact-label">MILL</span><strong>${safe(j.device||'Unassigned')}</strong></div>`;
- const eyebrow=document.querySelector('.premium-eyebrow');if(eyebrow)eyebrow.innerHTML=`<span class="premium-line"></span> MANUFACTURING ORDER <span class="premium-dot">·</span> ${safe(j.device||'Unassigned')}`;
- const buttons=document.querySelector('.compact-header-actions');if(buttons)buttons.innerHTML=`<button class="btn" data-print>${icon('print')} Print preview</button>`;
+ const facts=document.querySelector('.compact-facts');if(facts)facts.innerHTML=`<div><span class="fact-label">Order quantity</span><strong>${num(j.quantity)} <small>tubes</small></strong></div><div><span class="fact-label">Due date</span><strong>${safe(stamp(j.due))}</strong></div><div><span class="fact-label">Assigned mill</span><strong>${safe(j.device||'Unassigned')}</strong></div>`;
+ const eyebrow=document.querySelector('.premium-eyebrow');if(eyebrow)eyebrow.innerHTML=`<span class="premium-line"></span> ORDER WORKSPACE <span class="premium-dot">/</span> ${previewStatus==='started'?'IN PRODUCTION':safe(statusLabel(previewStatus).toUpperCase())}`;
+ // Header actions remain stable between status transitions; section editors and job status actions live below.
+
 }
 function quickEntry(name,description,action,ico='edit'){return `<button class="quick-link" type="button" data-op="${action}"><span class="quick-icon">${icon(ico)}</span><span class="quick-text"><strong>${safe(name)}</strong><small>${safe(description)}</small></span><span class="quick-arrow" aria-hidden="true">↗</span></button>`}
 function installQuickActions(){const list=document.querySelector('.quick-list');if(!list)return;list.innerHTML=previewEditing?quickEntry('Save order changes','Apply mock allocation edits','save','check')+quickEntry('Discard edits','Return to read-only mode','cancel','edit')+quickEntry('Change mill','Separate mock assignment workflow','change-mill','factory')+quickEntry('Change mill operator','Separate mock employee selection','change-operator','edit'):quickEntry('Job report','One-job printable summary','report-view','print')+quickEntry('Materials','Allocations and traceability','materials-view','factory')+quickEntry('Scrap details','Reasons, tubes and material lost','scrap-view','factory')+quickEntry('History','Milestones and grouped batches','history-view','check');
