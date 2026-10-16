@@ -1354,6 +1354,7 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
 .hv-report-links .actions{margin-left:auto;display:flex;flex-wrap:wrap;gap:7px}
 @media(max-width:700px){.overview-unique-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}.hv-report-links .actions{margin-left:0;width:100%}}
 @media(max-width:430px){.overview-unique-metrics{grid-template-columns:minmax(0,1fr)!important}.mat-source-linkage summary span{display:block;margin:4px 0 0}}
+
 /* Materials 2026: faithful localhost table + right-side summary, responsive and accessible */
 .mat-allocation-columns{display:grid;grid-template-columns:minmax(0,3fr) minmax(264px,1fr);gap:15px;align-items:start;padding:0 15px 15px}
 .mat-inventory-main{min-width:0;border:1px solid #e0e5ea;background:#fff;border-radius:5px;overflow:hidden}
@@ -1391,7 +1392,8 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
 .mat-mesh-showall{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;color:#556371;font-weight:680;white-space:nowrap}
 .mat-mesh-showall input{accent-color:#7d0040;width:16px;height:16px}
 .mat-manager--viewing .mat-mesh-showall input{cursor:pointer}
-@media(max-width:1220px){.mat-allocation-columns{grid-template-columns:minmax(0,1fr)}.mat-planning-sidebar{position:static}.mat-planning-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}}
+@media(max-width:1170px){.mat-allocation-columns{grid-template-columns:minmax(0,1fr) 264px;gap:11px}}
+@media(max-width:920px){.mat-allocation-columns{grid-template-columns:minmax(0,1fr)}.mat-planning-sidebar{position:static}.mat-planning-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}}
 @media(max-width:560px){.mat-allocation-columns{padding:0 10px 10px;gap:10px}.mat-planning-list{grid-template-columns:minmax(0,1fr)}.mat-field--searchtype,.mat-field--searchtype select{flex:1 1 100%;min-width:0;width:100%}.mat-context-strip{padding:9px 11px}}
 </style><style id="hv-style">
 /* High-volume preview across job tabs; source records are never changed. */
@@ -1983,7 +1985,7 @@ function matPlanningCoverage(){
   const display=valid.length?Number(total(valid,key)).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' LF':items.length?'Not recorded':'0.00 LF';
   return {display,note:unknown?`${unknown} assigned record${unknown===1?'':'s'} missing LF · ${valid.length?'partial total':'cannot total'}`:`${valid.length} measured item${valid.length===1?'':'s'}`};
  };
- const sidebarHead=(title,subtitle)=>`<div class="mat-planning-head"><span class="mat-planning-icon" aria-hidden="true">${icon('layers')}</span><div><h4>${safe(title)}</h4><p>${safe(subtitle)}</p></div></div>`;
+ const sidebarHead=(title,subtitle)=>`<div class="mat-planning-head"><span class="mat-planning-icon" aria-hidden="true">${icon(matState.kind==='coil'?'ruler':'layers')}</span><div><h4>${safe(title)}</h4><p>${safe(subtitle)}</p></div></div>`;
  if(matState.kind==='coil'){
   const perf=rows.filter(x=>String(x.type||'').toLowerCase()==='perforated'||(!x.type&&x.pattern&&!String(x.pattern).toLowerCase().includes('blank')));
   const blank=rows.filter(x=>String(x.type||'').toLowerCase()==='blank'||(!x.type&&String(x.pattern||'').toLowerCase().includes('blank')));
@@ -2081,9 +2083,9 @@ function matCommitUsed(){const pending=matState.pending;if(!pending||pending.act
 function matApplyAction(){const pending=matState.pending;if(!pending)return;let changed=0;
  if(pending.action==='Allocate'){
   if(pending.kind==='coil'){
-   const known=new Set(m.allocated_coils.map(x=>x.coil_no));pending.records.forEach(x=>{if(known.has(x.id))return;known.add(x.id);m.allocated_coils.push({coil_no:x.id,work:x.work,po:x.po??null,date_received:x.date_received,weight:x.weight,width:x.width,gage:x.gage,pattern:x.pattern,type:x.type,lf:x.lf});m.alloc_coil_heat.push({heat:x.heat});changed++});
+   const known=new Set(m.allocated_coils.map(x=>x.coil_no));pending.records.forEach(x=>{if(known.has(x.id))return;known.add(x.id);m.allocated_coils.push({coil_no:x.id,work:x.work,date_received:x.date_received,weight:x.weight,width:x.width,gage:x.gage,pattern:x.pattern,type:x.type,lf:x.lf});m.alloc_coil_heat.push({heat:x.heat});changed++});
   }else{
-   const known=new Set(m.allocated_mesh.map(x=>x.mesh_no));pending.records.forEach(x=>{if(known.has(x.id))return;known.add(x.id);m.allocated_mesh.push({mesh_no:x.id,heat:x.heat,po:x.po??null,mesh:x.mesh,type:x.type,date_received:x.date_received,role:x.role,width:x.width,length:x.length});changed++});
+   const known=new Set(m.allocated_mesh.map(x=>x.mesh_no));pending.records.forEach(x=>{if(known.has(x.id))return;known.add(x.id);m.allocated_mesh.push({mesh_no:x.id,heat:x.heat,mesh:x.mesh,type:x.type,date_received:x.date_received,role:x.role,width:x.width,length:x.length});changed++});
   }
  }else{
   if(pending.kind==='coil'){
