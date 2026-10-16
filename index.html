@@ -428,7 +428,7 @@ const num=v=>v===null||v===undefined||v===''?'—':Number(v).toLocaleString('en-
 const safe=v=>String(v===null||v===undefined||v===''?'—':v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const money=v=>v===null||v===undefined?'—':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(v);
 const pct=(a,b)=>!b?0:Math.max(0,Math.min(100,Math.round(a/b*100)));
-const stamp=v=>v?new Date(v).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:v.includes('T')?'numeric':undefined,minute:v.includes('T')?'2-digit':undefined}):'—';
+const stamp=v=>{if(!v)return '—';const raw=String(v),dateOnly=/^\d{4}-\d{2}-\d{2}$/.test(raw);const dt=new Date(dateOnly?raw+'T12:00:00':raw);return Number.isNaN(dt.valueOf())?raw:dt.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:dateOnly?undefined:'numeric',minute:dateOnly?undefined:'2-digit'});};
 const dur=n=>!Number.isFinite(Number(n))?'—':(()=>{let v=Math.max(0,Math.round(Number(n)));let d=Math.floor(v/86400),hr=Math.floor(v%86400/3600),mm=Math.floor(v%3600/60);return [d?d+'d':'',hr?hr+'h':'',mm+'m'].filter(Boolean).join(' ')})();
 const f=(label,val)=>`<div class="detail-item"><dt>${safe(label)}</dt><dd>${safe(val)}</dd></div>`;
 const fields=a=>`<dl class="detail-grid">${a.map(x=>f(x[0],x[1])).join('')}</dl>`;
