@@ -1354,6 +1354,45 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
 .hv-report-links .actions{margin-left:auto;display:flex;flex-wrap:wrap;gap:7px}
 @media(max-width:700px){.overview-unique-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}.hv-report-links .actions{margin-left:0;width:100%}}
 @media(max-width:430px){.overview-unique-metrics{grid-template-columns:minmax(0,1fr)!important}.mat-source-linkage summary span{display:block;margin:4px 0 0}}
+/* Materials 2026: faithful localhost table + right-side summary, responsive and accessible */
+.mat-allocation-columns{display:grid;grid-template-columns:minmax(0,3fr) minmax(264px,1fr);gap:15px;align-items:start;padding:0 15px 15px}
+.mat-inventory-main{min-width:0;border:1px solid #e0e5ea;background:#fff;border-radius:5px;overflow:hidden}
+.mat-inventory-main .mat-tablewrap{border-top:0;max-height:510px}
+.mat-inventory-main .mat-toolbar-detail{padding:11px 13px;background:#f9fafb;border-bottom:1px solid #e5e9ed}
+.mat-inventory-main .mat-pager{padding:10px 12px}
+.mat-inventory-main .mat-status-legend{padding:9px 12px}
+.mat-planning-sidebar{min-width:0;border:1px solid #d9dce1;border-radius:5px;background:linear-gradient(165deg,#fff,#fbfafc);overflow:hidden;position:sticky;top:18px;box-shadow:0 2px 8px rgba(30,35,48,.045)}
+.mat-planning-head{display:flex;align-items:center;gap:10px;padding:13px;background:linear-gradient(100deg,#eeeef1,#f7f2f5);border-bottom:1px solid #e3dce2}
+.mat-planning-icon{color:#7d3457;width:32px;height:32px;display:grid;place-items:center;background:#fff;border:1px solid #ddd4da;border-radius:4px;flex:none}
+.mat-planning-icon svg{width:17px;height:17px}
+.mat-planning-head h4{font-size:13px;font-weight:800;color:#343c46;margin:0}
+.mat-planning-head p{margin:3px 0 0;font-size:10.5px;color:#65707a;line-height:1.3}
+.mat-planning-list{margin:0;padding:4px 13px 7px}
+.mat-planning-metric{padding:11px 0;border-bottom:1px solid #e7e8ed}
+.mat-planning-metric:last-child{border-bottom:0}
+.mat-planning-metric dt{font-size:11.5px;line-height:1.35;color:#53606c;font-weight:710;margin-bottom:5px}
+.mat-planning-metric dd{font-size:16px;color:#252e38;font-weight:800;letter-spacing:-.022em;font-variant-numeric:tabular-nums;line-height:1.25;margin:0}
+.mat-planning-metric small{display:block;color:#78838d;font-size:10.5px;line-height:1.45;margin-top:4px}
+.mat-planning-shortage dd{font-size:12px;font-weight:740;letter-spacing:0}
+.mat-unavailable{color:#9b6037;background:#fff6e9;border:1px solid #e7d4b7;padding:5px 7px;display:inline-block;border-radius:3px}
+.mat-planning-reference{display:grid;gap:5px;padding:12px 13px;background:#f7f8fa;border-top:1px solid #e1e4e9}
+.mat-planning-reference strong{font-size:11px;color:#606976}
+.mat-planning-reference span{font-size:16px;color:#414a56;font-weight:800}
+.mat-planning-reference small{color:#7b8590;font-size:10.5px;line-height:1.4}
+.mat-planning-source{border-top:1px solid #e6e8eb;padding:12px 13px;display:grid;gap:5px;background:#fafafa}
+.mat-planning-source strong{color:#596571;font-size:10.5px}
+.mat-planning-source span{color:#7b848e;font-size:10.5px;line-height:1.5}
+.mat-planning-source code{font-size:10px}
+.mat-context-strip{display:flex;align-items:center;flex-wrap:wrap;gap:7px 19px;padding:10px 15px;border:1px solid #e0e5e9;background:#fafbfd;border-radius:5px;margin-bottom:12px;color:#5e6b78;font-size:11.5px}
+.mat-context-strip strong{color:#374550}
+.mat-context-strip small{flex:1 1 250px;color:#7a858f;font-size:10.5px}
+.mat-field--searchtype{flex:0 1 156px}
+.mat-field--searchtype select{min-width:155px}
+.mat-mesh-showall{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;color:#556371;font-weight:680;white-space:nowrap}
+.mat-mesh-showall input{accent-color:#7d0040;width:16px;height:16px}
+.mat-manager--viewing .mat-mesh-showall input{cursor:pointer}
+@media(max-width:1220px){.mat-allocation-columns{grid-template-columns:minmax(0,1fr)}.mat-planning-sidebar{position:static}.mat-planning-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}}
+@media(max-width:560px){.mat-allocation-columns{padding:0 10px 10px;gap:10px}.mat-planning-list{grid-template-columns:minmax(0,1fr)}.mat-field--searchtype,.mat-field--searchtype select{flex:1 1 100%;min-width:0;width:100%}.mat-context-strip{padding:9px 11px}}
 </style><style id="hv-style">
 /* High-volume preview across job tabs; source records are never changed. */
 .hv-area{margin-top:16px;min-width:0}.hv-panel{min-width:0;border:1px solid #dce2e7;background:#fff;border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(32,40,50,.035)}
@@ -1844,7 +1883,7 @@ window.addEventListener('popstate',()=>navigate(new URLSearchParams(location.sea
 <script>
 // TPM materials workspace: source-informed mock, no live inventory writes.
 // Existing Orders.vue uses CoilAllocation.vue + MeshAllocation.vue + JobMaterialsUsed.vue.
-const matState = {kind:'coil', scope:'allocated', perforation:'all', role:'all', search:'', sort:'id', page:1, pageSize:20, edit:false, selected:new Set(), pending:null, audit:[]};
+const matState = {kind:'coil', scope:'allocated', perforation:'all', role:'all', showAllMeshTypes:false, searchField:'all', search:'', sort:'id', page:1, pageSize:20, edit:false, selected:new Set(), pending:null, audit:[]};
 const matAuditKey=localPreviewKey+'-materials-audit-v2';
 try{matState.audit=JSON.parse(localStorage.getItem(matAuditKey)||'[]');if(!Array.isArray(matState.audit))matState.audit=[]}catch(e){matState.audit=[]}
 // Distinct fictional inventory for scale testing, not fetched from TPM or a supplier.
@@ -1852,15 +1891,15 @@ const matCoilPool=Array.from({length:186},(_,i)=>{
  const width=[4.625,4.625,4.625,5.025,4.25,6.0,4.625,5.5][i%8];
  const type=i%5===0?'Blank':'Perforated';
  const lf=Math.round((185+(i*53)%970)*100)/100;
- return {id:'C-'+String(12000+i).padStart(5,'0'),coil_no:'C-'+String(12000+i).padStart(5,'0'),heat:'H-'+(74110+Math.floor(i/3)),work:'W-'+(29420+Math.floor(i/4)),width,gage:i%4===0?'0.090':'0.083',pattern:type==='Blank'?'Blank':'60° staggered',type,lf,weight:Math.round(lf*3.2),date_received:`2026-10-${String(1+(i%15)).padStart(2,'0')}`};
+ return {id:'C-'+String(12000+i).padStart(5,'0'),coil_no:'C-'+String(12000+i).padStart(5,'0'),heat:'H-'+(74110+Math.floor(i/3)),work:'W-'+(29420+Math.floor(i/4)),po:'PO-'+(44000+Math.floor(i/12)),width,gage:i%4===0?'0.090':'0.083',pattern:type==='Blank'?'Blank':'60° staggered',type,lf,weight:Math.round(lf*3.2),date_received:`2026-10-${String(1+(i%15)).padStart(2,'0')}`};
 });
 const matMeshPool=Array.from({length:82},(_,i)=>{
  const role=['Top Filter','Bottom Filter','Inner Drainage','Outer Drainage'][i%4];
  const len=Math.round((155+(i*29)%390)*10)/10;
- return {id:'MSH-'+String(3100+i),mesh_no:'MSH-'+String(3100+i),heat:'MH-'+(93000+Math.floor(i/3)),mesh:i%3===0?'40 × 40':i%3===1?'20 × 20':'60 × 60',type:i%5===0?'316L SS woven':'304 SS woven',role,width:(i%4===0?4.625:5.025),length:len,date_received:`2026-10-${String(1+(i%14)).padStart(2,'0')}`};
+ return {id:'MSH-'+String(3100+i),mesh_no:'MSH-'+String(3100+i),heat:'MH-'+(93000+Math.floor(i/3)),po:'PO-'+(55000+Math.floor(i/10)),mesh:i%3===0?'40 × 40':i%3===1?'20 × 20':'60 × 60',type:i%5===0?'316L SS woven':'304 SS woven',role,width:(i%4===0?4.625:5.025),length:len,date_received:`2026-10-${String(1+(i%14)).padStart(2,'0')}`};
 });
 const matFmtLF=(value)=>value===null||value===undefined||!Number.isFinite(Number(value))?'—':Number(value).toLocaleString('en-US',{maximumFractionDigits:2})+' LF';
-const matStockRows=()=>matState.kind==='coil'?m.allocated_coils.map((row,i)=>({id:row.coil_no,coil_no:row.coil_no,heat:m.alloc_coil_heat[i]?.heat??'—',work:row.work??'—',width:row.width??null,gage:row.gage??null,pattern:row.pattern??null,type:row.type??null,lf:row.lf??null,weight:row.weight??null,date_received:row.date_received??null})):m.allocated_mesh.map(row=>({id:row.mesh_no,mesh_no:row.mesh_no,heat:row.heat,mesh:row.mesh,type:row.type,role:row.role??null,width:row.width??null,length:row.length??null,date_received:row.date_received??null}));
+const matStockRows=()=>matState.kind==='coil'?m.allocated_coils.map((row,i)=>({id:row.coil_no,coil_no:row.coil_no,heat:m.alloc_coil_heat[i]?.heat??'—',work:row.work??null,po:row.po??null,width:row.width??null,gage:row.gage??null,pattern:row.pattern??null,type:row.type??null,lf:row.lf??null,weight:row.weight??null,date_received:row.date_received??null})):m.allocated_mesh.map(row=>({id:row.mesh_no,mesh_no:row.mesh_no,heat:row.heat,po:row.po??null,mesh:row.mesh,type:row.type,role:row.role??null,width:row.width??null,length:row.length??null,date_received:row.date_received??null}));
 const matAvailableRows=()=>{
  const assigned=new Set(matStockRows().map(x=>x.id));
  return (matState.kind==='coil'?matCoilPool:matMeshPool).filter(x=>!assigned.has(x.id));
@@ -1870,12 +1909,19 @@ const matSearchCompact=v=>matSearchNormalize(v).replace(/[^a-z0-9.]+/g,'');
 const matSearchTerms=q=>matSearchNormalize(q).split(/\s+/).filter(Boolean);
 function matFiltered(){
  let list=matState.scope==='allocated'?matStockRows():matAvailableRows();
- if(matState.scope==='compatible')list=list.filter(x=>matState.kind==='coil'?Number(x.width)===Number(j.strip?.replace(/[a-z ]/gi,'')):Number(x.width)===Number(j.strip?.replace(/[a-z ]/gi,'')));
+ if(matState.scope==='compatible'){
+  list=list.filter(x=>Number(x.width)===Number(j.strip?.replace(/[a-z ]/gi,'')));
+  if(matState.kind==='mesh'&&!matState.showAllMeshTypes){
+   const sourceType=m.allocated_mesh.find(x=>x.mesh)?.mesh;
+   if(sourceType)list=list.filter(x=>x.mesh===sourceType);
+  }
+ }
  if(matState.kind==='coil'&&matState.perforation!=='all')list=list.filter(x=>String(x.type||'').toLowerCase()===matState.perforation);
  if(matState.kind==='mesh'&&matState.role!=='all')list=list.filter(x=>x.role===matState.role);
  const searchTerms=matSearchTerms(matState.search);
  if(searchTerms.length)list=list.filter(x=>{
-  const data=[x.id,x.work,x.heat,x.mesh,x.type,x.role,x.pattern,x.width,x.gage,x.lf,x.length,x.weight,x.date_received,x.coil_no,x.mesh_no].filter(v=>v!==null&&v!==undefined).map(v=>matSearchNormalize(v));
+  const byField={id:[x.id,x.coil_no,x.mesh_no],work:[x.work],po:[x.po],heat:[x.heat],spec:[x.mesh,x.type,x.role,x.pattern,x.width,x.gage]};
+  const data=(matState.searchField==='all'?[...byField.id,...byField.work,...byField.po,...byField.heat,...byField.spec,x.lf,x.length,x.weight,x.date_received]:(byField[matState.searchField]||[])).filter(v=>v!==null&&v!==undefined).map(v=>matSearchNormalize(v));
   const words=data.join(' '),compact=data.map(matSearchCompact).join(' ');
   return searchTerms.every(term=>words.includes(term)||compact.includes(matSearchCompact(term)));
  });
@@ -1902,15 +1948,15 @@ function matInventoryTable(){
  const selectedVisible=items.length>0&&items.every(x=>matState.selected.has(x.id));
  const isAllocated=matState.scope==='allocated';
  const checkbox=(row)=>`<input type="checkbox" data-mat-check="${safe(row.id)}" aria-label="Select ${safe(row.id)}" ${matState.selected.has(row.id)?'checked':''} ${!matState.edit?'disabled':''}/>`;
- const headings=matState.kind==='coil'?['Coil','Available LF','Width','Work #','Pattern','Gage','Type','Heat','Job status']:['Mesh #','Length (LF)','Mesh type','Material','Role','Width','Heat','Received','Job status'];
+ const headings=matState.kind==='coil'?['Coil','Available LF','Width','Work Order #','PO #','Pattern','Gage','Type','Heat','Job status']:['Mesh #','Length (LF)','Mesh type','Material','Role','Width','PO #','Heat','Received','Job status'];
  const visibleRows=items.map(row=>{
- const fields=matState.kind==='coil'?[`<strong class="mat-item-no">${safe(row.id)}</strong>`,row.lf===null?'<span class="mat-muted">Not recorded</span>':`<span class="mat-lf">${matFmtLF(row.lf)}</span>`,row.width===null?'—':`${Number(row.width).toFixed(3)} in`,matReadable(row.work),matReadable(row.pattern),matReadable(row.gage),`<span class="mat-type ${row.type==='Blank'?'blank':''}">${safe(row.type||'Unclassified')}</span>`,matReadable(row.heat),matStatus(isAllocated)]:[`<strong class="mat-item-no">${safe(row.id)}</strong>`,row.length===null?'<span class="mat-muted">Not recorded</span>':`<span class="mat-lf">${matFmtLF(row.length)}</span>`,matReadable(row.mesh),matReadable(row.type),matReadable(row.role),row.width===null?'—':`${Number(row.width).toFixed(3)} in`,matReadable(row.heat),matReadable(row.date_received),matStatus(isAllocated)];
+ const fields=matState.kind==='coil'?[`<strong class="mat-item-no">${safe(row.id)}</strong>`,row.lf===null?'<span class="mat-muted">Not recorded</span>':`<span class="mat-lf">${matFmtLF(row.lf)}</span>`,row.width===null?'—':`${Number(row.width).toFixed(3)} in`,matReadable(row.work),matReadable(row.po),matReadable(row.pattern),matReadable(row.gage),`<span class="mat-type ${row.type==='Blank'?'blank':''}">${safe(row.type||'Unclassified')}</span>`,matReadable(row.heat),matStatus(isAllocated)]:[`<strong class="mat-item-no">${safe(row.id)}</strong>`,row.length===null?'<span class="mat-muted">Not recorded</span>':`<span class="mat-lf">${matFmtLF(row.length)}</span>`,matReadable(row.mesh),matReadable(row.type),matReadable(row.role),row.width===null?'—':`${Number(row.width).toFixed(3)} in`,matReadable(row.po),matReadable(row.heat),matReadable(row.date_received),matStatus(isAllocated)];
  return `<tr class="${matState.selected.has(row.id)?'mat-selected':''}"><td>${checkbox(row)}</td>${fields.map(x=>`<td>${x}</td>`).join('')}</tr>`
  }).join('');
  const count=matSelectionSummary();
  const availableText=matState.scope==='allocated'?'Assigned to this job':matState.scope==='compatible'?'Unallocated · part-width matches (preview)':'Unallocated inventory · all widths';
  return `<div class="mat-toolbar-detail" role="status" aria-live="polite"><span><strong>${num(all.length)}</strong> ${matState.kind==='coil'?'coils':'mesh rolls'} · ${availableText}${matState.search?` · Search: <strong>${safe(matState.search)}</strong>`:''}</span><span>${matState.edit?`${num(matState.selected.size)} selected · Selection applies to the active search`:'Selection locked · viewing only'}</span></div>
- <div class="mat-tablewrap"><table class="mat-table" aria-label="${matState.kind==='coil'?'Coil':'Mesh'} inventory" style="min-width:${matState.kind==='coil'?890:930}px"><thead><tr><th style="width:43px"><input type="checkbox" data-mat-checkall aria-label="Select all visible rows" ${selectedVisible?'checked':''} ${!matState.edit||!items.length?'disabled':''}/></th>${headings.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${visibleRows||`<tr><td colspan="${headings.length+1}"><div class="mat-empty"><strong>No matching inventory</strong>Try a different search, width, perforation, or role filter.<div><button type="button" class="mat-empty-reset" data-mat-act="reset-filters">Reset filters</button></div></div></td></tr>`}</tbody></table></div>
+ <div class="mat-tablewrap"><table class="mat-table" aria-label="${matState.kind==='coil'?'Coil':'Mesh'} inventory" style="min-width:${matState.kind==='coil'?1060:1050}px"><thead><tr><th style="width:43px"><input type="checkbox" data-mat-checkall aria-label="Select all visible rows" ${selectedVisible?'checked':''} ${!matState.edit||!items.length?'disabled':''}/></th>${headings.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${visibleRows||`<tr><td colspan="${headings.length+1}"><div class="mat-empty"><strong>No matching inventory</strong>Try a different search, width, perforation, or role filter.<div><button type="button" class="mat-empty-reset" data-mat-act="reset-filters">Reset filters</button></div></div></td></tr>`}</tbody></table></div>
  <div class="mat-pager"><span>Showing ${all.length?from+1:0}–${Math.min(from+items.length,all.length)} of ${num(all.length)} records · ${matState.page} of ${maxPage} pages</span><div class="actions"><label>Rows <select data-mat-input="pagesize"><option ${matState.pageSize===20?'selected':''}>20</option><option ${matState.pageSize===50?'selected':''}>50</option><option ${matState.pageSize===100?'selected':''}>100</option></select></label><button type="button" data-mat-act="prev" ${matState.page===1?'disabled':''}>← Previous</button><button type="button" data-mat-act="next" ${matState.page===maxPage?'disabled':''}>Next →</button></div></div>
  <div class="mat-status-legend"><div class="mat-mark-legend">${matStatus(true,'Allocated','Not allocated')}${matStatus(false,'Allocated','Not allocated')}</div><small>Checks mean assigned to this job; X means not currently assigned.</small></div>
  ${matState.edit?`<div class="mat-bulk"><div><strong>${count.count} ${matState.kind==='coil'?'coils':'mesh rolls'} selected</strong><p>${count.unknown?`${matFmtLF(count.known)} known · ${count.unknown} without LF records`:matFmtLF(count.known)} · Selection stays on the current filter</p></div><div class="actions"><button class="btn sm" data-mat-act="clear" ${!count.count?'disabled':''}>Clear</button>${isAllocated&&matState.kind==='coil'?`<button class="btn sm" data-mat-act="used-preview" ${!(count.count===1&&Number(count.data[0]?.lf)>0&&Number(count.data[0]?.width)>0&&Number(count.data[0]?.gage)>0)?'disabled title="Select one coil with recorded LF, width, and gauge"':''}>Enter as Used</button>`:''}<button class="btn sm ${isAllocated?'mat-release':'mat-primary'}" data-mat-act="review" ${!count.count?'disabled':''}>${isAllocated?'✕ Deallocate selected':'✓ Allocate selected'} (${count.count})</button></div></div>`:`<div class="mat-bulk mat-bulk--locked" aria-label="Material allocation actions locked"><div><strong class="mat-bulk-locked-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Allocation actions locked</strong><p>Enable Edit allocations above to select and ${isAllocated?'deallocate':'allocate'} material.</p></div><div class="actions"><button class="btn sm mat-bulk-disabled-action" type="button" disabled aria-label="${isAllocated?'Deallocate selected':'Allocate selected'} — enable Edit allocations first">${isAllocated?'✕ Deallocate selected':'✓ Allocate selected'}</button></div></div>`}`;
@@ -1918,23 +1964,40 @@ function matInventoryTable(){
 function matManagement(){
  const isCoil=matState.kind==='coil',assigned=isCoil?m.allocated_coils.length:m.allocated_mesh.length;
  const filters=isCoil?`<label class="mat-field">Perforation type <select data-mat-input="perforation"><option value="all" ${matState.perforation==='all'?'selected':''}>All types</option><option value="blank" ${matState.perforation==='blank'?'selected':''}>Blank only</option><option value="perforated" ${matState.perforation==='perforated'?'selected':''}>Perforated only</option></select></label>`:`<label class="mat-field">Mesh layer / role <select data-mat-input="role">${['all','Top Filter','Bottom Filter','Inner Drainage','Outer Drainage'].map(x=>`<option value="${safe(x)}" ${matState.role===x?'selected':''}>${x==='all'?'All roles':safe(x)}</option>`).join('')}</select></label>`;
- const scopes=[['allocated','Allocated'],['compatible',isCoil?'Part-specific widths':'Part-matching mesh'],['all',isCoil?'All material widths':'All mesh']];
+ const scopes=[['allocated','Allocated'],['all',isCoil?'All material widths':'All Mesh'],['compatible',isCoil?'Part specific widths':'Part Specific Mesh']];
  return `<section class="mat-panel mat-manager ${matState.edit?'mat-manager--editing':'mat-manager--viewing'}" id="mat-manager"><div class="mat-panel-head"><div class="mat-head-left"><span class="mat-icon">${icon('layers')}</span><div><h3>Allocate & deallocate inventory</h3><p>Search, filter, then select multiple records. Allocations only—not production usage.</p></div></div><span class="mat-badge">${assigned} ${isCoil?'coils':'mesh rolls'} allocated</span></div>
  <div class="mat-tabs" role="tablist" aria-label="Material type"><button role="tab" type="button" data-mat-act="kind" data-value="coil" aria-selected="${isCoil}">Steel coils <span class="mat-badge">${m.allocated_coils.length}</span></button><button role="tab" type="button" data-mat-act="kind" data-value="mesh" aria-selected="${!isCoil}">Mesh rolls <span class="mat-badge">${m.allocated_mesh.length}</span></button></div>
  <div class="mat-mode-banner ${matState.edit?'mat-mode-banner--edit':'mat-mode-banner--view'}" role="status"><span class="mat-mode-visual" aria-hidden="true">${matState.edit?icon('check'):'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>'}</span><div class="mat-mode-copy"><strong>${matState.edit?'Editing enabled · selection unlocked':'Viewing mode · allocation controls locked'}</strong><p>${matState.edit?'Select rows to allocate or deallocate material. Confirm each change before applying it.':'You can browse, search, and filter inventory. Click Edit allocations to select or change assignments.'}</p></div><span class="mat-mode-tag">${matState.edit?'● EDITING':'READ ONLY'}</span></div>
  <div class="mat-toolbar"><div class="mat-toolbar-top"><div class="mat-scope" aria-label="Inventory list scope">${scopes.map(([id,label])=>`<button type="button" data-mat-act="scope" data-value="${id}" aria-pressed="${matState.scope===id}">${safe(label)}</button>`).join('')}</div><button type="button" class="mat-edit-trigger ${matState.edit?'mat-done':''}" data-mat-act="edit">${matState.edit?`${icon('check')} Done editing`:`${icon('edit')} Edit allocations`}</button></div>
- <div class="mat-searchrow"><label class="mat-field mat-field--search" for="mat-inventory-search">Search inventory<div class="mat-searchcontrol"><span class="mat-search-icon" aria-hidden="true">⌕</span><input type="search" id="mat-inventory-search" data-mat-input="search" placeholder="${isCoil?'Coil, work, heat, width, gauge':'Mesh, type, role, heat, width'}" value="${safe(matState.search)}" autocomplete="off" spellcheck="false" aria-describedby="mat-search-help"/>${matState.search?'<button class="mat-search-clear" type="button" data-mat-act="clear-search" aria-label="Clear inventory search">✕ Clear</button>':''}</div></label>${filters}<label class="mat-field">Sort by <select data-mat-input="sort"><option value="id" ${matState.sort==='id'?'selected':''}>Inventory # (A–Z)</option><option value="id-desc" ${matState.sort==='id-desc'?'selected':''}>Inventory # (Z–A)</option><option value="largest" ${matState.sort==='largest'?'selected':''}>Most LF first</option><option value="smallest" ${matState.sort==='smallest'?'selected':''}>Least LF first</option><option value="wide" ${matState.sort==='wide'?'selected':''}>Width (narrow first)</option><option value="recent" ${matState.sort==='recent'?'selected':''}>Newest received first</option></select></label><button type="button" class="mat-filter-reset" data-mat-act="reset-filters">Reset filters</button></div><div class="mat-search-help" id="mat-search-help">Search across IDs, heat/work numbers, width, gauge, material and dates. Combine terms like <strong>4.625 perforated</strong>; dashes in inventory IDs are optional. Press Esc to clear.</div>
+ <div class="mat-searchrow"><label class="mat-field mat-field--searchtype">Search by <select data-mat-input="searchField" aria-label="Inventory search type">${[['all','All fields'],['id',isCoil?'Coil #':'Mesh #'],...(isCoil?[['work','Work Order #']]:[]),['po','PO # (sample)'],['heat','Heat #'],['spec',isCoil?'Pattern / specs':'Mesh type / role']].map(([value,label])=>`<option value="${value}" ${matState.searchField===value?'selected':''}>${label}</option>`).join('')}</select></label><label class="mat-field mat-field--search" for="mat-inventory-search">Search inventory<div class="mat-searchcontrol"><span class="mat-search-icon" aria-hidden="true">⌕</span><input type="search" id="mat-inventory-search" data-mat-input="search" placeholder="${matState.searchField==='po'?'PO-44000':matState.searchField==='work'?'W-29420':matState.searchField==='id'?isCoil?'C-12000':'MSH-3100':isCoil?'Coil #, work order #, PO #, heat #':'Mesh #, PO #, heat #, type'}" value="${matState.search?safe(matState.search):''}" autocomplete="off" spellcheck="false" aria-describedby="mat-search-help"/>${matState.search?'<button class="mat-search-clear" type="button" data-mat-act="clear-search" aria-label="Clear inventory search">✕ Clear</button>':''}</div></label>${filters}${!isCoil&&matState.scope==='compatible'?`<label class="mat-mesh-showall"><input type="checkbox" data-mat-input="showAllMeshTypes" ${matState.showAllMeshTypes?'checked':''}/> Show All Mesh Types</label>`:''}<label class="mat-field">Sort by <select data-mat-input="sort"><option value="id" ${matState.sort==='id'?'selected':''}>Inventory # (A–Z)</option><option value="id-desc" ${matState.sort==='id-desc'?'selected':''}>Inventory # (Z–A)</option><option value="largest" ${matState.sort==='largest'?'selected':''}>Most LF first</option><option value="smallest" ${matState.sort==='smallest'?'selected':''}>Least LF first</option><option value="wide" ${matState.sort==='wide'?'selected':''}>Width (narrow first)</option><option value="recent" ${matState.sort==='recent'?'selected':''}>Newest received first</option></select></label><button type="button" class="mat-filter-reset" data-mat-act="reset-filters">Reset filters</button></div><div class="mat-search-help" id="mat-search-help">Select a search type, or use All fields for coil/mesh ID, Work Order #, PO #, heat, and specs. Try <strong>4.625 perforated</strong> or <strong>PO-44000</strong>. PO search is available for generated sample records only; TPM's original coil search promises Coil # and Work Order #. Press Esc to clear.</div>
  ${matState.edit?'<div class="mat-preview-banner"><strong>Edit mode.</strong> Select one or many rows; the action bar appears beneath the table. Confirmations simulate the original immediate allocate/deallocate workflow. No TPM APIs are called.</div>':''}
- ${matInventoryTable()}</div></section>`;
+ <div class="mat-allocation-columns"><div class="mat-inventory-main">${matInventoryTable()}</div>${matPlanningCoverage()}</div></div></section>`;
 }
 function matPlanningCoverage(){
- const coils=matStockRowsFor('coil'),mesh=matStockRowsFor('mesh');
- const known=(rows)=>rows.filter(x=>x.lf!==null&&x.lf!==undefined&&Number.isFinite(Number(x.lf)));
- const classified=coils.filter(x=>x.type==='Blank'||x.type==='Perforated');
- const blanks=known(classified.filter(x=>x.type==='Blank'));const perfs=known(classified.filter(x=>x.type==='Perforated'));
- const meshLengths=mesh.filter(x=>x.length!==null&&x.length!==undefined&&Number.isFinite(Number(x.length)));
- const frac=(group,total)=>total===0?'Not recorded':matFmtLF(group.reduce((sum,x)=>sum+Number(x.lf),0));
- return `<details class="mat-demo-audit" style="background:#fdfdfe"><summary>Planning coverage · perforated, blank, and mesh footage (as on the original TPM page)</summary><div class="mat-flow" style="margin-top:10px"><div><span class="mat-softlabel">Perforated LF assigned</span><strong>${frac(perfs,classifedCount('Perforated',coils))}</strong><small>${classifedCount('Perforated',coils)-perfs.length} records without measured LF · partial if missing</small></div><div><span class="mat-softlabel">Blank LF assigned</span><strong>${frac(blanks,classifedCount('Blank',coils))}</strong><small>${classifedCount('Blank',coils)-blanks.length} records without measured LF · partial if missing</small></div><div><span class="mat-softlabel">Mesh LF assigned</span><strong>${meshLengths.length?matFmtLF(meshLengths.reduce((n,x)=>n+Number(x.length),0)):'Not recorded'}</strong><small>${mesh.length-meshLengths.length} mesh records lack length</small></div></div><p class="mat-note" style="margin-top:10px">Live TPM uses /api/weight_show and /api/meshtotal_show for required LF, allocated totals and shortage. The preview cannot reliably compute shortages while original source coils lack width, gauge or weight measurements.</p></details>`;
+ const rows=matStockRowsFor(matState.kind);
+ const measured=(items,key)=>items.filter(x=>x[key]!==null&&x[key]!==undefined&&Number.isFinite(Number(x[key])));
+ const total=(items,key)=>items.reduce((n,x)=>n+Number(x[key]),0);
+ const metric=(label,value,note,tone='')=>`<div class="mat-planning-metric ${tone}"><dt>${safe(label)}</dt><dd>${value}</dd>${note?`<small>${safe(note)}</small>`:''}</div>`;
+ const labelValue=(items,key)=>{
+  const valid=measured(items,key),unknown=items.length-valid.length;
+  const display=valid.length?Number(total(valid,key)).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' LF':items.length?'Not recorded':'0.00 LF';
+  return {display,note:unknown?`${unknown} assigned record${unknown===1?'':'s'} missing LF · ${valid.length?'partial total':'cannot total'}`:`${valid.length} measured item${valid.length===1?'':'s'}`};
+ };
+ const sidebarHead=(title,subtitle)=>`<div class="mat-planning-head"><span class="mat-planning-icon" aria-hidden="true">${icon('layers')}</span><div><h4>${safe(title)}</h4><p>${safe(subtitle)}</p></div></div>`;
+ if(matState.kind==='coil'){
+  const perf=rows.filter(x=>String(x.type||'').toLowerCase()==='perforated'||(!x.type&&x.pattern&&!String(x.pattern).toLowerCase().includes('blank')));
+  const blank=rows.filter(x=>String(x.type||'').toLowerCase()==='blank'||(!x.type&&String(x.pattern||'').toLowerCase().includes('blank')));
+  const all=labelValue(rows,'lf'),a=labelValue(perf,'lf'),b=labelValue(blank,'lf');
+  const source=`<div class="mat-planning-source"><strong>Localhost source fields</strong><span>Required LF, shortages and pounds come from <code>/api/weight_show</code>. This preview has no API response for job #${safe(j.job)}; unknown quantities are not set to zero.</span></div>`;
+  return `<aside class="mat-planning-sidebar" aria-label="Steel allocation totals">${sidebarHead('Steel footage summary','Job allocation · same fields as localhost')}
+  <dl class="mat-planning-list">${metric('Total linear feet per order',all.display,all.note)}${metric('Total perforated allocated',a.display,a.note)}${metric('Total blank allocated',b.display,b.note)}${metric('Total to be stamped','<span class="mat-unavailable">Requires job calculation</span>','Shortage LF and lbs needed · not available in offline fixture','mat-planning-shortage')}${metric('Total to order - Blank','<span class="mat-unavailable">Requires job calculation</span>','Blank shortage LF and lbs needed · not available in offline fixture','mat-planning-shortage')}</dl>
+  <div class="mat-planning-reference"><strong>Order planning LF reference</strong><span>${matFmtLF(j.lf_mat)}</span><small>From fictional job header; not substituted for the live shortage calculation.</small></div>${source}</aside>`;
+ }
+ const alloc=labelValue(rows,'length');
+ const knownUsed=m.used_mesh.map(x=>({length:x.length??x.used_length??null}));const used=labelValue(knownUsed,'length');
+ return `<aside class="mat-planning-sidebar" aria-label="Mesh allocation totals">${sidebarHead('Mesh length summary','Job totals · same fields as localhost')}
+ <dl class="mat-planning-list">${metric('Length allocated',alloc.display,alloc.note)}${metric('Length already used',used.display,used.note||'Tracked by TPM mesh usage records')}${metric('Total required length','<span class="mat-unavailable">Requires job calculation</span>','Original field from /api/meshtotal_show · no mock requirement available','mat-planning-shortage')}</dl>
+ <div class="mat-planning-source"><strong>TPM source of truth</strong><span>The original mesh component uses <code>/api/meshtotal_show</code> for allocated, used, and required lengths. Measured fixture rows are shown only where present.</span></div></aside>`;
 }
 function classifedCount(type,rows){return rows.filter(x=>x.type===type).length}
 function matStockRowsFor(kind){const old=matState.kind;matState.kind=kind;const rows=matStockRows();matState.kind=old;return rows}
@@ -1964,10 +2027,9 @@ function matPage(){
  ['Raw stock LF consumed','Not recorded',`Used-coil records lack consumed LF · ${Number(s.totals.feet).toFixed(1)} LF separately recorded as scrap`,'amber']
  ];
  return `<div class="mat-workspace"><header class="mat-hero"><div><span class="mat-eyebrow">MATERIALS / JOB #${safe(j.job)}</span><h2>Material planning & usage</h2><p>Allocate coils and mesh in bulk, understand linear footage, and trace what production actually used.</p></div></header>
- <div class="mat-stats">${baseStats.map(x=>matStat(...x)).join('')}</div>
+ <div class="mat-context-strip"><span><strong>${matFmtLF(j.total_tube)}</strong> produced tube footage</span><span><strong>Raw steel LF used:</strong> Not recorded</span><small>Source totals and shortage calculations are in the allocation sidebar; finished-tube LF is not raw material consumption.</small></div>
  <div class="mat-context"><span style="font-size:16px;color:#8f416a">ⓘ</span><div><strong>These LF values mean different things.</strong> Order LF is a planning reference; allocated LF depends on recorded coil dimensions and weight; Finished tube footage is not the same as raw-coil withdrawal. Raw LF consumed is unknown, so it must not be estimated from completed tubes. Recorded scrap is tracked independently on the Scrap tab.</div></div>
  ${matManagement()}
- ${matPlanningCoverage()}
  ${matUsedRecords()}
  <details class="mat-additional-weights"><summary>Additional original weight measurements</summary><div class="mat-panel-body">${tabFields(jobGroups.weights.filter(x=>x[0]==='Weight before'||x[0]==='Weight after'))}</div></details>
  ${matAuditView()}
@@ -1994,10 +2056,11 @@ function matChangeOption(key,value){
  clearTimeout(matSearchTimer);
  if(key==='search'){matState.search=value;matState.page=1;matState.selected.clear();matSearchTimer=setTimeout(()=>matRender(true),175);return}
  if(key==='pagesize'){matState.pageSize=Number(value)||20;matState.page=1;matRender();return}
+ if(key==='kind'){matState.searchField='all';matState.search=''}
  matState[key]=value;matResetSelection();matRender();
 }
 function matResetFilters(keepSearchFocus=false){
- clearTimeout(matSearchTimer);matState.search='';matState.sort='id';matState.perforation='all';matState.role='all';matResetSelection();matRender();
+ clearTimeout(matSearchTimer);matState.search='';matState.searchField='all';matState.sort='id';matState.perforation='all';matState.role='all';matResetSelection();matRender();
  if(keepSearchFocus)document.getElementById('mat-inventory-search')?.focus({preventScroll:true});
 }
 function matConfirmAction(){const summary=matSelectionSummary();if(!matState.edit||!summary.count)return;
@@ -2046,7 +2109,7 @@ document.addEventListener('click',event=>{
  if(op==='cancel-confirm'){matState.pending=null;closeModal();return}if(op==='confirm'){matApplyAction();return}if(op==='confirm-used'){matCommitUsed();return}
 },true);
 document.addEventListener('change',event=>{
- const input=event.target.closest('[data-mat-input]');if(input&&input.dataset.matInput!=='search'){matChangeOption(input.dataset.matInput,input.value);return}
+ const input=event.target.closest('[data-mat-input]');if(input&&input.dataset.matInput!=='search'){matChangeOption(input.dataset.matInput,input.type==='checkbox'?input.checked:input.value);return}
  const check=event.target.closest('[data-mat-check]');if(check&&matState.edit){if(check.checked)matState.selected.add(check.dataset.matCheck);else matState.selected.delete(check.dataset.matCheck);matRender();return}
  if(event.target.matches('[data-mat-checkall]')&&matState.edit){const items=matFiltered().slice((matState.page-1)*matState.pageSize,matState.page*matState.pageSize);items.forEach(row=>{if(event.target.checked)matState.selected.add(row.id);else matState.selected.delete(row.id)});matRender();return}
 },true);
