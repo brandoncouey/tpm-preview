@@ -2220,6 +2220,49 @@ document.addEventListener('input',event=>{const input=event.target.closest('[dat
 if(new URLSearchParams(location.search).get('view')==='materials')navigate('materials');
 </script>
 
+<style>
+/* TPM Production: full route coverage; never assign completion to unlinked checkpoints. */
+.prod-route-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 13px;font-size:11px;color:#697581}
+.prod-route-meta strong{color:#354150}
+.prod-route-meta span{border:1px solid #dfe3e8;background:#f8f9fa;padding:5px 8px;border-radius:4px}
+.prod-route-wrap{display:flex;flex-direction:column;gap:15px}
+.prod-route-phase{display:grid;grid-template-columns:148px minmax(0,1fr);gap:15px;border-top:1px solid #e8eaf0;padding-top:14px}
+.prod-route-phase:first-child{border:0;padding-top:0}
+.prod-route-phase-label{font-size:11px;color:#65717d}
+.prod-route-phase-label b{display:block;font-size:12px;color:#34404b;line-height:1.4;margin-bottom:5px}
+.prod-route-phase-label small{font-size:10.5px;line-height:1.5;display:block}
+.prod-route-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;min-width:0}
+.prod-route-step{text-align:left;border:1px solid #dfe4e8;background:#fff;border-radius:5px;padding:12px 13px;min-width:0;color:#33404d;cursor:pointer;display:flex;flex-direction:column;gap:5px;transition:border-color .15s,background .15s}
+.prod-route-step:hover{border-color:#b98aa4;background:#fdf9fb}
+.prod-route-step:focus-visible{outline:2px solid #832953;outline-offset:2px}
+.prod-route-step[aria-pressed="true"]{border-color:#9d5177;box-shadow:inset 3px 0 #822f5b;background:#fff9fc}
+.prod-route-step-top{display:flex;align-items:center;justify-content:space-between;gap:5px;flex-wrap:wrap}
+.prod-route-index{font-size:10px;color:#8c7580;font-weight:850;letter-spacing:.05em}
+.prod-route-badge{font-size:9.5px;padding:3px 6px;border-radius:3px;border:1px solid #dfe4e8;background:#f3f5f7;color:#677581;font-weight:780;white-space:nowrap}
+.prod-route-badge[data-state="recorded"]{border-color:#bbd9c8;background:#edf8f1;color:#236a46}
+.prod-route-badge[data-state="allocation"]{border-color:#ccd6e4;background:#f2f6fc;color:#45617b}
+.prod-route-badge[data-state="conditional"]{border-color:#e6dbc4;background:#fff8ea;color:#8a6626}
+.prod-route-step strong{font-size:12px;font-weight:800;line-height:1.35}
+.prod-route-step small{font-size:10.8px;color:#687684;line-height:1.4}
+.prod-route-step-description{font-size:10.5px;line-height:1.5;color:#78848c}
+.prod-route-detail{border:1px solid #dbc6d1;border-left:3px solid #873961;border-radius:4px;background:#fcfafb;padding:15px 17px;min-width:0}
+.prod-route-detail-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.prod-route-detail .prod-route-eyebrow{color:#86506c;font-size:10px;letter-spacing:.07em;font-weight:850;text-transform:uppercase}
+.prod-route-detail h4{font-size:15px;color:#2c3640;letter-spacing:-.02em;margin:6px 0}
+.prod-route-detail p{font-size:11.5px;line-height:1.65;color:#63707a;max-width:95ch}
+.prod-route-data{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:13px 0}
+.prod-route-data > div{background:#fff;border:1px solid #e4e7ea;padding:10px 11px;border-radius:3px;min-width:0}
+.prod-route-data span{display:block;color:#78848f;font-size:10px}
+.prod-route-data strong{display:block;color:#354251;font-size:12px;margin-top:4px;font-weight:800;overflow-wrap:anywhere}
+.prod-route-next{margin-top:11px;font-size:11px;color:#63707a}
+.prod-route-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.prod-route-actions button{font-size:11px;min-height:33px;padding:7px 10px;border:1px solid #bba7b2;color:#733657;background:#fff;border-radius:4px;font-weight:800}
+.prod-route-actions button:hover{background:#f8eff3}
+.prod-route-footnote{font-size:11px;line-height:1.6;color:#63717d;background:#f5f7f9;border:1px solid #e1e6ea;padding:10px 12px;border-radius:4px}
+@media(max-width:1000px){.prod-route-phase{grid-template-columns:1fr;gap:9px}.prod-route-phase-label{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap}.prod-route-phase-label b{margin:0}}
+@media(max-width:640px){.prod-route-steps,.prod-route-data{grid-template-columns:1fr}.prod-route-detail{padding:12px}.prod-route-step{padding:11px}.prod-route-phase{gap:11px}}
+@media print{.prod-route-detail,.prod-route-step{break-inside:avoid}}
+</style>
 <!-- TPM production scalability and operator drill-down preview -->
 <script>
 // Production scale testing. Original source records are preserved and never mutated.
@@ -2312,8 +2355,63 @@ function prodStationResults(){
  return `<div class="prod-table-status"><span><strong>${num(rows.length)} tube-stage checks</strong> · ${source}</span><span>${num(rows.filter(x=>x.checked).length)} recorded · ${num(rows.filter(x=>!x.checked).length)} not recorded</span></div>${prodTable(['Tube ID','Stage','Source field','Stage check','Recorded at','Operator'],body)}${prodPager(rows.length,prodState.stagePage,prodState.stageSize,'stage')}`;
 }
 function prodCards(){return `<div class="prod-people">${h.people.map(p=>{const dept=p.departments[0],selected=prodState.person===p.person,initials=p.person.split(' ').map(n=>n[0]).join('');return `<button type="button" class="prod-person ${selected?'is-selected':''}" data-prod-person="${safe(p.person)}" aria-pressed="${selected}"><div class="prod-person-top"><span class="prod-avatar">${safe(initials)}</span><span><span class="prod-person-name">${safe(p.person)}</span><br/><span class="prod-person-role">${safe(dept.name)}</span></span></div><div class="prod-person-stats"><div><strong>${num(p.tubes)}</strong><span>Source tube records</span></div><div><strong>${dur(dept.seconds)}</strong><span>Source time recorded</span></div></div><div class="prod-person-foot"><span>${dept.sessions.length} original · 36 mock sessions</span><span>View activity →</span></div></button>`}).join('')}</div>`}
-function productionLarge(){const intro=tabIntro('Production / Work records','Production activity','Track completed station counts and explore high-volume employee and station logs without losing individual records.','3 stations · 3 operators');const stageCards=`<div class="tab-stage-grid">${h.stages.slice(0,3).map((st,i)=>tabStage(st,i).replace('class="premium-stage"',`class="premium-stage" role="button" tabindex="0" aria-label="Open ${safe(st.label)} station details"`)).join('')}</div>`;const stats=tm.map((entry,i)=>tabStat(entry[0],entry[1],entry[2],['wine','slate','teal','amber','slate','wine'][i])).join('');return `<div class="tab-workspace prod-v2">${intro}
+// Proposed route coverage, not a claim that every operation is mandatory for this job.
+// Only three checkpoints and material allocation records exist in this fixture.
+const prodRoutePhases=[
+ {id:'prepare',title:'01 · Material readiness',note:'Verify release conditions before work starts.'},
+ {id:'forming',title:'02 · Forming & cutoff',note:'Actual tube-stage counts exist for these stations.'},
+ {id:'weld',title:'03 · Welding & assembly',note:'Route these steps based on part requirements.'},
+ {id:'release',title:'04 · Final quality & handoff',note:'Release only against verified quality records.'}
+];
+const prodRouteSteps=[
+ {id:'materials',phase:'prepare',name:'Material allocation & verification',owner:'Materials / Production planning',description:'Validate allocated coil and mesh, specification match and available quantity before production.',evidence:'Material assignment, material type, heat/coil traceability and quantity readiness.',link:'materials'},
+ {id:'mill',phase:'forming',name:'Mill forming & seam welding',owner:'Mill operations',description:'Tube forming and mill seam weld work, with tube counts and timestamps.',evidence:'Mill tube check, operator, time, weld setup reference and exceptions.',source:'Mill'},
+ {id:'cutoff',phase:'forming',name:'Cutoff & length preparation',owner:'Cutoff operations',description:'Cut finished tubes to required dimensions and capture processing checkpoints.',evidence:'Cutoff tube check, completion time, operator and length checks.',source:'Cutoff'},
+ {id:'inspection',phase:'forming',name:'In-process inspection',owner:'Quality / Inspection',description:'Existing inspection checkpoint before downstream assembly as applicable.',evidence:'Inspection tube check, inspector, measurement checks and exception records.',source:'Inspection'},
+ {id:'excluder',phase:'weld',name:'Excluder ring fit & placement',owner:'Ring assembly',description:'Confirm whether excluder rings are specified; track fit, position and traceability where required.',evidence:'Part-specific excluder requirement, ring identification, fit/placement sign-off and operator.',conditional:true},
+ {id:'ring-weld',phase:'weld',name:'Ring welding',owner:'Welding',description:'Post-forming ring welding operation if defined in the job route.',evidence:'Ring weld checkpoint, ring location, assigned welder, approved procedure and time.',conditional:true,knownCheckpoint:true},
+ {id:'tack-weld',phase:'weld',name:'Tack welds',owner:'Welding',description:'Tack weld operation if the part/process calls for it; do not assume it is mandatory.',evidence:'Tack weld checkpoint, weld locations/quantity, operator and timestamp.',conditional:true,knownCheckpoint:true},
+ {id:'ring-end',phase:'weld',name:'Ring end processing',owner:'Ring finishing',description:'Ring-end processing checkpoint, only where called for by this product.',evidence:'Ring end checkpoint, dimensions/fit verification, processing time and operator.',conditional:true,knownCheckpoint:true},
+ {id:'repair',phase:'weld',name:'Repair welding / rework',owner:'Weld repair / Quality',description:'Exception-only repair path; a listed welder does not prove that repairs occurred.',evidence:'Linked defect, approval, repair weld record, reinspection and disposition.',conditional:true},
+ {id:'final',phase:'release',name:'Final inspection & release',owner:'Final quality',description:'Verify all required route steps and quality checks before marking production complete.',evidence:'Final checkpoint, required dimensional and weld checks, authorized release.',knownCheckpoint:true},
+ {id:'shipping',phase:'release',name:'Packing & shipping handoff',owner:'Shipping / Dispatch',description:'After final quality release, record packaging and handoff to shipment.',evidence:'Pack count, container, release, shipment record and traceability.',conditional:true}
+];
+const prodRouteSelection={id:'ring-weld'};
+const prodRouteStage=(step)=>step.source?h.stages.find(x=>x.label===step.source):null;
+function prodRouteState(step){
+ const st=prodRouteStage(step);
+ if(st)return {type:'recorded',label:'Recorded source',detail:`${num(st.done)} stage completions in job fixture`};
+ if(step.id==='materials')return {type:'allocation',label:'Allocations listed',detail:'Allocation is not the same as verification or release'};
+ if(step.conditional)return {type:'conditional',label:'Scope unconfirmed',detail:'Required/not required is not established for this job'};
+ return {type:'unknown',label:'No source in fixture',detail:'No matching checkpoint data is supplied for this operation'};
+}
+function prodRouteDetail(){
+ const step=prodRouteSteps.find(x=>x.id===prodRouteSelection.id)||prodRouteSteps[0];
+ const state=prodRouteState(step),st=prodRouteStage(step);
+ let primary='Not available in this fixture',secondary='Not recorded in this fixture',secondaryLabel='Last event';
+ if(st){primary=`${num(st.done)} / ${num(j.quantity)} tubes`;secondary=stamp(st.last_at);secondaryLabel='Latest source checkpoint'}
+ if(step.id==='materials'){primary=`${num(m.allocated_coils.length)} coils · ${num(m.allocated_mesh.length)} mesh allocations`;secondary='Not verified';secondaryLabel='Material release'}
+ if(step.id==='repair'&&j.repair_welder_name){secondary=safe(j.repair_welder_name);secondaryLabel='Assigned repair welder'}
+ return `<div class="prod-route-detail-top"><span class="prod-route-eyebrow">${safe(step.owner)} · Workflow detail</span><span class="prod-route-badge" data-state="${state.type}">${safe(state.label)}</span></div>
+ <h4>${safe(step.name)}</h4><p>${safe(step.description)}</p>
+ <div class="prod-route-data"><div><span>${st?'Source checkpoint count':step.id==='materials'?'Source allocations':'Current production record'}</span><strong>${safe(primary)}</strong></div><div><span>${safe(secondaryLabel)}</span><strong>${safe(secondary)}</strong></div></div>
+ <p><strong>Evidence to capture:</strong> ${safe(step.evidence)}</p>
+ <div class="prod-route-next">${safe(state.detail)}. ${step.knownCheckpoint?'TPM names this checkpoint, but its tube-level flags are absent from the provided fixture.':step.conditional?'Treat this as a configurable step, never an automatically required or completed one.':''}</div>
+ <div class="prod-route-actions">${step.link==='materials'?'<button type="button" data-prod-route-to="materials">Open materials view ↗</button>':st?' <button type="button" data-prod-route-to="source">Inspect actual tube checks ↗</button>':''}</div>`;
+}
+function prodRouteView(){
+ const original=h.stages.length;
+ const stages=prodRoutePhases.map(phase=>{
+  const children=prodRouteSteps.filter(x=>x.phase===phase.id);
+  return `<section class="prod-route-phase" aria-label="${safe(phase.title)}"><div class="prod-route-phase-label"><b>${safe(phase.title)}</b><small>${safe(phase.note)}</small></div><div class="prod-route-steps">${children.map(step=>{const state=prodRouteState(step);return `<button type="button" class="prod-route-step" data-prod-process="${safe(step.id)}" aria-pressed="${prodRouteSelection.id===step.id?'true':'false'}"><span class="prod-route-step-top"><span class="prod-route-index">${String(prodRouteSteps.indexOf(step)+1).padStart(2,'0')}</span><span class="prod-route-badge" data-state="${state.type}">${safe(state.label)}</span></span><strong>${safe(step.name)}</strong><small>${safe(step.owner)}</small><span class="prod-route-step-description">${safe(step.description)}</span></button>`}).join('')}</div></section>`;
+ }).join('');
+ const body=`<div class="prod-route-meta"><span><strong>${original} measured stations</strong> in source fixture</span><span>${prodRouteSteps.length} proposed route checkpoints / handoffs</span><span>Optional work requires part-specific routing</span></div><div class="prod-route-wrap">${stages}<div class="prod-route-detail" id="prod-route-detail" aria-live="polite">${prodRouteDetail()}</div><p class="prod-route-footnote">Coverage map only: this sample has Mill, Cutoff, and Inspection checks, plus allocations. Excluder rings, Ring Weld, Tack Weld, Ring End, Repair, Final, and shipment sign-off have no completion records here. Missing records must not be displayed as zero completed, overdue, rejected, or skipped. The final stage sequence and applicability should be driven by each part’s approved routing.</p></div>`;
+ return tabPanel('factory','Full manufacturing route','From material verification through welding, quality and shipping. Select any step to inspect its coverage.',body,{right:'Part-specific / configurable'});
+}
+
+function productionLarge(){const intro=tabIntro('Production / Work records','Production activity','Track the complete job route, including conditional welding operations, plus source-backed operator and tube activity.','Full production route');const stageCards=`<div class="tab-stage-grid">${h.stages.slice(0,3).map((st,i)=>tabStage(st,i).replace('class="premium-stage"',`class="premium-stage" role="button" tabindex="0" aria-label="Open ${safe(st.label)} station details"`)).join('')}</div>`;const stats=tm.map((entry,i)=>tabStat(entry[0],entry[1],entry[2],['wine','slate','teal','amber','slate','wine'][i])).join('');return `<div class="tab-workspace prod-v2">${intro}
 <div class="prod-state-note"><span aria-hidden="true">◇</span><div><strong>Volume-testing preview:</strong> Original production counts and 7 recorded worker sessions are preserved. The 108 extra operator sessions and 96 tube-stage checks are fictional scale-test examples, not TPM records. Check states map to the real mill_check, cutoff_check and insp_check fields; no review or hold status has been invented.</div></div>
+${prodRouteView()}
 ${tabPanel('factory','Station completion','Original job roll-up · click a station to see its counts',stageCards,{right:`${num(j.quantity)} tubes ordered`})}
 ${tabPanel('users','Operators & contributions','Select an operator to inspect detailed sessions; aggregate metrics remain from the original source.',prodCards(),{right:'3 operators'})}
 <section class="tab-panel prod-register" aria-label="Employee work sessions"><div class="tab-panel-head"><div class="tab-panel-ident"><span class="tab-panel-icon">${icon('users')}</span><div><h3>Employee work sessions</h3><p>Sessions are calculated from recorded tube work; a 20-minute gap starts a new session.</p></div></div><span class="tab-header-side">${prodState.dataset==='demo'?'Scale-test data':'Original records'}</span></div><div class="prod-filterbar"><label class="prod-control prod-control--search">Search sessions<input type="search" data-prod-input="search" value="${safe(prodState.search)}" placeholder="ID, employee, station, date or tubes…" autocomplete="off" aria-label="Search employee work sessions"></label><label class="prod-control">Operator<select data-prod-select="person">${prodSelect([['all','All operators'],...prodPersonOption],prodState.person)}</select></label><label class="prod-control">Dataset<select data-prod-select="dataset">${prodSelect([['demo','Scale test · 36 per person'],['original','Original recorded sessions']],prodState.dataset)}</select></label><label class="prod-control">Sort<select data-prod-select="sort">${prodSelect([['newest','Newest first'],['oldest','Oldest first'],['tubes','Most tubes']],prodState.sort)}</select></label></div><div class="prod-filter-actions"><button type="button" class="prod-row-link" data-prod-act="people-reset">Reset filters</button></div><div id="prod-people-results">${prodPeopleResults()}</div></section>
@@ -2325,7 +2423,7 @@ ${tabPanel('users','Operators & contributions','Select an operator to inspect de
 <label class="prod-control">Dataset<select data-prod-select="stage-dataset">${prodSelect([['demo','Fictional · 32 tubes'],['original','Original · 5 tubes']],prodState.stageDataset)}</select></label>
 <label class="prod-control">Sort<select data-prod-select="stage-sort">${prodSelect([['newest','Latest check first'],['oldest','Earliest check first'],['tube-id','Tube ID']],prodState.stageSort)}</select></label>
 </div><div id="prod-station-results">${prodStationResults()}</div>
-<div class="prod-origin-note">A green check means the stage flag is <strong>1</strong>. A red X means no stage check is recorded—it does <strong>not</strong> mean inspection failure, scrap, hold, or rejection. TPM also supports Ring weld, Tack weld, Ring end and Final checkpoints; those fields are not present in this sample job fixture and are not simulated here.</div></section>
+<div class="prod-origin-note">A green check means the stage flag is <strong>1</strong>. A red X means no stage check is recorded—it does <strong>not</strong> mean inspection failure, scrap, hold, or rejection. TPM also names Ring weld, Tack weld, Ring end and Final checkpoints. Their tube fields are absent from this fixture; excluder-ring work and repair welding are modeled as possible part-specific operations, not completed work.</div></section>
 
 <div class="prod-timing"><details><summary><span>Timing checkpoints <span class="prod-muted">· all 6 original measurements</span></span><span aria-hidden="true">⌄</span></summary><div class="prod-timing-inner"><div class="tab-stat-grid three">${stats}</div><div class="tab-timing-note"><strong>Timing context:</strong> Running and attended overlap; elapsed is wall-clock time. Production gaps are inferred, not confirmed employee breaks. Do not sum these durations.</div></div></details></div>
 </div>`}
@@ -2349,7 +2447,26 @@ function prodDetail(id){
 }
 renderers.C.production=productionLarge;
 let prodTimer=0;
-document.addEventListener('click',event=>{const person=event.target.closest('[data-prod-person]');if(person){event.preventDefault();prodState.person=person.dataset.prodPerson;prodState.page=1;navigate('production');return}const el=event.target.closest('[data-prod-act]');if(el){event.preventDefault();const action=el.dataset.prodAct;if(action==='people-reset'){prodState.person='all';prodState.dataset='demo';prodState.search='';prodState.sort='newest';prodState.page=1;navigate('production');return}if(action.startsWith('people-')){prodState.page+=action.endsWith('next')?1:-1;prodRefresh('people');return}if(action.startsWith('stage-')){prodState.stagePage+=action.endsWith('next')?1:-1;prodRefresh('stage');return}}const entry=event.target.closest('[data-prod-detail]');if(entry){event.preventDefault();prodDetail(entry.dataset.prodDetail)}},true);
+document.addEventListener('click',event=>{
+ const stepButton=event.target.closest('[data-prod-process]');
+ if(stepButton){event.preventDefault();prodRouteSelection.id=stepButton.dataset.prodProcess;document.querySelectorAll('[data-prod-process]').forEach(el=>el.setAttribute('aria-pressed',String(el===stepButton)));const detail=document.getElementById('prod-route-detail');if(detail)detail.innerHTML=prodRouteDetail();return;}
+ const routeButton=event.target.closest('[data-prod-route-to]');
+ if(routeButton){
+  event.preventDefault();
+  if(routeButton.dataset.prodRouteTo==='materials'){navigate('materials');return;}
+  const current=prodRouteSteps.find(x=>x.id===prodRouteSelection.id);
+  if(current?.source){
+   prodState.stage=current.source;prodState.stageDataset='original';prodState.stageCheck='all';prodState.stageSearch='';prodState.stagePage=1;
+   const stageEl=document.querySelector('[data-prod-select="stage"]');if(stageEl)stageEl.value=current.source;
+   const datasetEl=document.querySelector('[data-prod-select="stage-dataset"]');if(datasetEl)datasetEl.value='original';
+   const checkEl=document.querySelector('[data-prod-select="stage-check"]');if(checkEl)checkEl.value='all';
+   const searchEl=document.querySelector('[data-prod-input="stage-search"]');if(searchEl)searchEl.value='';
+   prodRefresh('stage');
+   document.querySelector('[aria-label="Tube stage check register"]')?.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  return;
+ }
+ const person=event.target.closest('[data-prod-person]');if(person){event.preventDefault();prodState.person=person.dataset.prodPerson;prodState.page=1;navigate('production');return}const el=event.target.closest('[data-prod-act]');if(el){event.preventDefault();const action=el.dataset.prodAct;if(action==='people-reset'){prodState.person='all';prodState.dataset='demo';prodState.search='';prodState.sort='newest';prodState.page=1;navigate('production');return}if(action.startsWith('people-')){prodState.page+=action.endsWith('next')?1:-1;prodRefresh('people');return}if(action.startsWith('stage-')){prodState.stagePage+=action.endsWith('next')?1:-1;prodRefresh('stage');return}}const entry=event.target.closest('[data-prod-detail]');if(entry){event.preventDefault();prodDetail(entry.dataset.prodDetail)}},true);
 document.addEventListener('change',event=>{const el=event.target.closest('[data-prod-select]');if(!el)return;const field=el.dataset.prodSelect;const value=el.value;const map={person:'person',dataset:'dataset',sort:'sort',stage:'stage','stage-sort':'stageSort','stage-check':'stageCheck','stage-dataset':'stageDataset','people-size':'pageSize','stage-size':'stageSize'};if(!map[field])return;prodState[map[field]]=field.endsWith('size')?Number(value):value;if(field==='dataset'||field==='person'||field==='sort'||field==='people-size')prodState.page=1;else prodState.stagePage=1;prodRefresh(field.startsWith('stage')?'stage':'people');if(field==='person'||field==='dataset')navigate('production')},true);
 document.addEventListener('input',event=>{const el=event.target.closest('[data-prod-input]');if(!el)return;const isStation=el.dataset.prodInput==='stage-search';prodState[isStation?'stageSearch':'search']=el.value;if(isStation)prodState.stagePage=1;else prodState.page=1;clearTimeout(prodTimer);prodTimer=setTimeout(()=>prodRefresh(isStation?'stage':'people'),90)},true);
 if(new URLSearchParams(location.search).get('view')==='production')navigate('production');
