@@ -1428,7 +1428,7 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
 .ops-main .record-fields-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .ops-main .compact-sidecard{margin:0}
 .ops-main .compact-sidecard .compact-notes{font-size:12px;line-height:1.6}
-.ops-rail{position:sticky;top:14px;max-height:calc(100dvh - 28px);overflow-y:auto;scrollbar-width:thin;min-width:0;display:flex;flex-direction:column;gap:12px;padding-right:2px}
+.ops-rail{position:sticky;top:14px;min-width:0;display:flex;flex-direction:column;gap:12px;overflow:visible;padding:0;align-self:start}
 .ops-card{background:#fff;border:1px solid #dce2e8;border-radius:6px;overflow:hidden;box-shadow:0 2px 10px #2634420a;flex-shrink:0}
 .ops-panel-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0;font-size:12.5px;line-height:1.3;font-weight:850;color:#28343e}
 .ops-panel-title small{font-size:10px;font-weight:650;color:#71808b}
@@ -1456,7 +1456,14 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
 .ops-risk:before{content:"!";width:18px;height:18px;flex:none;display:grid;place-items:center;border-radius:50%;background:#e8b55c;color:#4c330b;font-weight:950;font-size:11px}
 .ops-risk--ok{border-color:#bfddcf;background:#eff8f2;color:#207149}
 .ops-risk--ok:before{content:"✓";background:#24764b;color:#fff}
-.ops-date-list{margin:13px 0 11px;display:grid;gap:0}
+.ops-date-list{margin:12px 0 3px;display:grid;gap:0}
+.ops-dates-note{margin:12px 0 0;color:#72808b;font-size:10.5px;line-height:1.5}
+.ops-action-link.ops-report-primary{border-color:#ddc5d3;background:#fbf4f8;color:#712b50}
+.ops-workflow-details>summary{cursor:pointer;font-size:11px;font-weight:800;color:#5d6773;padding:3px 0;list-style:none}
+.ops-workflow-details>summary:after{content:'⌄';float:right;color:#7d8893}
+.ops-workflow-details[open]>summary:after{content:'⌃'}
+.ops-workflow-details>summary::-webkit-details-marker{display:none}
+.ops-workflow-details[open] .quick-operation{margin-top:8px}
 .ops-date-line{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #edf0f2;padding:7px 0;font-size:11px}
 .ops-date-line span{color:#6a7885}
 .ops-date-line strong{color:#394652;font-size:11px;white-space:nowrap}
@@ -1484,9 +1491,10 @@ body{font-size:14px;line-height:1.5;font-weight:400;letter-spacing:0}
 .ops-workflow-actions .quick-bottom .inline-link{font-size:11px}
 .ops-main>.premium-bottom{margin:1px 0 0}
 @media(max-width:1260px){.ops-grid{grid-template-columns:minmax(0,1fr) 298px;gap:12px}.ops-status-top{padding:13px}.ops-forecast-inner{padding:13px}.ops-rail-actions{padding:12px}.ops-main .premium-stages{gap:7px}}
-@media(max-width:1120px){.ops-grid{grid-template-columns:minmax(0,1fr)}.ops-rail{position:static;max-height:none;overflow:visible;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.ops-rail>.ops-card:last-child{grid-column:span 2}.ops-status-card{grid-column:1}.ops-forecast-card{grid-column:2}.ops-main{order:2}.ops-rail{order:1}.ops-main .record-fields-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:680px){.ops-view{padding:0 0 12px}.ops-design-bar{padding:10px}.ops-rail{display:flex;flex-direction:column}.ops-status-card,.ops-forecast-card,.ops-rail>.ops-card:last-child{width:100%}.ops-main .record-fields-grid{grid-template-columns:minmax(0,1fr)}.ops-main .compact-kpi-grid{grid-template-columns:minmax(0,1fr)}.ops-main .premium-stages{grid-template-columns:minmax(0,1fr)}.ops-date-line{font-size:11px}}
-@media print{.ops-rail{position:static;max-height:none;overflow:visible}.ops-design-bar{display:none}.ops-grid{display:block}}
+@media(max-width:1120px){.ops-grid{grid-template-columns:minmax(0,1fr)}.ops-rail{position:static;overflow:visible;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.ops-status-card{grid-column:1}.ops-schedule-card{grid-column:2}.ops-actions-card{grid-column:1/-1}.ops-main{order:2}.ops-rail{order:1}.ops-main .record-fields-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.ops-view{padding:0 0 12px}.ops-design-bar{padding:10px}.ops-rail{display:flex;flex-direction:column}.ops-status-card,.ops-schedule-card,.ops-actions-card{width:100%}.ops-main .record-fields-grid{grid-template-columns:minmax(0,1fr)}.ops-main .compact-kpi-grid{grid-template-columns:minmax(0,1fr)}.ops-main .premium-stages{grid-template-columns:minmax(0,1fr)}.ops-date-line{font-size:11px}}
+@media(max-height:740px) and (min-width:1121px){.ops-rail{position:static}}
+@media print{.ops-rail{position:static;overflow:visible}.ops-design-bar{display:none}.ops-grid{display:block}}
 
 /* Fit the highest-value controls into the first sticky-rail viewport. */
 .ops-action-links{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
@@ -2426,8 +2434,7 @@ if(['scrap','history','report','overview','materials'].includes(new URLSearchPar
 (function(){
   if (typeof renderers === 'undefined' || !renderers.C || !renderers.C.overview) return;
   const baseOverview=renderers.C.overview;
-  const snapshotDay='2026-10-16';  // fixed fictional scenario baseline, not a live forecast
-  const sampleRate=150; // tubes/shift: adjustable scenario assumption, NOT a measured backend metric
+  // Show recorded dates only. No inferred production rate or fabricated completion ETA.
   const normalDate=(input)=>{
     const text=String(input||'').slice(0,10);
     if(!/^\d{4}-\d{2}-\d{2}$/.test(text))return null;
@@ -2435,29 +2442,13 @@ if(['scrap','history','report','overview','materials'].includes(new URLSearchPar
     return Number.isNaN(d.getTime())?null:d;
   };
   const present=(d)=>d?new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}).format(d):'Not recorded';
-  const after=(d,days)=>new Date(d.getTime()+days*86400000);
   const n=(v)=>Number(v||0).toLocaleString('en-US');
-  const projection=(rate)=>{
-    const throughput=Math.max(25,Math.min(1000,Number(rate)||sampleRate));
-    const qty=Math.max(0,Number(j.quantity)||0);
-    const remaining=Math.max(0,qty-Number(h.stages?.[2]?.done||0));
-    const shifts=remaining/throughput;
-    const days=Math.ceil(shifts);
-    const base=normalDate(snapshotDay), projected=after(base,days), due=normalDate(j.due);
-    const difference=due?Math.round((projected.getTime()-due.getTime())/86400000):null;
-    return {rate:throughput,remaining,shifts,days,projected,difference};
-  };
   const progress=()=>{const quantity=Math.max(1,Number(j.quantity)||1),passed=Number(h.stages?.[2]?.done||0);return Math.max(0,Math.min(100,Math.round(passed/quantity*100)));};
   const statusLabel=()=> previewStatus==='shipped'?'Shipped':previewStatus==='completed'?'Completed':previewStatus==='not_started'?'Not started':'In production';
   const opsStatus=()=>`<section class="ops-card ops-status-card" aria-label="Order status"><div class="ops-status-top"><div class="ops-overline">ORDER CONTROL · #${safe(j.job)}</div><div class="ops-current-state"><strong>${safe(statusLabel())}</strong><span class="ops-status-pill">${previewStatus==='started'?'ACTIVE':'RECORD'}</span></div><p class="ops-status-caption">${safe(j.part)} · ${safe(j.customer_name)}<br/>Current recorded stage: final inspection</p></div><div class="ops-progress-block"><div class="ops-progress-heading"><span>Final inspection completion</span><strong>${progress()}%</strong></div><div class="ops-progress-track" role="progressbar" aria-label="Final inspection completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress()}"><span style="width:${progress()}%"></span></div><div class="ops-progress-note"><span>Awaiting inspection</span><b>${n(Math.max(0,Number(j.quantity)-Number(h.stages?.[2]?.done||0)))} tubes</b></div></div></section>`;
-  const opsForecast=()=>{
-    const p=projection(sampleRate);
-    const etaLabel=p.difference===null?'Due date unavailable':p.difference>0?`${p.difference} ${p.difference===1?'day':'days'} beyond due date`:p.difference===0?'Finishes on the due date':`${Math.abs(p.difference)} ${Math.abs(p.difference)===1?'day':'days'} before due date`;
-    const risk=p.difference!==null&&p.difference>0;
-    return `<section class="ops-card ops-forecast-card" aria-label="Planning scenario and estimated completion"><div class="ops-forecast-inner"><div class="ops-panel-title">Projected completion <small>Demo scenario</small></div><div class="ops-prediction-row"><div class="ops-forecast-overline">Approximate ready date</div><div class="ops-prediction-date" id="ops-predicted-date">${present(p.projected)}</div><div class="ops-prediction-detail">Based on final inspection outstanding, not a confirmed schedule</div></div><div class="ops-risk ${risk?'':'ops-risk--ok'}" id="ops-risk" role="status">${etaLabel} · scenario only</div><div class="ops-date-list"><div class="ops-date-line"><span>Order due</span><strong>${present(normalDate(j.due))}</strong></div><div class="ops-date-line"><span>Planned ship</span><strong>${present(normalDate(j.ship_date))}</strong></div><div class="ops-date-line"><span>Planning baseline</span><strong>${present(normalDate(snapshotDay))}</strong></div></div><div class="ops-rate-row"><label class="ops-rate-label" for="ops-rate">Assumed tubes / shift <input id="ops-rate" type="number" min="25" max="1000" step="25" inputmode="numeric" value="${sampleRate}" aria-describedby="ops-assumption" /></label><div class="ops-shifts" id="ops-shifts">${p.shifts.toFixed(1)} shifts remaining at assumed rate</div><details class="ops-stage-details"><summary>Show stage-by-stage estimates</summary><div class="ops-shift-table" aria-label="Estimated production shifts by stage"><div class="ops-shift-line"><span>Mill remaining</span><b id="ops-est-mill">${((Number(j.quantity)-Number(h.stages?.[0]?.done||0))/p.rate).toFixed(1)} shifts</b></div><div class="ops-shift-line"><span>Cutoff remaining</span><b id="ops-est-cutoff">${((Number(j.quantity)-Number(h.stages?.[1]?.done||0))/p.rate).toFixed(1)} shifts</b></div><div class="ops-shift-line"><span>Inspection remaining</span><b id="ops-est-insp">${p.shifts.toFixed(1)} shifts</b></div></div></details></div></div><div class="ops-data-warning" id="ops-assumption"><strong>Illustrative estimate.</strong> One shift per calendar day, same assumed rate at each stage. No verified throughput, weekends, downtime, quality rework, or live forecasting API included.</div></section>`;
-  };
-  const link=(title,dest,symbol)=>`<button type="button" class="ops-action-link" data-route="${dest}"><span><span class="ops-symbol" aria-hidden="true">${symbol}</span>${title}</span><span class="ops-arrow" aria-hidden="true">↗</span></button>`;
-  const opsActions=(existing)=>`<section class="ops-card" aria-label="Quick actions and workflow controls"><div class="ops-rail-actions"><h3 class="ops-panel-title">Quick actions <small>Job #${safe(j.job)}</small></h3><div class="ops-action-links">${link('Production','production','◉')}${link('Materials','materials','▤')}${link('Scrap','scrap','⚑')}${link('Job report','report','▣')}</div><div class="ops-workflow-actions"><h3 class="ops-panel-title">Order workflow</h3>${existing?.querySelector('.quick-operation')?.outerHTML||''}${existing?.querySelector('.quick-bottom')?.outerHTML||''}</div></div></section>`;
+  const opsSchedule=()=>`<section class="ops-card ops-schedule-card" aria-label="Recorded order dates"><div class="ops-forecast-inner"><h3 class="ops-panel-title">Order dates <small>Recorded targets</small></h3><div class="ops-date-list"><div class="ops-date-line"><span>Order due</span><strong>${present(normalDate(j.due))}</strong></div><div class="ops-date-line"><span>Planned ship</span><strong>${present(normalDate(j.ship_date))}</strong></div></div><p class="ops-dates-note">Schedule dates are recorded targets, not verified completion forecasts.</p></div></section>`;
+  const link=(title,dest,symbol,primary=false)=>`<button type="button" class="ops-action-link${primary?' ops-report-primary':''}" data-route="${dest}"><span><span class="ops-symbol" aria-hidden="true">${symbol}</span>${title}</span><span class="ops-arrow" aria-hidden="true">↗</span></button>`;
+  const opsActions=(existing)=>`<section class="ops-card ops-actions-card" aria-label="Job reports and quick actions"><div class="ops-rail-actions"><h3 class="ops-panel-title">Reports &amp; quick access <small>Job #${safe(j.job)}</small></h3><div class="ops-action-links">${link('View job report','report','▣',true)}<button class="ops-action-link ops-report-primary" type="button" data-ops-print><span><span class="ops-symbol" aria-hidden="true">⎙</span>Print job report</span><span class="ops-arrow" aria-hidden="true">↗</span></button>${link('Production records','production','◉')}${link('Scrap & quality','scrap','⚑')}${link('Materials','materials','▤')}${link('Job history','history','◷')}</div><div class="ops-workflow-actions"><details class="ops-workflow-details"><summary>Order workflow options</summary>${existing?.querySelector('.quick-operation')?.outerHTML||''}${existing?.querySelector('.quick-bottom')?.outerHTML||''}</details></div></div></section>`;
   renderers.C.overview=function(){
     const holder=document.createElement('div');holder.innerHTML=baseOverview();
     const journey=holder.querySelector('.journey-shell');
@@ -2467,17 +2458,13 @@ if(['scrap','history','report','overview','materials'].includes(new URLSearchPar
     const notes=aside?.querySelector('.compact-sidecard:not(.premium-quick)');
     const footer=holder.querySelector('.premium-bottom');
     if(!journey||!content||!aside)return baseOverview();
-    return `<div class="ops-view"><div class="ops-design-bar"><div class="ops-design-label"><strong>Overview / Variant B</strong><span>Operational rail · side-by-side comparison</span></div><a class="ops-original-link" href="./?view=overview">View original Overview ↗</a></div><div class="ops-grid"><main class="ops-main">${journey.outerHTML}${content.outerHTML}${notes?.outerHTML||''}${footer?.outerHTML||''}</main><aside class="ops-rail" aria-label="Sticky order status and quick actions">${opsStatus()}${opsForecast()}${opsActions(actions)}</aside></div></div>`;
+    return `<div class="ops-view"><div class="ops-design-bar"><div class="ops-design-label"><strong>Overview / Variant B</strong><span>Operational rail · side-by-side comparison</span></div><a class="ops-original-link" href="./?view=overview">View original Overview ↗</a></div><div class="ops-grid"><main class="ops-main">${journey.outerHTML}${content.outerHTML}${notes?.outerHTML||''}${footer?.outerHTML||''}</main><aside class="ops-rail" aria-label="Order status, job reports and recorded dates">${opsStatus()}${opsActions(actions)}${opsSchedule()}</aside></div></div>`;
   };
-  const updateForecast=(input)=>{
-    const p=projection(input.value);const id=(name)=>document.getElementById(name);
-    if(id('ops-predicted-date'))id('ops-predicted-date').textContent=present(p.projected);
-    const eta=p.difference===null?'Due date unavailable':p.difference>0?`${p.difference} ${p.difference===1?'day':'days'} beyond due date`:p.difference===0?'Finishes on the due date':`${Math.abs(p.difference)} ${Math.abs(p.difference)===1?'day':'days'} before due date`;
-    const risk=id('ops-risk');if(risk){risk.textContent=eta+' · scenario only';risk.classList.toggle('ops-risk--ok',p.difference===null||p.difference<=0)}
-    if(id('ops-shifts'))id('ops-shifts').textContent=p.shifts.toFixed(1)+' shifts remaining at assumed rate';
-    ['mill','cutoff','insp'].forEach((name,i)=>{const el=id('ops-est-'+name);if(el)el.textContent=(Math.max(0,Number(j.quantity)-Number(h.stages?.[i]?.done||0))/p.rate).toFixed(1)+' shifts'});
-  };
-  document.addEventListener('input',e=>{if(e.target.id==='ops-rate')updateForecast(e.target)});
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('[data-ops-print]'))return;
+    navigate('report');
+    window.print();
+  });
   const route=new URLSearchParams(location.search).get('view');
   if(!route||route==='overview')navigate('overview');
 })();
