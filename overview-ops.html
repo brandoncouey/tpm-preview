@@ -2584,4 +2584,138 @@ if(['scrap','history','report','overview','materials'].includes(new URLSearchPar
   const route=new URLSearchParams(location.search).get('view');
   if(!route||route==='overview')navigate('overview');
 })();
-</script></body></html>
+</script><!-- Station-filtered Production view (source rollups and individual checkpoints remain separate) -->
+<style>
+.prod-station-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.prod-station-stat{min-width:0;text-align:left;display:flex;flex-direction:column;gap:8px;border:1px solid #dce2e7;background:#fff;color:#35414b;border-radius:5px;padding:13px 14px;cursor:pointer}
+.prod-station-stat:hover{border-color:#a77b92;background:#fefbfd}
+.prod-station-stat[aria-pressed=true]{border-color:#91466e;background:#fcf7fa;box-shadow:inset 0 3px #88345f}
+.prod-station-stat-label{display:flex;justify-content:space-between;gap:7px;align-items:center;flex-wrap:wrap;font-size:12px;font-weight:800}
+.prod-station-stat-label small,.prod-station-stat-foot{font-size:10.5px;color:#7c8892;font-weight:600}
+.prod-station-stat-value{font-size:23px;font-weight:830;color:#263540;line-height:1.15;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.prod-station-stat-value small{font-size:12px;font-weight:550;color:#8a939b;letter-spacing:0}
+.prod-station-progress{height:5px;background:#ebedf0;border-radius:5px;overflow:hidden}
+.prod-station-progress span{display:block;height:100%;background:#883f64;border-radius:5px}
+.prod-station-stat:nth-child(2) .prod-station-progress span{background:#668097}
+.prod-station-stat:nth-child(3) .prod-station-progress span{background:#367c6d}
+.prod-station-stat-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.prod-station-stat-foot strong{color:#40505c}
+.prod-dept-layout{display:grid;grid-template-columns:177px minmax(0,1fr);gap:16px;min-width:0;align-items:start}
+.prod-dept-rail{position:sticky;top:16px;background:#fff;border:1px solid #dce2e7;border-radius:5px;display:flex;flex-direction:column;gap:4px;padding:10px;min-width:0}
+.prod-dept-rail h3{font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:850;color:#8f526e;padding:3px 6px 8px}
+.prod-dept-rail button{display:flex;align-items:center;justify-content:space-between;gap:6px;width:100%;text-align:left;padding:11px 8px;border:1px solid transparent;border-radius:4px;background:transparent;color:#52616e;cursor:pointer}
+.prod-dept-rail button:hover{background:#f7f2f5;color:#743554}
+.prod-dept-rail button[aria-current=true]{border-color:#ead4e0;background:#f9edf3;color:#793456}
+.prod-dept-rail button strong{font-size:12px;font-weight:770}
+.prod-dept-rail button small{font-size:10px;color:#7e8b96;font-variant-numeric:tabular-nums}
+.prod-dept-note{margin:7px 2px 0;border-top:1px solid #e8ebee;padding:11px 5px 2px;font-size:10.5px;line-height:1.5;color:#7b8590}
+.prod-dept-content{min-width:0;display:flex;flex-direction:column;gap:14px}
+.prod-dept-focus{background:linear-gradient(115deg,#fff,#f8f9fa);border:1px solid #dce3e8;border-radius:5px;padding:15px 17px}
+.prod-dept-focus-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.prod-dept-focus h3{font-size:16px;font-weight:820;color:#293640}
+.prod-dept-focus p{font-size:11px;color:#72808d;line-height:1.5;margin-top:4px}
+.prod-dept-tag{font-size:10px;font-weight:800;color:#7e4160;padding:5px 8px;background:#f8eff3;border:1px solid #e5d1dc;border-radius:3px}
+.prod-dept-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}
+.prod-dept-kpis div{border-left:1px solid #e1e5e8;padding-left:13px;min-width:0}
+.prod-dept-kpis div:first-child{border:0;padding-left:0}
+.prod-dept-kpis span{font-size:10px;color:#72818d;display:block}
+.prod-dept-kpis strong{font-size:14px;display:block;margin-top:5px;color:#30404d;line-height:1.4;overflow-wrap:anywhere}
+.prod-dept-content .prod-people{grid-template-columns:repeat(auto-fit,minmax(205px,1fr))}
+.prod-dept-guidance{font-size:11px;line-height:1.55;color:#687783;padding:10px 12px;border:1px solid #e2e6e9;border-radius:4px;background:#f9fafb}
+@media(max-width:1100px){.prod-dept-layout{grid-template-columns:148px minmax(0,1fr);gap:11px}.prod-dept-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.prod-dept-kpis div:nth-child(3){border:0;padding-left:0}}
+@media(max-width:850px){.prod-dept-layout{grid-template-columns:1fr}.prod-dept-rail{position:static;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}.prod-dept-rail h3,.prod-dept-note{grid-column:1/-1}.prod-dept-rail button{flex-direction:column;align-items:flex-start}}
+@media(max-width:650px){.prod-station-stats{grid-template-columns:1fr}.prod-dept-rail{grid-template-columns:repeat(2,minmax(0,1fr))}.prod-dept-rail button{flex-direction:row;align-items:center}}
+@media print{.prod-dept-rail{position:static}}
+</style>
+<script>
+/* Station-focused read-only extension to the TPM Production preview. */
+prodState.stationView='all';
+prodState.person='all';
+prodState.dataset='original';
+prodState.stage='all';
+prodState.stageDataset='original';
+const prodScopedPeople=()=>h.people.filter(p=>prodState.stationView==='all'||p.departments.some(d=>d.name===prodState.stationView));
+const prodChosenStage=()=>h.stages.find(x=>x.label===prodState.stationView)||null;
+prodPeopleRows=function(){
+ const rec=prodState.dataset==='original'?prodOriginal:prodDemoPeople;
+ return prodSortRows(rec.filter(r=>(prodState.stationView==='all'||r.stage===prodState.stationView)&&(prodState.person==='all'||r.person===prodState.person)&&prodQueryMatch(r,prodState.search)),prodState.sort);
+};
+prodStageRows=function(){
+ const rec=prodState.stageDataset==='original'?prodOriginalChecks:prodDemoStages;
+ return prodSortRows(rec.filter(r=>(prodState.stationView==='all'||r.stage===prodState.stationView)&&(prodState.stageCheck==='all'||(prodState.stageCheck==='recorded'?r.checked:!r.checked))&&prodQueryMatch(r,prodState.stageSearch)),prodState.stageSort);
+};
+const prodEarlierPeopleResults=prodPeopleResults;
+prodPeopleResults=function(){
+ return prodEarlierPeopleResults().replace('7 original sessions available',`${prodOriginal.filter(r=>prodState.stationView==='all'||r.stage===prodState.stationView).length} original sessions in view`);
+};
+prodCards=function(){
+ return `<div class="prod-people">${prodScopedPeople().map(p=>{
+ const dept=p.departments.find(d=>prodState.stationView==='all'||d.name===prodState.stationView)||p.departments[0];
+ const selected=prodState.person===p.person,initials=p.person.split(' ').map(n=>n[0]).join('');
+ return `<button type="button" class="prod-person ${selected?'is-selected':''}" data-prod-person="${safe(p.person)}" aria-pressed="${selected}"><div class="prod-person-top"><span class="prod-avatar">${safe(initials)}</span><span><span class="prod-person-name">${safe(p.person)}</span><br/><span class="prod-person-role">${safe(dept.name)}</span></span></div><div class="prod-person-stats"><div><strong>${num(p.tubes)}</strong><span>Fixture tube records</span></div><div><strong>${dur(dept.seconds)}</strong><span>Recorded time</span></div></div><div class="prod-person-foot"><span>${dept.sessions.length} source sessions</span><span>View activity →</span></div></button>`;
+ }).join('')}</div>`;
+};
+function prodDeptStats(){
+ return `<div class="prod-station-stats" aria-label="Station completion comparison">${h.stages.map(st=>`<button type="button" class="prod-station-stat" data-dept="${safe(st.label)}" aria-pressed="${prodState.stationView===st.label?'true':'false'}"><span class="prod-station-stat-label">${safe(st.label)} <small>${pct(st.done,j.quantity)}% complete</small></span><span class="prod-station-stat-value">${num(st.done)} <small>/ ${num(j.quantity)} tubes</small></span><span class="prod-station-progress" aria-hidden="true"><span style="width:${pct(st.done,j.quantity)}%"></span></span><span class="prod-station-stat-foot"><span><strong>${num(Math.max(0,j.quantity-st.done))}</strong> remaining</span><span>View station ↗</span></span></button>`).join('')}</div>`;
+}
+function prodDeptSidebar(){
+ const choices=[{label:'All stations',value:'all'},...h.stages.map(st=>({label:st.label,value:st.label,done:st.done}))];
+ return `<nav class="prod-dept-rail" aria-label="Production station filter"><h3>Departments</h3>${choices.map(ch=>`<button type="button" data-dept="${safe(ch.value)}" aria-current="${prodState.stationView===ch.value?'true':'false'}"><strong>${safe(ch.label)}</strong><small>${ch.value==='all'?'3':pct(ch.done,j.quantity)+'%'}</small></button>`).join('')}<p class="prod-dept-note">Station filters control both operator sessions and tube checkpoints. One page scroll.</p></nav>`;
+}
+function prodDeptFocus(){
+ const st=prodChosenStage(),people=prodScopedPeople();
+ const items=st?[
+  ['Completed',num(st.done)+' / '+num(j.quantity)],
+  ['Remaining',num(Math.max(0,j.quantity-st.done))+' tubes'],
+  ['Source operator',people.map(p=>p.person).join(', ')||'Not available'],
+  ['Last recorded',stamp(st.last_at)]
+ ]:[
+  ['Ordered quantity',num(j.quantity)+' tubes'],
+  ['Source stations',String(h.stages.length)],
+  ['Source operators',String(people.length)],
+  ['Latest inspection',stamp(h.stages[2]?.last_at)]
+ ];
+ return `<section class="prod-dept-focus" aria-label="Selected station overview"><div class="prod-dept-focus-header"><div><h3>${safe(st?st.label+' station':'All stations')}</h3><p>${st?'Showing only this station’s employee sessions and tube checks.':'Compare progress across stations, then filter down to the related processing records.'}</p></div><span class="prod-dept-tag">${st?pct(st.done,j.quantity)+'% recorded':'Job overview'}</span></div><div class="prod-dept-kpis">${items.map(([label,value])=>`<div><span>${safe(label)}</span><strong>${safe(value)}</strong></div>`).join('')}</div></section>`;
+}
+function prodDeptWorkspace(){
+ const st=prodChosenStage();
+ const people=prodScopedPeople();
+ const stats=tm.map((r,i)=>tabStat(r[0],r[1],r[2],['wine','slate','teal','amber','slate','wine'][i])).join('');
+ const selected=st?st.label+' ':'';
+ const intro=tabIntro('Production / Departments','Production by station','Filter Mill, Cutoff and Inspection activity without mixing tube checkpoints with separate department stages.','3 recorded stations · '+num(j.quantity)+' tubes');
+ return `<div class="tab-workspace prod-v2">${intro}${prodDeptStats()}<div class="prod-dept-layout">${prodDeptSidebar()}<div class="prod-dept-content">
+ ${prodDeptFocus()}
+ <div class="prod-dept-guidance">The station totals above come from the job roll-up. Tube checks and employee sessions below are a smaller source sample. Welds, excluder rings and tack welds should be documented within their applicable tube/process records; this fixture does not supply separate completions for them.</div>
+ ${tabPanel('users',st?st.label+' employees':'Operators & contributions','Select an employee to review their source sessions.',prodCards(),{right:people.length+' people in scope'})}
+ <section class="tab-panel prod-register" aria-label="Employee work sessions"><div class="tab-panel-head"><div class="tab-panel-ident"><span class="tab-panel-icon">${icon('users')}</span><div><h3>${selected}Employee work sessions</h3><p>Source sessions scoped to the selected department. Gaps over 20 minutes start new sessions.</p></div></div><span class="tab-header-side">${prodState.dataset==='original'?'Original fixture':'Scale-test data'}</span></div>
+ <div class="prod-filterbar">
+ <label class="prod-control prod-control--search">Search sessions<input type="search" data-prod-input="search" value="${safe(prodState.search)}" placeholder="Session, employee, date or tubes…" autocomplete="off" aria-label="Search employee work sessions"></label>
+ <label class="prod-control">Operator<select data-prod-select="person">${prodSelect([['all','All operators'],...people.map(p=>[p.person,p.person])],prodState.person)}</select></label>
+ <label class="prod-control">Dataset<select data-prod-select="dataset">${prodSelect([['original','Original sessions'],['demo','Fictional scale test']],prodState.dataset)}</select></label>
+ <label class="prod-control">Sort<select data-prod-select="sort">${prodSelect([['newest','Newest first'],['oldest','Oldest first'],['tubes','Most tubes']],prodState.sort)}</select></label>
+ </div><div class="prod-filter-actions"><button type="button" class="prod-row-link" data-prod-act="people-reset">Reset session filters</button></div><div id="prod-people-results">${prodPeopleResults()}</div></section>
+ <section class="tab-panel prod-register" aria-label="Tube stage check register"><div class="tab-panel-head"><div class="tab-panel-ident"><span class="tab-panel-icon">${icon('factory')}</span><div><h3>${selected}Tube checkpoints</h3><p>One tube-stage check per row, filtered by the department navigation.</p></div></div><span class="tab-header-side">5 source tubes per station</span></div>
+ <div class="prod-filterbar prod-filterbar--station">
+ <label class="prod-control prod-control--search">Search tube checks<input type="search" data-prod-input="stage-search" value="${safe(prodState.stageSearch)}" placeholder="Tube ID or check field…" autocomplete="off" aria-label="Search tube stage checks"></label>
+ <label class="prod-control">Check<select data-prod-select="stage-check">${prodSelect([['all','All checks'],['recorded','✓ Recorded'],['not_recorded','✕ Not recorded']],prodState.stageCheck)}</select></label>
+ <label class="prod-control">Dataset<select data-prod-select="stage-dataset">${prodSelect([['original','Original 5 tubes'],['demo','Fictional 32 tubes']],prodState.stageDataset)}</select></label>
+ <label class="prod-control">Sort<select data-prod-select="stage-sort">${prodSelect([['newest','Newest first'],['oldest','Oldest first'],['tube-id','Tube ID']],prodState.stageSort)}</select></label>
+ </div><div id="prod-station-results">${prodStationResults()}</div>
+ <div class="prod-origin-note">A green check means stage flag = 1. An unchecked flag does not mean a failed inspection, hold, or rejection. The five sample tubes are not the complete job. No ring/weld completion flags have been invented.</div></section>
+ ${!st?`<div class="prod-timing"><details><summary><span>Job-wide timing checkpoints <span class="prod-muted">· not station-specific</span></span><span aria-hidden="true">⌄</span></summary><div class="prod-timing-inner"><div class="tab-stat-grid three">${stats}</div><div class="tab-timing-note">Running and attended overlap; do not sum them. Gaps are inferred from timestamps.</div></div></details></div>`:''}
+ <div class="tab-footline">Original records shown by default. Fictional scale-test data is selectable for UI testing only. No backend changes.</div>
+ </div></div></div>`;
+}
+renderers.C.production=prodDeptWorkspace;
+document.addEventListener('click',function(e){
+ const btn=e.target.closest('[data-dept]');
+ if(!btn)return;
+ e.preventDefault();e.stopImmediatePropagation();
+ const stage=btn.dataset.dept;
+ if(stage!=='all'&&!h.stages.some(x=>x.label===stage))return;
+ if(prodState.stationView!==stage){prodState.stationView=stage;prodState.person='all';prodState.stage='all';prodState.page=1;prodState.stagePage=1;prodState.search='';prodState.stageSearch='';}
+ navigate('production');
+},true);
+if(new URLSearchParams(location.search).get('view')==='production')navigate('production');
+</script>
+</body></html>
