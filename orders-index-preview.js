@@ -93,7 +93,7 @@
     const attrs='id="'+id+'" name="'+key+'" data-new-order-field="'+key+'" '+(required?'required ':'')+
       (min!==''?'min="'+min+'" ':'')+(step!==''?'step="'+step+'" ':'');
     const control=choices?'<select '+attrs+'>'+newOptionList(choices,String(value),placeholder||'Select an option')+'</select>':
-      '<input '+attrs+' type="'+type+'" value="'+esc(value)+'" placeholder="'+esc(placeholder)+'" autocomplete="off">';
+      '<input '+attrs+' type="'+type+'" value="'+esc(value)+'" placeholder="'+esc(placeholder)+'" autocomplete="off" '+(key==='customer'?'list="new-order-customers"':key==='part'?'list="new-order-parts"':'')+'>';
     return '<div class="new-order-field '+(wide?'new-order-field-wide ':'')+(error?'new-order-field-error':'')+'"><label for="'+id+'">'+esc(title)+(required?' <em>*</em>':'')+'</label>'+
       control+(error?'<span class="new-order-error" role="alert">'+esc(error)+'</span>':note?'<span class="new-order-help">'+esc(note)+'</span>':'')+'</div>';
   }
@@ -148,7 +148,7 @@
   function newOrderEdit(){
     const d=newOrder.draft;
     const customerNames=[j.customer_name,...customers.filter(x=>x!==j.customer_name)];
-    return '<div class="new-order-form-grid">'+
+    return '<div class="new-order-form-grid"><datalist id="new-order-customers">'+customerNames.map(x=>'<option value="'+esc(x)+'"></option>').join('')+'</datalist><datalist id="new-order-parts">'+parts.map(x=>'<option value="'+esc(x)+'"></option>').join('')+'</datalist>'+
       newOrderSection({number:'01',title:'Customer & order details',description:'Identify the customer, purchase order, and part being manufactured.',
         content:'<div class="new-order-fields">'+
           newOrderField('customer','Customer',{required:true,placeholder:'Customer name'})+
@@ -339,7 +339,8 @@
     return '<div class="orders-index" aria-label="TPM Orders list">'
       +'<header class="orders-list-head"><div class="orders-list-identity"><button type="button" class="orders-mobile-menu" data-shell-open aria-label="Open TPM sidebar">☰</button><div class="orders-list-crumb">TPM / MANUFACTURING / ORDERS</div><h1>Orders <span class="orders-list-number">'+formatInt(sample.length)+'</span></h1><p>Manage manufacturing orders, find jobs quickly and work with multiple records in one view.</p></div>'
       +'<div class="orders-list-head-actions"><span class="orders-demo-pill">DEMO DATA · NOT CONNECTED TO TPM</span>'
-      +'<button type="button" class="orders-primary-button" data-orders-open="'+esc(j.job)+'">Open sample job <span aria-hidden="true">↗</span></button></div></header>'
+      +'<button type="button" class="orders-list-secondary" data-orders-open="'+esc(j.job)+'">Sample job ↗</button>'
+      +'<button type="button" class="orders-primary-button" data-orders-new>+ New order</button></div></header>'
       +'<section class="orders-list-metrics" aria-label="Order status summary">'+cards.map(([title,value,sub,status])=>
         '<button type="button" data-orders-status="'+status+'" class="orders-list-metric '+(ordersState.status===status?'is-active':'')+'" aria-pressed="'+String(ordersState.status===status)+'">'
         +'<span class="orders-list-metric-name">'+title+'</span><strong>'+value+'</strong><span class="orders-list-metric-foot">'+sub+'</span></button>'
@@ -361,7 +362,7 @@
       +'<th scope="col">Job #</th><th scope="col">Customer / PO</th><th scope="col">Part number</th><th scope="col" class="orders-align-right">Quantity</th><th scope="col">Status</th><th scope="col">Inspection progress</th><th scope="col">Due date</th><th scope="col">Mill</th><th scope="col" class="orders-align-right">Action</th></tr></thead><tbody>'
       +(rows.length?rows.map(order=>'<tr class="'+(ordersState.selected.has(order.id)?'orders-row-selected':'')+'">'
         +'<td class="orders-select-column"><input type="checkbox" data-orders-check="'+esc(order.id)+'" aria-label="Select job '+esc(order.id)+'" '+(ordersState.selected.has(order.id)?'checked':'')+'></td>'
-        +'<td><button type="button" data-orders-open="'+esc(order.id)+'" class="orders-job-link">#'+esc(order.id)+'</button><span class="orders-source-label">'+(order.source?'SOURCE FIXTURE':'DEMO ORDER')+'</span></td>'
+        +'<td><button type="button" data-orders-open="'+esc(order.id)+'" class="orders-job-link">#'+esc(order.id)+'</button><span class="orders-source-label">'+(order.source?'SOURCE FIXTURE':order.created?'BROWSER PREVIEW':'DEMO ORDER')+'</span></td>'
         +'<td><strong class="orders-customer">'+esc(order.customer)+'</strong><span class="orders-secondary">'+esc(order.po)+'</span></td>'
         +'<td><span class="orders-part">'+esc(order.part)+'</span>'+(ordersState.flags.has(order.id)?'<span class="orders-flag" title="Flagged for review in this preview">⚑</span>':'')+'</td>'
         +'<td class="orders-align-right orders-number">'+formatInt(order.quantity)+'</td>'
@@ -373,7 +374,7 @@
       +' · '+formatInt(totalQty)+' total sample tubes</span>'
       +'<div class="orders-pagination"><button type="button" data-orders-page="prev" '+(ordersState.page<=1?'disabled':'')+'>← Previous</button><span>Page '+ordersState.page+' of '+pages+'</span><button type="button" data-orders-page="next" '+(ordersState.page>=pages?'disabled':'')+'>Next →</button></div></div>'
       +'</section>'
-      +'<p class="orders-index-disclaimer"><strong>Preview only.</strong> Job #'+esc(j.job)+' uses the existing sample job fixture and opens the full Overview, Production, Scrap, Materials, Report and History views. Other orders are synthetic examples for styling and selection tests. Flag actions are temporary browser-only UI state. No Laravel operations, bulk mutations or permissions are simulated.</p>'
+      +'<p class="orders-index-disclaimer"><strong>Preview only.</strong> Job #'+esc(j.job)+' uses the existing sample job fixture and opens the full Overview, Production, Scrap, Materials, Report and History views. Other orders are synthetic examples for styling and selection tests. Locally created orders are saved to this browser only. Flag actions are temporary; no Laravel orders or production data are changed.</p>'
       +'</div>';
   }
   function setHeaderListMode(on){
@@ -409,7 +410,8 @@
     const source=sample.find(o=>o.id===String(id));
     if(!source)return;
     if(!source.source){
-      notify('Job #'+id+' is a fictional list-row example. Open Job #'+j.job+' for the complete source-backed details.');
+      if(source.created)inspectPreviewOrder(source);
+      else notify('Job #'+id+' is a fictional list-row example. Open Job #'+j.job+' for the complete source-backed details.');
       return;
     }
     const url=new URL(location.href);
@@ -427,6 +429,7 @@
     document.title='TPM · Orders · Design Preview';
   }
   navigate=function(route){
+    if(route==='new-order'){showNewOrder();return}
     const hasJob=new URLSearchParams(location.search).has('job');
     if(route==='overview'&&!hasJob){showIndex();return;}
     if(route!=='overview'&&!hasJob){
@@ -455,6 +458,19 @@
     }
     const back=event.target.closest('[data-orders-back]');
     if(back){event.preventDefault();event.stopImmediatePropagation();showIndex();return;}
+    const newOrderButton=event.target.closest('[data-orders-new]');
+    if(newOrderButton){event.preventDefault();event.stopImmediatePropagation();showNewOrder({fresh:true});return;}
+    const createAction=event.target.closest('[data-new-order-action]');
+    if(createAction){
+      event.preventDefault();event.stopImmediatePropagation();
+      switch(createAction.dataset.newOrderAction){
+        case 'cancel':discardNewOrder();break;
+        case 'review':reviewDraft();break;
+        case 'edit':newOrder.step='edit';renderNewOrder();break;
+        case 'create':createPreviewOrder();break;
+      }
+      return;
+    }
     const open=event.target.closest('[data-orders-open]');
     if(open){event.preventDefault();event.stopImmediatePropagation();openJob(open.dataset.ordersOpen);return;}
     if(!document.body.classList.contains('orders-list-mode'))return;
@@ -498,6 +514,21 @@
     if(priority){ordersState.onlyPriority=priority.checked;ordersState.page=1;clearSelection();refreshList({keepScroll:true})}
   },true);
   document.addEventListener('input',event=>{
+    const newField=event.target.closest('[data-new-order-field]');
+    if(newField&&document.querySelector('.new-order-page')){
+      const key=newField.dataset.newOrderField;
+      if(Object.prototype.hasOwnProperty.call(newOrder.draft,key)){
+        newOrder.draft[key]=newField.value;newOrder.dirty=true;
+        if(newOrder.errors[key]){
+          delete newOrder.errors[key];
+          newField.closest('.new-order-field')?.classList.remove('new-order-field-error');
+          newField.closest('.new-order-field')?.querySelector('.new-order-error')?.remove();
+        }
+        const summary=document.getElementById('new-order-summary');
+        if(summary)summary.innerHTML=newOrderSummary();
+      }
+      return;
+    }
     const input=event.target.closest('[data-orders-search]');
     if(!input||!document.body.classList.contains('orders-list-mode'))return;
     ordersState.search=input.value;ordersState.page=1;clearSelection();
@@ -506,7 +537,8 @@
   },true);
   window.addEventListener('popstate',()=>{const route=new URLSearchParams(location.search).get('view')||'overview';navigate(route)});
   const initialUrl=new URL(location.href);
-  if((initialUrl.searchParams.get('view')||'overview')==='overview'&&!initialUrl.searchParams.has('job'))showIndex();
+  if(window.__TPM_INITIAL_VIEW==='new-order'||initialUrl.searchParams.get('view')==='new-order')showNewOrder({fresh:true});
+  else if((initialUrl.searchParams.get('view')||'overview')==='overview'&&!initialUrl.searchParams.has('job'))showIndex();
   else{
     if((initialUrl.searchParams.get('view')||'overview')!=='overview'&&!initialUrl.searchParams.has('job')){
       initialUrl.searchParams.set('job',String(j.job));history.replaceState(null,'',initialUrl);
