@@ -73,6 +73,14 @@
           gage:String(item.gage||''),stripWidth:String(item.stripWidth||''),pattern:String(item.pattern||''),
           holeSize:String(item.holeSize||''),centers:String(item.centers||''),
           finishedLength:String(item.finishedLength||''),cutoffLength:String(item.cutoffLength||''),
+          odTolerancePlus:String(item.odTolerancePlus||''),odToleranceMinus:String(item.odToleranceMinus||''),
+          finishedTolerancePlus:String(item.finishedTolerancePlus||''),
+          finishedToleranceMinus:String(item.finishedToleranceMinus||''),
+          ringMin:String(item.ringMin||''),ringMax:String(item.ringMax||''),
+          idDrift:String(item.idDrift||''),materialAngle:String(item.materialAngle||''),
+          millAmps:String(item.millAmps||''),millVolts:String(item.millVolts||''),
+          millSpeed:String(item.millSpeed||''),repairAmps:String(item.repairAmps||''),
+          repairVolts:String(item.repairVolts||''),repairSpeed:String(item.repairSpeed||''),
           requiredBlankLF:String(item.requiredBlankLF||''),requiredPerforatedLF:String(item.requiredPerforatedLF||''),
           requiredMeshLF:String(item.requiredMeshLF||''),meshRequired:String(item.meshRequired||'no'),
           setupNotes:String(item.setupNotes||'').slice(0,4000),
@@ -92,7 +100,10 @@
     repairWelder:'',die:'',millWeldSpec:'',repairWeldSpec:'',shipMethod:'',
     containerType:'',notes:'',
     materialGrade:'',partDimension:'',gage:'',stripWidth:'',pattern:'',holeSize:'',centers:'',
-    finishedLength:'',cutoffLength:'',requiredBlankLF:'',requiredPerforatedLF:'',
+    finishedLength:'',cutoffLength:'',odTolerancePlus:'',odToleranceMinus:'',
+    finishedTolerancePlus:'',finishedToleranceMinus:'',ringMin:'',ringMax:'',idDrift:'',
+    millAmps:'',millVolts:'',millSpeed:'',repairAmps:'',repairVolts:'',repairSpeed:'',
+    materialAngle:'',requiredBlankLF:'',requiredPerforatedLF:'',
     meshRequired:'no',requiredMeshLF:'',setupNotes:''
   });
   const freshNewOrder=()=>({
@@ -209,7 +220,7 @@
       coil.every(newCompatibility);
     const meshSatisfied=!meshRequired||(requested.mesh!==null&&requested.mesh>0&&allocated.mesh>=requested.mesh&&mesh.every(newCompatibility));
     const numericSpecifications=['stripWidth','gage','finishedLength','cutoffLength'].every(k=>lfNumber(d[k])>0);
-    const specsReady=!!d.materialGrade.trim()&&numericSpecifications;
+    const specsReady=!!d.materialGrade.trim()&&!!d.partDimension.trim()&&!!d.die.trim()&&numericSpecifications;
     const coverageReady=needsSteel&&steelSatisfied&&meshSatisfied;
     const approved=specsReady&&coverageReady&&newOrder.materialsConfirmed;
     const setupReady=approved&&newOrder.setupConfirmed;
@@ -382,8 +393,23 @@
           newOrderField('die','Die number',{placeholder:'e.g. D-14'})+
           newOrderField('millWeldSpec','Mill weld specification',{placeholder:'WPS / mill weld procedure'})+
           newOrderField('repairWeldSpec','Repair weld specification',{placeholder:'Only if required'})+
-          newOrderField('setupNotes','Setup tolerances / tooling notes',{placeholder:'Ring ID/OD tolerances, offsets, fixture instructions…',wide:true})+
-        '</div><p class="new-order-section-footnote">Part measurements and setup details come from approved engineering records in real TPM. Weld, ring, and tack checks are specific to the tube/process, not automatically independent departments.</p>'})+
+          newOrderField('setupNotes','Setup / tooling notes',{placeholder:'Tooling, first article or specialty instructions…',wide:true})+
+        '</div><details class="new-order-advanced"><summary>Additional technical setup · tolerances, ring checks, welding parameters</summary><div class="new-order-fields">'+
+          newOrderField('materialAngle','Material angle',{placeholder:'e.g. 90°'})+
+          newOrderField('odTolerancePlus','OD + tolerance',{placeholder:'e.g. +0.005 in'})+
+          newOrderField('odToleranceMinus','OD − tolerance',{placeholder:'e.g. -0.005 in'})+
+          newOrderField('finishedTolerancePlus','Length + tolerance',{placeholder:'e.g. +0.0625 in'})+
+          newOrderField('finishedToleranceMinus','Length − tolerance',{placeholder:'e.g. -0.0625 in'})+
+          newOrderField('ringMin','Ring minimum OD',{placeholder:'If applicable'})+
+          newOrderField('ringMax','Ring maximum OD',{placeholder:'If applicable'})+
+          newOrderField('idDrift','ID drift check',{placeholder:'If applicable'})+
+          newOrderField('millAmps','Mill weld amps',{placeholder:'e.g. 112 A'})+
+          newOrderField('millVolts','Mill weld voltage',{placeholder:'e.g. 21.6 V'})+
+          newOrderField('millSpeed','Mill weld speed',{placeholder:'e.g. 42 ft/min'})+
+          newOrderField('repairAmps','Repair weld amps',{placeholder:'If applicable'})+
+          newOrderField('repairVolts','Repair weld voltage',{placeholder:'If applicable'})+
+          newOrderField('repairSpeed','Repair weld speed',{placeholder:'If applicable'})+
+        '</div></details><p class="new-order-section-footnote">Part measurements and setup details come from approved engineering records in real TPM. Weld, ring, and tack checks are specific to the tube/process, not automatically independent departments.</p>'})+
       newOrderSection({number:'03',title:'Material planning & allocation',description:'Record required stock footage and select available steel coils / mesh for this order.',
         content:'<div class="new-order-fields">'+
           newOrderField('requiredBlankLF','Required blank steel (LF)',{type:'number',min:'0',step:'0.01',placeholder:'0.00',note:'Enter TPM planning requirement; no auto-generated shortage.'})+
@@ -426,6 +452,12 @@
         ['Cutoff setup',d.cutoffLength?d.cutoffLength+' in':'Not entered'],
         ['Perforation',d.pattern||'—'],['Hole diameter',d.holeSize||'—'],['Centers',d.centers||'—'],
         ['Die',d.die||'Not assigned'],['Mill WPS',d.millWeldSpec||'—'],
+        ['OD tolerances',[d.odTolerancePlus,d.odToleranceMinus].filter(Boolean).join(' / ')||'—'],
+        ['Finished length tolerances',[d.finishedTolerancePlus,d.finishedToleranceMinus].filter(Boolean).join(' / ')||'—'],
+        ['Ring OD range',[d.ringMin,d.ringMax].filter(Boolean).join('–')||'—'],
+        ['ID drift',d.idDrift||'—'],
+        ['Mill welding',[d.millAmps,d.millVolts,d.millSpeed].filter(Boolean).join(' · ')||'—'],
+        ['Repair welding',[d.repairAmps,d.repairVolts,d.repairSpeed].filter(Boolean).join(' · ')||'—'],
         ['Repair WPS',d.repairWeldSpec||'—']
       ]],
       ['Material planning & allocation',[
@@ -516,6 +548,11 @@
       materialGrade:d.materialGrade,partDimension:d.partDimension,gage:d.gage,
       stripWidth:d.stripWidth,pattern:d.pattern,holeSize:d.holeSize,centers:d.centers,
       finishedLength:d.finishedLength,cutoffLength:d.cutoffLength,
+      odTolerancePlus:d.odTolerancePlus,odToleranceMinus:d.odToleranceMinus,
+      finishedTolerancePlus:d.finishedTolerancePlus,finishedToleranceMinus:d.finishedToleranceMinus,
+      ringMin:d.ringMin,ringMax:d.ringMax,idDrift:d.idDrift,materialAngle:d.materialAngle,
+      millAmps:d.millAmps,millVolts:d.millVolts,millSpeed:d.millSpeed,
+      repairAmps:d.repairAmps,repairVolts:d.repairVolts,repairSpeed:d.repairSpeed,
       requiredBlankLF:d.requiredBlankLF,requiredPerforatedLF:d.requiredPerforatedLF,
       requiredMeshLF:d.requiredMeshLF,meshRequired:d.meshRequired,setupNotes:d.setupNotes,
       allocatedCoils:[...newOrder.allocatedCoils],allocatedMesh:[...newOrder.allocatedMesh],
