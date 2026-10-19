@@ -717,6 +717,21 @@
     }
     const back=event.target.closest('[data-orders-back]');
     if(back){event.preventDefault();event.stopImmediatePropagation();showIndex();return;}
+
+    const kind=event.target.closest('[data-new-material-kind]');
+    if(kind&&document.querySelector('.new-order-page')){
+      event.preventDefault();event.stopImmediatePropagation();
+      newOrder.materialKind=kind.dataset.newMaterialKind;
+      newOrder.materialPage=1;newOrder.materialSearch='';
+      refreshMaterialOnly({keepScroll:true});return;
+    }
+    const matPage=event.target.closest('[data-new-material-page]');
+    if(matPage&&document.querySelector('.new-order-page')){
+      event.preventDefault();event.stopImmediatePropagation();
+      const length=newMaterialRows().length,totalPages=Math.max(1,Math.ceil(length/newOrder.materialPageSize));
+      newOrder.materialPage=Math.min(totalPages,Math.max(1,newOrder.materialPage+(matPage.dataset.newMaterialPage==='next'?1:-1)));
+      refreshMaterialOnly({keepScroll:true});return;
+    }
     const newOrderButton=event.target.closest('[data-orders-new]');
     if(newOrderButton){event.preventDefault();event.stopImmediatePropagation();showNewOrder({fresh:true});return;}
     const createAction=event.target.closest('[data-new-order-action]');
@@ -758,6 +773,52 @@
     refreshList({keepScroll:true});
   },true);
   document.addEventListener('change',event=>{
+
+    const matRow=event.target.closest('[data-new-material-check]');
+    if(matRow&&document.querySelector('.new-order-page')){
+      const kind=newOrder.materialKind,rows=newMaterialCatalog(kind),row=rows.find(x=>x.id===matRow.dataset.newMaterialCheck);
+      if(!row)return;
+      const selected=kind==='coil'?newOrder.allocatedCoils:newOrder.allocatedMesh;
+      if(matRow.checked){
+        if(!newCompatibility(row)){notify('Check the part strip width and gage before selecting this material.');refreshMaterialOnly({keepScroll:true});return}
+        selected.add(row.id);
+      }else selected.delete(row.id);
+      newOrder.dirty=true;invalidateNewSetup(true);
+      refreshMaterialOnly({keepScroll:true});return;
+    }
+    const matAll=event.target.closest('[data-new-material-select-page]');
+    if(matAll&&document.querySelector('.new-order-page')){
+      const sel=newOrder.materialKind==='coil'?newOrder.allocatedCoils:newOrder.allocatedMesh;
+      const rows=newMaterialRows().slice((newOrder.materialPage-1)*newOrder.materialPageSize,newOrder.materialPage*newOrder.materialPageSize);
+      rows.filter(newCompatibility).forEach(r=>matAll.checked?sel.add(r.id):sel.delete(r.id));
+      newOrder.dirty=true;invalidateNewSetup(true);
+      refreshMaterialOnly({keepScroll:true});return;
+    }
+    const matSelect=event.target.closest('[data-new-material-filter]');
+    if(matSelect&&document.querySelector('.new-order-page')){
+      const key=matSelect.dataset.newMaterialFilter;
+      if(key==='materialType'||key==='materialRole'){newOrder[key]=matSelect.value;newOrder.materialPage=1;refreshMaterialOnly({keepScroll:true})}
+      return;
+    }
+    const compatible=event.target.closest('[data-new-material-compatible]');
+    if(compatible&&document.querySelector('.new-order-page')){
+      newOrder.materialCompatible=compatible.checked;newOrder.materialPage=1;refreshMaterialOnly({keepScroll:true});return;
+    }
+    const materialApproval=event.target.closest('[data-new-material-confirm]');
+    if(materialApproval&&document.querySelector('.new-order-page')){
+      const readiness=newRequirements();
+      newOrder.materialsConfirmed=materialApproval.checked&&readiness.specsReady&&readiness.coverageReady;
+      newOrder.dirty=true;invalidateNewSetup(false);
+      refreshMaterialOnly({keepScroll:true});return;
+    }
+    const setupApproval=event.target.closest('[data-new-setup-confirm]');
+    if(setupApproval&&document.querySelector('.new-order-page')){
+      const readiness=newRequirements();
+      newOrder.setupConfirmed=setupApproval.checked&&readiness.approved;
+      newOrder.dirty=true;
+      if(!newOrder.setupConfirmed)newOrder.draft.mill='';
+      refreshMaterialOnly({keepScroll:true});return;
+    }
     if(!document.body.classList.contains('orders-list-mode'))return;
     const check=event.target.closest('[data-orders-check]');
     if(check){if(check.checked)ordersState.selected.add(check.dataset.ordersCheck);else ordersState.selected.delete(check.dataset.ordersCheck);refreshList({keepScroll:true});return}
@@ -773,6 +834,14 @@
     if(priority){ordersState.onlyPriority=priority.checked;ordersState.page=1;clearSelection();refreshList({keepScroll:true})}
   },true);
   document.addEventListener('input',event=>{
+    const matSearch=event.target.closest('[data-new-material-search]');
+    if(matSearch&&document.querySelector('.new-order-page')){
+      newOrder.materialSearch=matSearch.value;
+      newOrder.materialPage=1;
+      clearTimeout(searchTimer);
+      searchTimer=setTimeout(()=>refreshMaterialOnly({keepScroll:true}),110);
+      return;
+    }
     const newField=event.target.closest('[data-new-order-field]');
     if(newField&&document.querySelector('.new-order-page')){
       const key=newField.dataset.newOrderField;
@@ -783,8 +852,15 @@
           newField.closest('.new-order-field')?.classList.remove('new-order-field-error');
           newField.closest('.new-order-field')?.querySelector('.new-order-error')?.remove();
         }
-        const summary=document.getElementById('new-order-summary');
-        if(summary)summary.innerHTML=newOrderSummary();
+        const critical=['materialGrade','stripWidth','gage','finishedLength','cutoffLength',
+          'requiredBlankLF','requiredPerforatedLF','meshRequired','requiredMeshLF'];
+        if(critical.includes(key)){
+          invalidateNewSetup(true);
+          refreshMaterialOnly({keepScroll:true});
+        }else{
+          const summary=document.getElementById('new-order-summary');
+          if(summary)summary.innerHTML=newOrderSummary();
+        }
       }
       return;
     }
