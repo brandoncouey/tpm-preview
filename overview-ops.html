@@ -1752,6 +1752,7 @@ function reportB(){return `${header('Job report','Consolidated one-job record fo
 function reportC(){
  const stats=[['Ordered quantity',num(j.quantity),'Tubes on this job','wine'],['Inspected',num(h.stages[2].done),'Recorded inspection completions','teal'],['Order value',money(j.revenue_total),'Quantity × unit price','slate'],['Scrap steel',Number(s.totals.feet).toFixed(1)+' LF','Recorded loss','amber']];
  return `<div class="tab-workspace">${tabIntro('Reports / Job-specific','Production job report','A complete, printable record for this manufacturing order. Company-wide analytics remain in Reports.','')}
+ <div class="tab-stat-grid unified-kpis" aria-label="Job report key figures">${stats.map(x=>tabStat(...x)).join('')}</div>
  <div class="tab-report-intro"><div><strong>Printable job dossier</strong><p>One field-level record for review and printing.</p></div><div class="tab-report-controls"><button class="btn" type="button" data-print>${icon('print')} Print report</button></div></div>
  ${tabPanel('factory','Manufacturing stage summary','Completion across mill, cutoff and inspection',`<div class="tab-stage-grid">${h.stages.map(tabStage).join('')}</div>`)}
  <div class="tab-grid">${tabPanel('check','Order information','All commercial and order fields',tabFields(jobGroups.order),{right:`${jobGroups.order.length} fields`})}${tabPanel('factory','Equipment & assignments','Mill, station operators and inspection assignments',tabFields(jobGroups.assignments),{right:`${jobGroups.assignments.length} fields`})}</div>
@@ -2124,6 +2125,7 @@ function matPage(){
  ['Raw stock LF consumed','Not recorded',`Used-coil records lack consumed LF · ${Number(s.totals.feet).toFixed(1)} LF separately recorded as scrap`,'amber']
  ];
  return `<div class="mat-workspace"><header class="mat-hero"><div><span class="mat-eyebrow">MATERIALS / JOB #${safe(j.job)}</span><h2>Material planning & usage</h2><p>Allocate coils and mesh in bulk, understand linear footage, and trace what production actually used.</p></div></header>
+ <div class="mat-stats unified-kpis" aria-label="Material planning key figures">${baseStats.map(([label,value,help,tone])=>`<div class="mat-stat mat-stat--${safe(tone)}"><span class="mat-softlabel">${safe(label)}</span><strong class="mat-stat-num">${safe(value)}</strong><small>${safe(help)}</small></div>`).join('')}</div>
  <div class="mat-context-strip"><span><strong>${matFmtLF(j.total_tube)}</strong> produced tube footage</span><span><strong>Raw steel LF used:</strong> Not recorded</span><small>Source totals and shortage calculations are in the allocation sidebar; finished-tube LF is not raw material consumption.</small></div>
  <div class="mat-context"><span style="font-size:16px;color:#8f416a">ⓘ</span><div><strong>These LF values mean different things.</strong> Order LF is a planning reference; allocated LF depends on recorded coil dimensions and weight; Finished tube footage is not the same as raw-coil withdrawal. Raw LF consumed is unknown, so it must not be estimated from completed tubes. Recorded scrap is tracked independently on the Scrap tab.</div></div>
  ${matManagement()}
@@ -2501,7 +2503,7 @@ const hvFormats={
   original:hvMeshSource,demo:hvMeshMock,rows:x=>[x.mesh_no,x.heat,x.mesh,x.type,hvTime(x.date_used),x.length==null?'Not recorded':`${x.length} LF`],date:x=>x.date_used}
 };
 const hvRegistry={};
-function hvInstance(instance,kind,options={}){if(!hvRegistry[instance])hvRegistry[instance]={kind,dataset:options.dataset||'demo',query:'',station:'all',order:'newest',page:1,size:25};return hvRegistry[instance]}
+function hvInstance(instance,kind,options={}){if(!hvRegistry[instance])hvRegistry[instance]={kind,dataset:options.dataset||'original',query:'',station:'all',order:'newest',page:1,size:25};return hvRegistry[instance]}
 function hvAllRows(instance){const v=hvRegistry[instance],def=hvFormats[v.kind],a=[...def[v.dataset]];let rows=a;
  const words=v.query.toLowerCase().trim().replace(/[-_]/g,' ').split(/\s+/).filter(Boolean);
  if(words.length)rows=rows.filter(x=>{const fields=def.rows(x).map(v=>String(v).replace(/<[^>]*>/g,' ')).join(' ')+' '+JSON.stringify(x);const text=fields.toLowerCase().replace(/[-_]/g,' ');return words.every(w=>text.includes(w))});
@@ -2526,13 +2528,24 @@ const hvOldOverview=renderers.C.overview;
 renderers.C.overview=hvOldOverview;
 renderers.C.scrap=()=>{
  const stats=sc.map((r,i)=>tabStat(r[0],r[1],r[2],['wine','slate','amber','teal'][i])).join('');
- return `<div class="tab-workspace hv-workspace">${tabIntro('Quality / Exceptions','Scrap & quality events','Recorded totals above; searchable mock-volume cases below use TPM’s actual scrap-reason fields.','')}<div class="tab-stat-grid">${stats}</div>
+ return `<div class="tab-workspace hv-workspace">${tabIntro('Quality / Exceptions','Scrap & quality events','Recorded loss totals and searchable exception records; optional mock-volume entries remain separate.','')}<div class="tab-stat-grid">${stats}</div>
  ${hvPanel('scrap-primary','scrap')}
   <div class="tab-footline">The original scrap total counts are not summed from the example rows. Reasons and stage labels are based on existing TPM fields.</div></div>`;
 };
 renderers.C.history=()=>{
+ const historyDone=ke.journey.filter(x=>x.state==='done').length;
+ const historyWaiting=ke.journey.length-historyDone;
+ const historyScrapGroups=ke.groups.filter(x=>x.type==='scrap').length;
+ const historyDates=ke.groups.map(x=>x.last_at).filter(Boolean).sort((a,b)=>new Date(b)-new Date(a));
+ const historyStats=[
+  ['Recorded milestones',num(historyDone),num(historyWaiting)+' pending milestones','wine'],
+  ['Activity groups',num(ke.groups.length),'Grouped production and exceptions','slate'],
+  ['Scrap groups',num(historyScrapGroups),'Exception groups, not individual tube scraps','amber'],
+  ['Latest activity',historyDates.length?stamp(historyDates[0]):'Not recorded','Most recent group timestamp','teal']
+ ];
  const milestones=ke.journey.map((e,i)=>tabEvent(e.label,e.detail||'Awaiting job milestone',stamp(e.at),i+1,e.state==='pending'?'slate':i%3===1?'teal':'wine')).join('');
- return `<div class="tab-workspace hv-workspace">${tabIntro('History / Manufacturing journey','Job history & milestones','Production batches and notable exceptions are browsable independently from fixed job milestones.','')}
+ return `<div class="tab-workspace hv-workspace">${tabIntro('History / Manufacturing journey','Job history & milestones','Review lifecycle milestones, grouped production batches and notable exceptions together.','')}
+ <div class="tab-stat-grid unified-kpis" aria-label="History key figures">${historyStats.map(x=>tabStat(...x)).join('')}</div>
  ${tabPanel('check','Manufacturing milestones','Original lifecycle record; pending milestones are not invented',`<div class="tab-event-list">${milestones}</div>`,{flush:true,right:`${ke.journey.length} source milestones`})}
  ${hvPanel('history-primary','history')}
   <div class="tab-footline">Routine tube checks belong in Production. History groups recorded work for readability; mock rows are solely for large-volume interaction testing.</div></div>`;
@@ -2718,4 +2731,59 @@ document.addEventListener('click',function(e){
 },true);
 if(new URLSearchParams(location.search).get('view')==='production')navigate('production');
 </script>
-</body></html>
+<style id="tpm-tab-design-parity">
+/* Unified operational card treatments for non-Overview tabs. */
+#view>.tab-workspace,#view>.mat-workspace{--tp-line:#dfe4e8;--tp-ink:#2c3741;--tp-muted:#74818b;gap:15px}
+#view>.tab-workspace .tab-intro,#view>.mat-workspace .mat-hero{
+ min-height:0;padding:16px 18px;background:linear-gradient(110deg,#fff,#fafbfc);
+ border:1px solid var(--tp-line);border-radius:4px;align-items:center}
+#view>.tab-workspace .tab-intro .tab-eyebrow,#view>.mat-workspace .mat-eyebrow{color:#805169;font-size:10px;font-weight:810;letter-spacing:.09em}
+#view>.tab-workspace .tab-intro h2,#view>.mat-workspace .mat-hero h2{color:var(--tp-ink);font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1.25}
+#view>.tab-workspace .tab-intro p,#view>.mat-workspace .mat-hero p{color:var(--tp-muted);font-size:11.5px;line-height:1.55}
+#view>.tab-workspace .tab-stat-grid,#view>.mat-workspace .mat-stats{gap:10px}
+#view>.tab-workspace .tab-stat,#view>.mat-workspace .mat-stat{
+ min-width:0;padding:14px 15px;background:#fff;border:1px solid var(--tp-line);
+ border-radius:4px;box-shadow:0 2px 8px rgba(31,40,52,.025)}
+#view>.tab-workspace .tab-stat::before,#view>.mat-workspace .mat-stat::before{width:3px}
+#view>.tab-workspace .tab-stat-label,#view>.mat-workspace .mat-softlabel{
+ color:#74818b;font-size:10.5px;font-weight:730;letter-spacing:0;text-transform:none;line-height:1.4}
+#view>.tab-workspace .tab-stat-value,#view>.mat-workspace .mat-stat .mat-stat-num{
+ color:#283640;font-size:23px;line-height:1.2;font-weight:830;letter-spacing:-.04em;
+ display:block;font-variant-numeric:tabular-nums;margin:8px 0 5px;overflow-wrap:anywhere}
+#view>.tab-workspace .tab-stat-helper,#view>.mat-workspace .mat-stat small{color:#788691;font-size:10.5px;line-height:1.5}
+#view>.prod-v2 .prod-station-stat{background:#fff;border-color:var(--tp-line);border-radius:4px;box-shadow:0 2px 8px rgba(31,40,52,.025)}
+#view>.prod-v2 .prod-dept-focus{background:#fff;border-color:var(--tp-line);border-radius:4px}
+#view>.prod-v2 .prod-dept-rail{border-color:var(--tp-line);border-radius:4px}
+#view>.tab-workspace .tab-panel,#view>.tab-workspace .hv-panel,
+#view>.mat-workspace .mat-panel,#view>.mat-workspace .hv-panel,
+#view>.mat-workspace .mat-additional-weights,#view>.mat-workspace .mat-source-linkage{
+ background:#fff;border:1px solid var(--tp-line);border-radius:4px;
+ box-shadow:0 2px 8px rgba(31,40,52,.025);overflow:hidden}
+#view>.tab-workspace .tab-panel-head,#view>.tab-workspace .hv-head,
+#view>.mat-workspace .mat-panel-head,#view>.mat-workspace .hv-head{
+ background:#f4f5f6;border-bottom:1px solid #e1e5e9;
+ min-height:58px;padding:13px 16px}
+#view>.tab-workspace .tab-panel-head::before{background:#82727b;width:3px}
+#view>.tab-workspace .tab-panel-head h3,#view>.tab-workspace .hv-head h3,
+#view>.mat-workspace .mat-panel-head h3,#view>.mat-workspace .hv-head h3{
+ color:#2f3b46;font-size:13.5px;font-weight:800;letter-spacing:-.015em}
+#view>.tab-workspace .tab-panel-head p,#view>.tab-workspace .hv-head p,
+#view>.mat-workspace .mat-panel-head p,#view>.mat-workspace .hv-head p{font-size:11px;color:#75808c;line-height:1.5}
+#view>.tab-workspace .tab-header-side,#view>.tab-workspace .hv-identity,
+#view>.mat-workspace .hv-identity{background:#fff;border:1px solid #dfe5e9;border-radius:3px;color:#697784;font-weight:740;font-size:10px;padding:5px 8px}
+#view>.tab-workspace .hv-toolbar,#view>.mat-workspace .hv-toolbar,
+#view>.mat-workspace .mat-toolbar{background:#f8f9fa;border-color:#e3e8ec}
+#view>.tab-workspace .hv-table th,#view>.mat-workspace .hv-table th,
+#view>.tab-workspace .tab-table th{background:#f1f3f5;font-size:10.5px;font-weight:780;color:#5b6a76}
+#view>.tab-workspace .tab-event{padding:14px 16px}
+#view>.tab-workspace .tab-event h4{font-weight:790;color:#2f3b46}
+#view>.tab-workspace .tab-report-intro{border-color:var(--tp-line);background:#f8f9fa}
+#view>.mat-workspace .mat-context,#view>.mat-workspace .mat-context-strip{background:#f8f9fa;border-color:#e2e8eb}
+@media(max-width:1180px){#view>.tab-workspace .unified-kpis,#view>.mat-workspace .unified-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){#view>.tab-workspace .tab-intro,#view>.mat-workspace .mat-hero{padding:13px 14px}
+#view>.tab-workspace .tab-intro h2,#view>.mat-workspace .mat-hero h2{font-size:19px}
+#view>.tab-workspace .tab-stat,#view>.mat-workspace .mat-stat{padding:12px 13px}
+#view>.tab-workspace .tab-stat-value,#view>.mat-workspace .mat-stat .mat-stat-num{font-size:21px}}
+@media(max-width:410px){#view>.tab-workspace .unified-kpis,#view>.mat-workspace .unified-kpis{grid-template-columns:1fr}}
+@media print{#view>.tab-workspace .tab-stat,#view>.mat-workspace .mat-stat{break-inside:avoid}}
+</style></body></html>
