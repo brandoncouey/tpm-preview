@@ -188,6 +188,11 @@
   navigate=function(route){
     const hasJob=new URLSearchParams(location.search).has('job');
     if(route==='overview'&&!hasJob){showIndex();return;}
+    if(route!=='overview'&&!hasJob){
+      const url=new URL(location.href);
+      url.searchParams.set('job',String(j.job));
+      history.replaceState(null,'',url);
+    }
     setHeaderListMode(false);
     originalNavigate(route);
     document.title='TPM · Job #'+j.job+' · Design Preview';
@@ -261,5 +266,10 @@
   window.addEventListener('popstate',()=>{const route=new URLSearchParams(location.search).get('view')||'overview';navigate(route)});
   const initialUrl=new URL(location.href);
   if((initialUrl.searchParams.get('view')||'overview')==='overview'&&!initialUrl.searchParams.has('job'))showIndex();
-  else setHeaderListMode(false);
+  else{
+    if((initialUrl.searchParams.get('view')||'overview')!=='overview'&&!initialUrl.searchParams.has('job')){
+      initialUrl.searchParams.set('job',String(j.job));history.replaceState(null,'',initialUrl);
+    }
+    setHeaderListMode(false);
+  }
 })();
