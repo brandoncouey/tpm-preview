@@ -342,7 +342,7 @@
     const d=newOrder.draft;
     const customerNames=[j.customer_name,...customers.filter(x=>x!==j.customer_name)];
     return '<div class="new-order-form-grid"><datalist id="new-order-customers">'+customerNames.map(x=>'<option value="'+esc(x)+'"></option>').join('')+'</datalist><datalist id="new-order-parts">'+parts.map(x=>'<option value="'+esc(x)+'"></option>').join('')+'</datalist>'+
-      newOrderSection({number:'01',title:'Customer & order details',description:'Identify the customer, purchase order, and part being manufactured.',
+      newOrderSection({number:'01',title:'Customer & order details',description:'Identify the customer, purchase order, part, quantity, and commercial terms.',
         content:'<div class="new-order-fields">'+
           newOrderField('customer','Customer',{required:true,placeholder:'Customer name'})+
           newOrderField('po','Customer PO / reference',{required:true,placeholder:'e.g. PO-44850'})+
@@ -350,27 +350,46 @@
           newOrderField('description','Part description',{required:true,placeholder:'What is being manufactured?',wide:true})+
           newOrderField('quantity','Ordered quantity',{type:'number',required:true,min:'1',step:'1',placeholder:'Tubes'})+
           newOrderField('unitPrice','Sales price per unit',{type:'number',required:true,min:'0',step:'0.01',placeholder:'0.00',note:'Preview total = quantity × unit price.'})+
-        '</div><p class="new-order-section-footnote">The preview accepts customer and part text. The live TPM application should use its actual searchable customer and part records.</p>'})+
-      newOrderSection({number:'02',title:'Production setup & assignments',description:'Optional initial station and employee assignments. No production work is recorded at creation.',
+        '</div><p class="new-order-section-footnote">In Laravel, customer and part should resolve to real records. This demo allows text entry only.</p>'})+
+      newOrderSection({number:'02',title:'Part specifications & setup',description:'Enter the manufactured tube specification before checking material compatibility.',
         content:'<div class="new-order-fields">'+
-          newOrderField('mill','Assigned mill',{choices:mills,placeholder:'Assign later'})+
-          newOrderField('die','Die number',{placeholder:'Optional die reference'})+
-          newOrderField('millOp','Mill operator',{placeholder:'Assign later'})+
+          newOrderField('materialGrade','Material grade',{choices:['304 stainless','316 stainless','316L stainless','Other / see notes'],placeholder:'Select material grade',note:'Required before mill assignment.'})+
+          newOrderField('partDimension','Nominal tube diameter / OD',{placeholder:'e.g. 1.250 in',note:'Match the approved part drawing.'})+
+          newOrderField('gage','Gage / wall thickness',{type:'number',min:'0.001',step:'0.001',placeholder:'e.g. 0.083',note:'Inches · used for catalog screening.'})+
+          newOrderField('stripWidth','Strip width',{type:'number',min:'0.001',step:'0.001',placeholder:'e.g. 4.625',note:'Inches · required for assignment screening.'})+
+          newOrderField('finishedLength','Finished tube length',{type:'number',min:'0.001',step:'0.01',placeholder:'e.g. 96.00',note:'Inches · finished part target.'})+
+          newOrderField('cutoffLength','Cutoff setup length',{type:'number',min:'0.001',step:'0.01',placeholder:'e.g. 96.00',note:'Inches · machine setup reference.'})+
+          newOrderField('pattern','Perforation pattern',{placeholder:'e.g. 60° staggered / Blank'})+
+          newOrderField('holeSize','Hole diameter',{placeholder:'e.g. 0.125 in'})+
+          newOrderField('centers','Hole center spacing',{placeholder:'e.g. 0.1875 in'})+
+          newOrderField('die','Die number',{placeholder:'e.g. D-14'})+
+          newOrderField('millWeldSpec','Mill weld specification',{placeholder:'WPS / mill weld procedure'})+
+          newOrderField('repairWeldSpec','Repair weld specification',{placeholder:'Only if required'})+
+          newOrderField('setupNotes','Setup tolerances / tooling notes',{placeholder:'Ring ID/OD tolerances, offsets, fixture instructions…',wide:true})+
+        '</div><p class="new-order-section-footnote">Part measurements and setup details come from approved engineering records in real TPM. Weld, ring, and tack checks are specific to the tube/process, not automatically independent departments.</p>'})+
+      newOrderSection({number:'03',title:'Material planning & allocation',description:'Record required stock footage and select available steel coils / mesh for this order.',
+        content:'<div class="new-order-fields">'+
+          newOrderField('requiredBlankLF','Required blank steel (LF)',{type:'number',min:'0',step:'0.01',placeholder:'0.00',note:'Enter TPM planning requirement; no auto-generated shortage.'})+
+          newOrderField('requiredPerforatedLF','Required perforated steel (LF)',{type:'number',min:'0',step:'0.01',placeholder:'0.00',note:'Enter separately from blank footage.'})+
+          newOrderField('meshRequired','Mesh needed for this job?',{choices:['no','yes'],placeholder:'Select mesh requirement',note:'When yes, required mesh LF must be entered and covered.'})+
+          newOrderField('requiredMeshLF','Required mesh length (LF)',{type:'number',min:'0',step:'0.01',placeholder:'0.00',note:'Only applies if mesh is required.'})+
+        '</div><div id="new-order-material-workspace">'+newMaterialsWorkspace()+'</div>'+
+        '<p class="new-order-section-footnote">Steel requirements, blank/perforated shortage, and mesh length are normally computed by TPM (e.g., weight and mesh total endpoints). This browser demo uses manually entered requirements and mock catalog quantities. No stock is reserved.</p>'})+
+      newOrderSection({number:'04',title:'Production setup & mill assignment',description:'Complete the setup checklist, then choose the mill and team after material coverage is verified.',
+        content:'<div class="new-order-fields">'+
           newOrderField('cutoffOp','Cutoff operator',{placeholder:'Assign later'})+
           newOrderField('inspector','Inspector',{placeholder:'Assign later'})+
           newOrderField('repairWelder','Repair welder',{placeholder:'Only if applicable'})+
-          newOrderField('millWeldSpec','Mill weld specification',{placeholder:'WPS / specification'})+
-          newOrderField('repairWeldSpec','Repair weld specification',{placeholder:'If required'})+
-        '</div><p class="new-order-section-footnote">Ring welding and tack-weld checks belong to applicable tube processes. This form does not assume every job requires them.</p>'})+
-      newOrderSection({number:'03',title:'Schedule & shipping',description:'Record target dates and shipment preferences before production begins.',
+        '</div><div id="new-order-setup-workspace">'+newSetupWorkspace()+'</div>'})+
+      newOrderSection({number:'05',title:'Schedule & shipping',description:'Capture critical dates and shipping instructions before production begins.',
         content:'<div class="new-order-fields">'+
           newOrderField('ordered','Date ordered',{type:'date',required:true})+
           newOrderField('due','Order due date',{type:'date',required:true})+
-          newOrderField('shipDate','Planned ship date',{type:'date',note:'Optional. Must not exceed the order due date.'})+
+          newOrderField('shipDate','Planned ship date',{type:'date',note:'Optional. Must not exceed the due date.'})+
           newOrderField('shipMethod','Shipping method',{choices:['Customer pickup','Freight','Local delivery','Parcel','Other'],placeholder:'Choose later'})+
           newOrderField('containerType','Container type',{choices:['Crate','Box','Bundle','Pallet','Other'],placeholder:'Choose later'})+
         '</div>'})+
-      newOrderSection({number:'04',title:'Instructions & requirements',description:'Keep manufacturing notes with the order.',
+      newOrderSection({number:'06',title:'Instructions & requirements',description:'Record additional manufacturing and customer notes.',
         content:'<div class="new-order-fields">'+newOrderNotes()+'</div>'})+
       '</div>';
   }
