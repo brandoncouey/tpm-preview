@@ -575,12 +575,23 @@
       ['Customer',order.customer],['PO',order.po],['Part',order.part],['Description',order.description],
       ['Quantity',formatInt(order.quantity)+' tubes'],['Price per unit',money(order.unitPrice)],
       ['Estimated total',money(order.quantity*order.unitPrice)],['Due date',localDate(order.due)],
+      ['Material grade',order.materialGrade||'Not entered'],['Strip width',order.stripWidth?order.stripWidth+' in':'Not entered'],
+      ['Gage',order.gage||'Not entered'],['Finished length',order.finishedLength||'Not entered'],
+      ['Cutoff setup',order.cutoffLength||'Not entered'],['Die',order.die||'Not entered'],
+      ['Blank requirement',order.requiredBlankLF?order.requiredBlankLF+' LF':'Not entered'],
+      ['Perforated requirement',order.requiredPerforatedLF?order.requiredPerforatedLF+' LF':'Not entered'],
+      ['Mesh required',order.meshRequired==='yes'?'Yes':'No'],
+      ['Mesh requirement',order.meshRequired==='yes'?(order.requiredMeshLF?order.requiredMeshLF+' LF':'Not entered'):'Not required'],
+      ['Allocated steel coils',(order.allocatedCoils||[]).join(', ')||'None'],
+      ['Allocated mesh rolls',(order.allocatedMesh||[]).join(', ')||'None'],
+      ['Material verification',order.materialsConfirmed?'Acknowledged in preview':'Pending'],
+      ['Setup verification',order.setupConfirmed?'Acknowledged in preview':'Pending'],
       ['Mill',order.mill],['Status','Not started']
     ];
-    modal('Preview order #'+order.id,'Created locally · Not saved to TPM',
+    modal('Preview order #'+order.id,'Browser-only order · Not saved to TPM',
       '<dl class="prod-detail-fields">'+fields.map(([key,value])=>
         '<div><dt>'+esc(key)+'</dt><dd>'+esc(value||'—')+'</dd></div>').join('')+'</dl>'+
-        '<p class="new-order-dialog-note">Only Job #'+esc(j.job)+' has full sample Production, Scrap, Materials, Report and History records in this preview.</p>',
+        '<p class="new-order-dialog-note">This order, its selected inventory and mill assignment are browser-only. No production or allocation records exist in TPM. Only Job #'+esc(j.job)+' has detailed source fixtures.</p>',
       '<button type="button" class="btn" data-op="close-dialog">Close</button>');
   }
 
