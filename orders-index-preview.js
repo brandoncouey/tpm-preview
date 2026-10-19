@@ -216,8 +216,9 @@
     const meshRequired=d.meshRequired==='yes';
     const needsSteel=!!((requested.blank||0)+(requested.perforated||0));
     const steelSatisfied=needsSteel &&
-      (requested.blank===null||allocated.blank>=requested.blank)&&
-      (requested.perforated===null||allocated.perforated>=requested.perforated)&&
+      requested.blank!==null&&requested.perforated!==null&&
+      allocated.blank>=requested.blank&&
+      allocated.perforated>=requested.perforated&&
       coil.every(newCompatibility);
     const meshSatisfied=!meshRequired||(requested.mesh!==null&&requested.mesh>0&&allocated.mesh>=requested.mesh&&mesh.every(newCompatibility));
     const numericSpecifications=['stripWidth','gage','finishedLength','cutoffLength'].every(k=>lfNumber(d[k])>0);
