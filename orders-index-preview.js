@@ -165,6 +165,179 @@
       '<header class="new-order-section-head"><span class="new-order-section-number">'+number+'</span><div><h2>'+title+'</h2><p>'+description+'</p></div></header>'+
       '<div class="new-order-section-body">'+content+'</div></section>';
   }
+
+  // Reuse the exact *fictional* inventory pool already displayed in this preview's Materials tab.
+  // Never borrow the allocation assignments belonging to sample Job #990100.
+  const newMaterialCatalog=kind=>{
+    try{
+      const rows=kind==='coil'?matCoilPool:matMeshPool;
+      return Array.isArray(rows)?rows:[];
+    }catch(e){return []}
+  };
+  const lfNumber=v=>{const n=Number(v);return v!==''&&v!==null&&v!==undefined&&Number.isFinite(n)&&n>=0?n:null};
+  const fmtLF=v=>Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' LF';
+  const newAllocRows=kind=>{
+    const ids=kind==='coil'?newOrder.allocatedCoils:newOrder.allocatedMesh;
+    return newMaterialCatalog(kind).filter(row=>ids.has(row.id));
+  };
+  const newAllocSum=(rows,key)=>rows.reduce((sum,r)=>sum+(Number(r[key])||0),0);
+  const newRequirements=()=>{
+    const d=newOrder.draft,coil=newAllocRows('coil'),mesh=newAllocRows('mesh');
+    const blank=coil.filter(x=>x.type==='Blank'),perforated=coil.filter(x=>x.type==='Perforated');
+    const requested={blank:lfNumber(d.requiredBlankLF),perforated:lfNumber(d.requiredPerforatedLF),mesh:lfNumber(d.requiredMeshLF)};
+    const allocated={blank:newAllocSum(blank,'lf'),perforated:newAllocSum(perforated,'lf'),mesh:newAllocSum(mesh,'length')};
+    const meshRequired=d.meshRequired==='yes';
+    const needsSteel=!!((requested.blank||0)+(requested.perforated||0));
+    const steelSatisfied=needsSteel &&
+      (requested.blank===null||allocated.blank>=requested.blank)&&
+      (requested.perforated===null||allocated.perforated>=requested.perforated);
+    const meshSatisfied=!meshRequired||(requested.mesh!==null&&requested.mesh>0&&allocated.mesh>=requested.mesh);
+    const numericSpecifications=['stripWidth','gage','finishedLength','cutoffLength'].every(k=>lfNumber(d[k])>0);
+    const specsReady=!!d.materialGrade.trim()&&numericSpecifications;
+    const coverageReady=needsSteel&&steelSatisfied&&meshSatisfied;
+    const approved=specsReady&&coverageReady&&newOrder.materialsConfirmed;
+    const setupReady=approved&&newOrder.setupConfirmed;
+    return {coil,mesh,blank,perforated,requested,allocated,needsSteel,
+      steelSatisfied,meshSatisfied,meshRequired,specsReady,coverageReady,approved,setupReady};
+  };
+  const newMaterialStatusText=(needed,allocated)=>{
+    if(needed===null)return 'Requirement not entered';
+    if(needed===0)return 'Not requested';
+    const short=Math.max(0,needed-allocated);
+    return short>0?fmtLF(short)+' to allocate':'Requirement covered in preview';
+  };
+  function newMaterialSummary(){
+    const d=newOrder.draft,r=newRequirements();
+    const requirements=[
+      ['Blank steel',r.requested.blank,r.allocated.blank],
+      ['Perforated steel',r.requested.perforated,r.allocated.perforated],
+      ['Mesh'+(r.meshRequired?' · required':' · not required'),r.meshRequired?r.requested.mesh:0,r.allocated.mesh]
+    ];
+    return '<div class="new-material-summary">'+requirements.map(([title,need,have])=>
+      '<div class="new-material-summary-card"><span>'+esc(title)+'</span>'+
+      '<strong>'+fmtLF(have)+' <small>allocated</small></strong>'+
+      '<p>Needed: '+(need===null?'Not entered':fmtLF(need))+'</p>'+
+      '<small class="'+(need>0&&have<need?'new-material-short':'')+'">'+esc(newMaterialStatusText(need,have))+'</small></div>'
+    ).join('')+'</div><p class="new-material-meaning">Requirements are manually entered planning references; allocation is summed from the selected fictional inventory. TPM-only weight, compatibility, and shortage calculations are not available in this preview.</p>';
+  }
+  function newMaterialRows(){
+    const kind=newOrder.materialKind,cols=kind==='coil';
+    let rows=newMaterialCatalog(kind);
+    if(cols&&newOrder.materialType!=='all')rows=rows.filter(x=>x.type.toLowerCase()===newOrder.materialType);
+    if(!cols&&newOrder.materialRole!=='all')rows=rows.filter(x=>x.role===newOrder.materialRole);
+    if(newOrder.materialCompatible){
+      const width=lfNumber(newOrder.draft.stripWidth);
+      const gage=lfNumber(newOrder.draft.gage);
+      rows=rows.filter(x=>(width!==null&&width>0&&Number(x.width)===width)&&
+        (!cols||gage===null||gage===0||Number(x.gage)===gage));
+    }
+    const term=newOrder.materialSearch.trim().toLowerCase();
+    if(term)rows=rows.filter(r=>JSON.stringify(r).toLowerCase().includes(term));
+    return rows;
+  }
+  const newCompatibility=row=>{
+    const d=newOrder.draft,sw=lfNumber(d.stripWidth),gage=lfNumber(d.gage);
+    if(sw!==null&&sw>0&&Number(row.width)!==sw)return false;
+    if(row.gage&&gage!==null&&gage>0&&Number(row.gage)!==gage)return false;
+    return true;
+  };
+  function newMaterialCatalogHtml(){
+    const kind=newOrder.materialKind,steel=kind==='coil',all=newMaterialRows(),pageSize=newOrder.materialPageSize;
+    const pages=Math.max(1,Math.ceil(all.length/pageSize));
+    newOrder.materialPage=Math.min(pages,Math.max(1,newOrder.materialPage));
+    const items=all.slice((newOrder.materialPage-1)*pageSize,newOrder.materialPage*pageSize);
+    const selection=steel?newOrder.allocatedCoils:newOrder.allocatedMesh;
+    const selectables=items.filter(newCompatibility);
+    const checkedAll=selectables.length>0&&selectables.every(x=>selection.has(x.id));
+    const filter=steel?'<label>Steel type<select data-new-material-filter="materialType">'+
+      [['all','All types'],['blank','Blank'],['perforated','Perforated']].map(([k,label])=>
+        '<option value="'+k+'" '+(newOrder.materialType===k?'selected':'')+'>'+label+'</option>').join('')+'</select></label>':
+      '<label>Mesh layer<select data-new-material-filter="materialRole">'+
+      ['all','Top Filter','Bottom Filter','Inner Drainage','Outer Drainage'].map(k=>
+        '<option value="'+k+'" '+(newOrder.materialRole===k?'selected':'')+'>'+(k==='all'?'All roles':k)+'</option>').join('')+'</select></label>';
+    const head=steel?'<th>Coil / heat</th><th>Width / gage</th><th>Type / pattern</th><th>Available LF</th>':
+      '<th>Mesh / heat</th><th>Mesh / role</th><th>Width / type</th><th>Available LF</th>';
+    const cells=x=>steel?'<td><strong>'+esc(x.id)+'</strong><small>'+esc(x.heat)+'</small></td>'+
+      '<td>'+esc(x.width)+' in <small>'+esc(x.gage)+' gage</small></td>'+
+      '<td>'+esc(x.type)+' <small>'+esc(x.pattern)+'</small></td>'+
+      '<td class="new-material-numeric">'+fmtLF(x.lf)+'</td>':
+      '<td><strong>'+esc(x.id)+'</strong><small>'+esc(x.heat)+'</small></td>'+
+      '<td>'+esc(x.mesh)+' <small>'+esc(x.role)+'</small></td>'+
+      '<td>'+esc(x.width)+' in <small>'+esc(x.type)+'</small></td>'+
+      '<td class="new-material-numeric">'+fmtLF(x.length)+'</td>';
+    return '<div class="new-material-manager"><div class="new-material-toolbar"><div class="new-material-kind" role="group" aria-label="Materials catalog">'+
+      '<button type="button" data-new-material-kind="coil" aria-pressed="'+steel+'">Steel coils <small>'+newOrder.allocatedCoils.size+' selected</small></button>'+
+      '<button type="button" data-new-material-kind="mesh" aria-pressed="'+(!steel)+'">Mesh rolls <small>'+newOrder.allocatedMesh.size+' selected</small></button></div>'+
+      '<span class="new-material-origin">Sample inventory · selection is preview-only</span></div>'+
+      '<div class="new-material-filters"><label class="new-material-search">Search material<input data-new-material-search type="search" placeholder="Coil #, heat, mesh, width…" value="'+esc(newOrder.materialSearch)+'" autocomplete="off"></label>'+
+      filter+'<label class="new-material-compat"><input type="checkbox" data-new-material-compatible '+(newOrder.materialCompatible?'checked':'')+'> Match part width'+(steel?' / gage':'')+'</label></div>'+
+      '<div class="new-material-table-scroll" role="region" tabindex="0" aria-label="New order material selection"><table class="new-material-table"><thead><tr>'+
+      '<th><input type="checkbox" data-new-material-select-page '+(checkedAll?'checked':'')+' aria-label="Select compatible materials on visible page"></th>'+
+      head+'</tr></thead><tbody>'+(items.length?items.map(x=>'<tr class="'+(selection.has(x.id)?'is-allocated':'')+'">'+
+        '<td><input type="checkbox" data-new-material-check="'+esc(x.id)+'" aria-label="Allocate '+esc(x.id)+'" '+(selection.has(x.id)?'checked':'')+
+        (!newCompatibility(x)&&!selection.has(x.id)?'disabled title="Width or gage does not match entered part"':'')+'></td>'+
+        cells(x)+'</tr>').join(''):'<tr><td colspan="5" class="new-material-empty">No matching material entries. Adjust filters or part specifications.</td></tr>')+
+      '</tbody></table></div><div class="new-material-pagination"><span>Showing '+(all.length?(newOrder.materialPage-1)*pageSize+1:0)+'–'+Math.min(all.length,newOrder.materialPage*pageSize)+' of '+all.length+' mock inventory records</span>'+
+      '<div><button type="button" data-new-material-page="prev" '+(newOrder.materialPage===1?'disabled':'')+'>← Prev</button>'+
+      '<span>Page '+newOrder.materialPage+' / '+pages+'</span>'+
+      '<button type="button" data-new-material-page="next" '+(newOrder.materialPage===pages?'disabled':'')+'>Next →</button></div></div>'+
+      '<p class="new-material-manager-foot">Checking an item adds its entire listed length to this draft allocation. Type and width/gage screening is illustrative; actual material compatibility must be verified in TPM. Existing job allocations are untouched.</p></div>';
+  }
+  function newMaterialsWorkspace(){
+    return newMaterialSummary()+'<div class="new-material-confirm">'+
+      '<label><input type="checkbox" data-new-material-confirm '+(newOrder.materialsConfirmed?'checked':'')+
+      '> I have checked the part specification, required footage, and selected material compatibility for this preview.</label>'+
+      '<small>This acknowledgment is not a real material approval, inventory reservation, or stock availability check.</small></div>'+
+      newMaterialCatalogHtml();
+  }
+  const newSetupStatus=()=>{
+    const r=newRequirements();
+    const steps=[
+      ['Part specification entered',r.specsReady],
+      ['Required steel coverage met',r.steelSatisfied],
+      ['Required mesh coverage met',r.meshSatisfied],
+      ['Material selection reviewed',newOrder.materialsConfirmed],
+      ['Setup checklist confirmed',newOrder.setupConfirmed]
+    ];
+    return '<div class="new-setup-progress"><div><strong>Setup readiness</strong><span class="'+(r.setupReady?'new-setup-ready':'new-setup-pending')+'">'+(r.setupReady?'Ready for mill assignment':'Not ready for assignment')+'</span></div>'+
+      '<ul>'+steps.map(([label,done])=>'<li class="'+(done?'is-done':'')+'"><span>'+(done?'✓':'○')+'</span>'+esc(label)+'</li>').join('')+'</ul>'+
+      '<p>Mill assignment becomes available after the part is specified, manually entered material requirements are covered in the sample inventory, and both checks are confirmed. The order may still be saved as an unassigned Not Started draft.</p></div>';
+  };
+  function newSetupWorkspace(){
+    const readiness=newRequirements(),enabled=readiness.setupReady;
+    return '<div class="new-setup-approval">'+newSetupStatus()+
+      '<label class="new-setup-checkbox"><input type="checkbox" data-new-setup-confirm '+(newOrder.setupConfirmed?'checked':'')+
+      (!readiness.approved?' disabled':'')+'> Confirm part setup is ready for mill assignment (preview only)</label></div>'+
+      '<div class="new-setup-assignment '+(!enabled?'is-locked':'')+'"><div class="new-setup-assignment-head"><h3>Mill assignment</h3><p>'+
+      (enabled?'Setup prerequisites acknowledged. Assign a mill and optional operator.':
+        'Complete material readiness and confirm setup before assigning the order to a mill.')+'</p></div>'+
+      '<div class="new-order-fields"><div class="new-order-field"><label for="new-order-mill">Assigned mill</label>'+
+      '<select id="new-order-mill" data-new-order-field="mill" '+(!enabled?'disabled':'')+'>'+
+      newOptionList(mills,newOrder.draft.mill,'Not assigned')+'</select></div>'+
+      newOrderField('millOp','Mill operator',{placeholder:'Assign after mill selection'})+'</div>'+
+      '<p class="new-setup-fineprint">Assigning the mill does not automatically start production. Only the real application can validate work-center availability and authorization.</p></div>';
+  }
+  function refreshMaterialOnly(opts={}){
+    const material=document.getElementById('new-order-material-workspace');
+    const setup=document.getElementById('new-order-setup-workspace');
+    const summary=document.getElementById('new-order-summary');
+    const original=window.scrollY,active=document.activeElement,isSearch=active?.hasAttribute('data-new-material-search');
+    const cursor=isSearch?active.selectionStart:null;
+    if(material)material.innerHTML=newMaterialsWorkspace();
+    if(setup)setup.innerHTML=newSetupWorkspace();
+    if(summary)summary.innerHTML=newOrderSummary();
+    if(isSearch){
+      const search=document.querySelector('[data-new-material-search]');
+      if(search){search.focus({preventScroll:true});if(cursor!==null)search.setSelectionRange(cursor,cursor)}
+    }
+    if(opts.keepScroll)window.scrollTo({top:original,behavior:'instant'});
+  }
+  function invalidateNewSetup(materialChanged=false){
+    if(materialChanged)newOrder.materialsConfirmed=false;
+    newOrder.setupConfirmed=false;
+    newOrder.draft.mill='';
+  }
+
   function newOrderEdit(){
     const d=newOrder.draft;
     const customerNames=[j.customer_name,...customers.filter(x=>x!==j.customer_name)];
