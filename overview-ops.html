@@ -2468,8 +2468,8 @@ document.addEventListener('click',event=>{
   }
   return;
  }
- const person=event.target.closest('[data-prod-person]');if(person){event.preventDefault();prodState.person=person.dataset.prodPerson;prodState.page=1;navigate('production');return}const el=event.target.closest('[data-prod-act]');if(el){event.preventDefault();const action=el.dataset.prodAct;if(action==='people-reset'){prodState.person='all';prodState.dataset='demo';prodState.search='';prodState.sort='newest';prodState.page=1;navigate('production');return}if(action.startsWith('people-')){prodState.page+=action.endsWith('next')?1:-1;prodRefresh('people');return}if(action.startsWith('stage-')){prodState.stagePage+=action.endsWith('next')?1:-1;prodRefresh('stage');return}}const entry=event.target.closest('[data-prod-detail]');if(entry){event.preventDefault();prodDetail(entry.dataset.prodDetail)}},true);
-document.addEventListener('change',event=>{const el=event.target.closest('[data-prod-select]');if(!el)return;const field=el.dataset.prodSelect;const value=el.value;const map={person:'person',dataset:'dataset',sort:'sort',stage:'stage','stage-sort':'stageSort','stage-check':'stageCheck','stage-dataset':'stageDataset','people-size':'pageSize','stage-size':'stageSize'};if(!map[field])return;prodState[map[field]]=field.endsWith('size')?Number(value):value;if(field==='dataset'||field==='person'||field==='sort'||field==='people-size')prodState.page=1;else prodState.stagePage=1;prodRefresh(field.startsWith('stage')?'stage':'people');if(field==='person'||field==='dataset')navigate('production')},true);
+ const person=event.target.closest('[data-prod-person]');if(person){event.preventDefault();prodState.person=person.dataset.prodPerson;prodState.recordView='sessions';prodState.page=1;if(typeof prodDeptRefresh==='function')prodDeptRefresh(true);else navigate('production');return}const el=event.target.closest('[data-prod-act]');if(el){event.preventDefault();const action=el.dataset.prodAct;if(action==='people-reset'){prodState.person='all';prodState.dataset='original';prodState.search='';prodState.sort='newest';prodState.page=1;if(typeof prodDeptRefresh==='function')prodDeptRefresh();else navigate('production');return}if(action.startsWith('people-')){prodState.page+=action.endsWith('next')?1:-1;prodRefresh('people');return}if(action.startsWith('stage-')){prodState.stagePage+=action.endsWith('next')?1:-1;prodRefresh('stage');return}}const entry=event.target.closest('[data-prod-detail]');if(entry){event.preventDefault();prodDetail(entry.dataset.prodDetail)}},true);
+document.addEventListener('change',event=>{const el=event.target.closest('[data-prod-select]');if(!el)return;const field=el.dataset.prodSelect;const value=el.value;const map={person:'person',dataset:'dataset',sort:'sort',stage:'stage','stage-sort':'stageSort','stage-check':'stageCheck','stage-dataset':'stageDataset','people-size':'pageSize','stage-size':'stageSize'};if(!map[field])return;prodState[map[field]]=field.endsWith('size')?Number(value):value;if(field==='dataset'||field==='person'||field==='sort'||field==='people-size')prodState.page=1;else prodState.stagePage=1;if(field==='person'||field==='dataset'){if(typeof prodDeptRefresh==='function')prodDeptRefresh();else navigate('production')}else prodRefresh(field.startsWith('stage')?'stage':'people')},true);
 document.addEventListener('input',event=>{const el=event.target.closest('[data-prod-input]');if(!el)return;const isStation=el.dataset.prodInput==='stage-search';prodState[isStation?'stageSearch':'search']=el.value;if(isStation)prodState.stagePage=1;else prodState.page=1;clearTimeout(prodTimer);prodTimer=setTimeout(()=>prodRefresh(isStation?'stage':'people'),90)},true);
 if(new URLSearchParams(location.search).get('view')==='production')navigate('production');
 </script>
@@ -2662,10 +2662,15 @@ prodPeopleResults=function(){
  return prodEarlierPeopleResults().replace('7 original sessions available',`${prodOriginal.filter(r=>prodState.stationView==='all'||r.stage===prodState.stationView).length} original sessions in view`);
 };
 prodCards=function(){
- return `<div class="prod-people">${prodScopedPeople().map(p=>{
- const dept=p.departments.find(d=>prodState.stationView==='all'||d.name===prodState.stationView)||p.departments[0];
- const selected=prodState.person===p.person,initials=p.person.split(' ').map(n=>n[0]).join('');
- return `<button type="button" class="prod-person ${selected?'is-selected':''}" data-prod-person="${safe(p.person)}" aria-pressed="${selected}"><div class="prod-person-top"><span class="prod-avatar">${safe(initials)}</span><span><span class="prod-person-name">${safe(p.person)}</span><br/><span class="prod-person-role">${safe(dept.name)}</span></span></div><div class="prod-person-stats"><div><strong>${num(p.tubes)}</strong><span>Fixture tube records</span></div><div><strong>${dur(dept.seconds)}</strong><span>Recorded time</span></div></div><div class="prod-person-foot"><span>${dept.sessions.length} source sessions</span><span>View activity →</span></div></button>`;
+ const people=prodScopedPeople();
+ return `<div class="prod-operator-grid">${people.map(p=>{
+  const dept=p.departments.find(d=>prodState.stationView==='all'||d.name===prodState.stationView)||p.departments[0];
+  const initials=p.person.split(' ').map(x=>x[0]).join('');
+  const selected=prodState.person===p.person;
+  return `<button type="button" class="prod-person prod-operator ${selected?'is-selected':''}" data-prod-person="${safe(p.person)}" aria-pressed="${selected}">
+   <span class="prod-operator-head"><span class="prod-operator-avatar">${safe(initials)}</span><span class="prod-operator-ident"><strong>${safe(p.person)}</strong><small>${safe(dept.name)} · ${num(dept.sessions.length)} source sessions</small></span><span class="prod-operator-arrow" aria-hidden="true">↗</span></span>
+   <span class="prod-operator-facts"><span><strong>${num(p.tubes)}</strong> tubes recorded</span><span><strong>${dur(dept.seconds)}</strong> recorded time</span></span>
+  </button>`;
  }).join('')}</div>`;
 };
 function prodDeptStats(){
@@ -2678,46 +2683,95 @@ function prodDeptSidebar(){
 function prodDeptFocus(){
  const st=prodChosenStage(),people=prodScopedPeople();
  const items=st?[
-  ['Completed',num(st.done)+' / '+num(j.quantity)],
-  ['Remaining',num(Math.max(0,j.quantity-st.done))+' tubes'],
-  ['Source operator',people.map(p=>p.person).join(', ')||'Not available'],
-  ['Last recorded',stamp(st.last_at)]
+  ['Recorded at station',num(st.done)+' tubes'],
+  ['Operator',people.length?people.map(p=>p.person).join(', '):'Not recorded'],
+  ['First source checkpoint',stamp(st.first_at)],
+  ['Latest source checkpoint',stamp(st.last_at)]
  ]:[
-  ['Ordered quantity',num(j.quantity)+' tubes'],
-  ['Source stations',String(h.stages.length)],
-  ['Source operators',String(people.length)],
-  ['Latest inspection',stamp(h.stages[2]?.last_at)]
+  ['Order', '#'+j.job],
+  ['Quantity',num(j.quantity)+' tubes'],
+  ['Recorded operators',String(people.length)],
+  ['Latest source checkpoint',stamp(h.stages.map(x=>x.last_at).filter(Boolean).sort((a,b)=>new Date(b)-new Date(a))[0])]
  ];
- return `<section class="prod-dept-focus" aria-label="Selected station overview"><div class="prod-dept-focus-header"><div><h3>${safe(st?st.label+' station':'All stations')}</h3><p>${st?'Showing only this station’s employee sessions and tube checks.':'Compare progress across stations, then filter down to the related processing records.'}</p></div><span class="prod-dept-tag">${st?pct(st.done,j.quantity)+'% recorded':'Job overview'}</span></div><div class="prod-dept-kpis">${items.map(([label,value])=>`<div><span>${safe(label)}</span><strong>${safe(value)}</strong></div>`).join('')}</div></section>`;
+ return `<section class="prod-dept-focus" aria-label="Selected station details">
+ <div class="prod-dept-focus-header"><div><span class="prod-focus-eyebrow">PRODUCTION / ${st?safe(st.label.toUpperCase()):'ALL STATIONS'}</span><h3>${st?safe(st.label+' operations'):'Manufacturing activity'}</h3><p>${st?'Recorded work and traceability for this production station.':'Follow tube progress from mill through cutoff and inspection.'}</p></div><span class="prod-dept-tag">${st?'Station focus':'Job overview'}</span></div>
+ <div class="prod-dept-kpis">${items.map(([label,value])=>`<div><span>${safe(label)}</span><strong>${safe(value||'Not recorded')}</strong></div>`).join('')}</div>
+ </section>`;
+}
+prodState.recordView='tubes';
+function prodDeptRecordPanel(){
+ const st=prodChosenStage(),isTubes=prodState.recordView==='tubes',name=st?st.label+' ':'';
+ const counts=isTubes?
+  [prodOriginalChecks.filter(r=>prodState.stationView==='all'||r.stage===prodState.stationView).length,prodDemoStages.filter(r=>prodState.stationView==='all'||r.stage===prodState.stationView).length]:
+  [prodOriginal.filter(r=>prodState.stationView==='all'||r.stage===prodState.stationView).length,prodDemoPeople.filter(r=>prodState.stationView==='all'||r.stage===prodState.stationView).length];
+ return isTubes?`
+ <section class="tab-panel prod-register prod-active-register" aria-label="Tube stage check register">
+  <div class="tab-panel-head"><div class="tab-panel-ident"><span class="tab-panel-icon">${icon('factory')}</span><div><h3>${safe(name)}Tube records</h3><p>Individual tube checkpoints for the selected station.</p></div></div><span class="tab-header-side">${counts[0]} source checks</span></div>
+  <div class="prod-filterbar prod-filterbar--station prod-clean-filters">
+   <label class="prod-control prod-control--search">Search tubes<input type="search" data-prod-input="stage-search" value="${safe(prodState.stageSearch)}" placeholder="Tube ID, field, operator…" autocomplete="off" aria-label="Search tube stage checks"></label>
+   <label class="prod-control">Stage check<select data-prod-select="stage-check">${prodSelect([['all','All results'],['recorded','Recorded'],['not_recorded','Not recorded']],prodState.stageCheck)}</select></label>
+   <label class="prod-control">Sort by<select data-prod-select="stage-sort">${prodSelect([['newest','Newest first'],['oldest','Oldest first'],['tube-id','Tube ID']],prodState.stageSort)}</select></label>
+   <label class="prod-control">Records<select data-prod-select="stage-dataset">${prodSelect([['original','Original fixture'],['demo','Scale-test examples']],prodState.stageDataset)}</select></label>
+  </div>
+  <div id="prod-station-results">${prodStationResults()}</div>
+  <div class="prod-origin-note">Source includes five sampled tubes, not all ${num(j.quantity)} ordered tubes. A missing check does not imply failure or rejection. Ring and weld checkpoints have no supplied tube records in this fixture.</div>
+ </section>`:`
+ <section class="tab-panel prod-register prod-active-register" aria-label="Employee work sessions">
+  <div class="tab-panel-head"><div class="tab-panel-ident"><span class="tab-panel-icon">${icon('users')}</span><div><h3>${safe(name)}Work sessions</h3><p>Operator activity and recorded working periods for this station.</p></div></div><span class="tab-header-side">${counts[0]} source sessions</span></div>
+  <div class="prod-filterbar prod-clean-filters">
+   <label class="prod-control prod-control--search">Search sessions<input type="search" data-prod-input="search" value="${safe(prodState.search)}" placeholder="Employee, date, session…" autocomplete="off" aria-label="Search employee work sessions"></label>
+   <label class="prod-control">Operator<select data-prod-select="person">${prodSelect([['all','All operators'],...prodScopedPeople().map(p=>[p.person,p.person])],prodState.person)}</select></label>
+   <label class="prod-control">Sort by<select data-prod-select="sort">${prodSelect([['newest','Newest first'],['oldest','Oldest first'],['tubes','Most tubes']],prodState.sort)}</select></label>
+   <label class="prod-control">Records<select data-prod-select="dataset">${prodSelect([['original','Original fixture'],['demo','Scale-test examples']],prodState.dataset)}</select></label>
+  </div>
+  <div class="prod-filter-actions"><button type="button" class="prod-row-link" data-prod-act="people-reset">Reset filters</button></div>
+  <div id="prod-people-results">${prodPeopleResults()}</div>
+  <div class="prod-origin-note">Sessions are computed from source activity; gaps above 20 minutes define new sessions. Scale-test records are available only if selected.</div>
+ </section>`;
+}
+function prodDeptRecordNav(){
+ const tubeCount=prodOriginalChecks.filter(r=>prodState.stationView==='all'||r.stage===prodState.stationView).length;
+ const sessionCount=prodOriginal.filter(r=>prodState.stationView==='all'||r.stage===prodState.stationView).length;
+ return `<div class="prod-record-nav" role="tablist" aria-label="Production record type">
+ <button type="button" role="tab" data-prod-view="tubes" aria-selected="${prodState.recordView==='tubes'}" aria-controls="prod-record-region"><span>Tube records</span><small>${tubeCount} checks</small></button>
+ <button type="button" role="tab" data-prod-view="sessions" aria-selected="${prodState.recordView==='sessions'}" aria-controls="prod-record-region"><span>Work sessions</span><small>${sessionCount} sessions</small></button>
+ </div>`;
 }
 function prodDeptWorkspace(){
- const st=prodChosenStage();
- const people=prodScopedPeople();
+ const st=prodChosenStage(),people=prodScopedPeople();
  const stats=tm.map((r,i)=>tabStat(r[0],r[1],r[2],['wine','slate','teal','amber','slate','wine'][i])).join('');
- const selected=st?st.label+' ':'';
- const intro=tabIntro('Production / Departments','Production by station','Filter Mill, Cutoff and Inspection activity without mixing tube checkpoints with separate department stages.','3 recorded stations · '+num(j.quantity)+' tubes');
- return `<div class="tab-workspace prod-v2">${intro}${prodDeptStats()}<div class="prod-dept-layout">${prodDeptSidebar()}<div class="prod-dept-content">
- ${prodDeptFocus()}
- <div class="prod-dept-guidance">The station totals above come from the job roll-up. Tube checks and employee sessions below are a smaller source sample. Welds, excluder rings and tack welds should be documented within their applicable tube/process records; this fixture does not supply separate completions for them.</div>
- ${tabPanel('users',st?st.label+' employees':'Operators & contributions','Select an employee to review their source sessions.',prodCards(),{right:people.length+' people in scope'})}
- <section class="tab-panel prod-register" aria-label="Employee work sessions"><div class="tab-panel-head"><div class="tab-panel-ident"><span class="tab-panel-icon">${icon('users')}</span><div><h3>${selected}Employee work sessions</h3><p>Source sessions scoped to the selected department. Gaps over 20 minutes start new sessions.</p></div></div><span class="tab-header-side">${prodState.dataset==='original'?'Original fixture':'Scale-test data'}</span></div>
- <div class="prod-filterbar">
- <label class="prod-control prod-control--search">Search sessions<input type="search" data-prod-input="search" value="${safe(prodState.search)}" placeholder="Session, employee, date or tubes…" autocomplete="off" aria-label="Search employee work sessions"></label>
- <label class="prod-control">Operator<select data-prod-select="person">${prodSelect([['all','All operators'],...people.map(p=>[p.person,p.person])],prodState.person)}</select></label>
- <label class="prod-control">Dataset<select data-prod-select="dataset">${prodSelect([['original','Original sessions'],['demo','Fictional scale test']],prodState.dataset)}</select></label>
- <label class="prod-control">Sort<select data-prod-select="sort">${prodSelect([['newest','Newest first'],['oldest','Oldest first'],['tubes','Most tubes']],prodState.sort)}</select></label>
- </div><div class="prod-filter-actions"><button type="button" class="prod-row-link" data-prod-act="people-reset">Reset session filters</button></div><div id="prod-people-results">${prodPeopleResults()}</div></section>
- <section class="tab-panel prod-register" aria-label="Tube stage check register"><div class="tab-panel-head"><div class="tab-panel-ident"><span class="tab-panel-icon">${icon('factory')}</span><div><h3>${selected}Tube checkpoints</h3><p>One tube-stage check per row, filtered by the department navigation.</p></div></div><span class="tab-header-side">5 source tubes per station</span></div>
- <div class="prod-filterbar prod-filterbar--station">
- <label class="prod-control prod-control--search">Search tube checks<input type="search" data-prod-input="stage-search" value="${safe(prodState.stageSearch)}" placeholder="Tube ID or check field…" autocomplete="off" aria-label="Search tube stage checks"></label>
- <label class="prod-control">Check<select data-prod-select="stage-check">${prodSelect([['all','All checks'],['recorded','✓ Recorded'],['not_recorded','✕ Not recorded']],prodState.stageCheck)}</select></label>
- <label class="prod-control">Dataset<select data-prod-select="stage-dataset">${prodSelect([['original','Original 5 tubes'],['demo','Fictional 32 tubes']],prodState.stageDataset)}</select></label>
- <label class="prod-control">Sort<select data-prod-select="stage-sort">${prodSelect([['newest','Newest first'],['oldest','Oldest first'],['tube-id','Tube ID']],prodState.stageSort)}</select></label>
- </div><div id="prod-station-results">${prodStationResults()}</div>
- <div class="prod-origin-note">A green check means stage flag = 1. An unchecked flag does not mean a failed inspection, hold, or rejection. The five sample tubes are not the complete job. No ring/weld completion flags have been invented.</div></section>
- ${!st?`<div class="prod-timing"><details><summary><span>Job-wide timing checkpoints <span class="prod-muted">· not station-specific</span></span><span aria-hidden="true">⌄</span></summary><div class="prod-timing-inner"><div class="tab-stat-grid three">${stats}</div><div class="tab-timing-note">Running and attended overlap; do not sum them. Gaps are inferred from timestamps.</div></div></details></div>`:''}
- <div class="tab-footline">Original records shown by default. Fictional scale-test data is selectable for UI testing only. No backend changes.</div>
- </div></div></div>`;
+ const intro=tabIntro('Production / Work centers','Production','Station progress, operators and per-tube processing records in one workspace.',num(j.quantity)+' ordered tubes');
+ return `<div class="tab-workspace prod-v2 prod-refined">
+  ${intro}
+  <section class="prod-top-stats" aria-label="Station completion">${prodDeptStats()}</section>
+  <div class="prod-dept-layout">
+   ${prodDeptSidebar()}
+   <div class="prod-dept-content">
+    ${prodDeptFocus()}
+    <section class="prod-operator-section" aria-label="Station operators">
+      <div class="prod-section-header"><div><span class="prod-section-eyebrow">STAFF & ACTIVITY</span><h3>${st?safe(st.label+' operators'):'Assigned operators'}</h3><p>Click an operator to filter their work sessions.</p></div><span class="prod-section-count">${people.length} assigned</span></div>
+      ${prodCards()}
+    </section>
+    <section class="prod-record-workspace" aria-label="Tube and operator record explorer">
+      <div class="prod-record-header">
+       <div><span class="prod-section-eyebrow">TRACEABILITY & HISTORY</span><h3>Production records</h3><p>Choose a record type; the current station filter applies to both.</p></div>
+       <span class="prod-record-scope">${st?safe(st.label):'All stations'}</span>
+      </div>
+      ${prodDeptRecordNav()}
+      <div id="prod-record-region" role="tabpanel">${prodDeptRecordPanel()}</div>
+    </section>
+    ${!st?`<div class="prod-timing"><details><summary><span>Job-wide timing measurements <span class="prod-muted">· 6 measures · not department specific</span></span><span aria-hidden="true">⌄</span></summary><div class="prod-timing-inner"><div class="tab-stat-grid three">${stats}</div><div class="tab-timing-note">Running, attended and elapsed represent different time concepts and must not be summed.</div></div></details></div>`:''}
+    <p class="prod-refined-footnote">Station counts are job-level rollups. The detailed fixture contains a smaller sample of individual tube records and work sessions. No live TPM database writes.</p>
+   </div>
+  </div>
+ </div>`;
+}
+function prodDeptRefresh(scrollToRecords=false){
+ const view=document.getElementById('view');if(!view)return;
+ const scroll=window.scrollY;
+ view.innerHTML=prodDeptWorkspace();
+ window.scrollTo({top:scroll,behavior:'instant'});
+ if(scrollToRecords){const records=document.getElementById('prod-record-workspace-anchor')||document.querySelector('.prod-record-workspace');records?.scrollIntoView({behavior:'smooth',block:'nearest'})}
 }
 renderers.C.production=prodDeptWorkspace;
 document.addEventListener('click',function(e){
@@ -2727,8 +2781,9 @@ document.addEventListener('click',function(e){
  const stage=btn.dataset.dept;
  if(stage!=='all'&&!h.stages.some(x=>x.label===stage))return;
  if(prodState.stationView!==stage){prodState.stationView=stage;prodState.person='all';prodState.stage='all';prodState.page=1;prodState.stagePage=1;prodState.search='';prodState.stageSearch='';}
- navigate('production');
+ if(typeof prodDeptRefresh==='function')prodDeptRefresh();else navigate('production');
 },true);
+document.addEventListener('click',function(e){const tab=e.target.closest('[data-prod-view]');if(!tab)return;e.preventDefault();prodState.recordView=tab.dataset.prodView;document.querySelectorAll('[data-prod-view]').forEach(b=>b.setAttribute('aria-selected',String(b===tab)));const region=document.getElementById('prod-record-region');if(region)region.innerHTML=prodDeptRecordPanel();},true);
 if(new URLSearchParams(location.search).get('view')==='production')navigate('production');
 </script>
 <style id="tpm-tab-design-parity">
@@ -2786,4 +2841,86 @@ if(new URLSearchParams(location.search).get('view')==='production')navigate('pro
 #view>.tab-workspace .tab-stat-value,#view>.mat-workspace .mat-stat .mat-stat-num{font-size:21px}}
 @media(max-width:410px){#view>.tab-workspace .unified-kpis,#view>.mat-workspace .unified-kpis{grid-template-columns:1fr}}
 @media print{#view>.tab-workspace .tab-stat,#view>.mat-workspace .mat-stat{break-inside:avoid}}
+</style><style id="tpm-production-refinement">
+/* Rework of Production subviews: neutral enterprise hierarchy, not just uniform borders. */
+#view>.prod-refined{gap:15px}
+#view>.prod-refined .tab-intro{padding:18px 20px;min-height:82px}
+#view>.prod-refined .tab-intro h2{font-size:23px}
+#view>.prod-refined .prod-station-stats{gap:10px}
+#view>.prod-refined .prod-station-stat{padding:16px 17px 14px;gap:11px;box-shadow:0 2px 9px rgba(31,40,52,.025);border:1px solid #dce1e6;background:#fff;border-radius:5px}
+#view>.prod-refined .prod-station-stat:hover{border-color:#af95a4;box-shadow:0 4px 15px rgba(38,42,50,.06)}
+#view>.prod-refined .prod-station-stat[aria-pressed="true"]{border-color:#92627c;background:#fbf8fa;box-shadow:inset 0 3px #813b62}
+#view>.prod-refined .prod-station-stat-label{font-size:12px;color:#374451}
+#view>.prod-refined .prod-station-stat-label small{color:#7e8993;font-size:10.5px}
+#view>.prod-refined .prod-station-stat-value{font-size:27px;font-weight:820}
+#view>.prod-refined .prod-station-progress{height:6px;background:#e9edf0}
+#view>.prod-refined .prod-station-stat-foot{font-size:11px}
+#view>.prod-refined .prod-dept-layout{grid-template-columns:176px minmax(0,1fr);gap:14px}
+#view>.prod-refined .prod-dept-rail{padding:10px;top:14px;border:1px solid #dfe4e8;box-shadow:0 2px 7px rgba(40,49,62,.024);background:#fff;max-height:none;overflow:visible}
+#view>.prod-refined .prod-dept-rail h3{color:#777f8b;font-size:10px;letter-spacing:.1em;padding:6px 8px 10px}
+#view>.prod-refined .prod-dept-rail button{position:relative;border-radius:4px;padding:12px 9px;font-size:12px}
+#view>.prod-refined .prod-dept-rail button[aria-current=true]{color:#693553;background:#f6eff3;border-color:#e7dce2}
+#view>.prod-refined .prod-dept-rail button[aria-current=true]:before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;background:#874260;border-radius:2px}
+#view>.prod-refined .prod-dept-note{font-size:10.5px;color:#82909b;line-height:1.6}
+#view>.prod-refined .prod-dept-content{gap:13px}
+#view>.prod-refined .prod-dept-focus{padding:17px 18px 16px;background:#fff;border:1px solid #dfe4e8;box-shadow:0 2px 7px rgba(31,40,52,.023)}
+#view>.prod-refined .prod-focus-eyebrow{display:block;color:#85627a;letter-spacing:.08em;font-size:9.5px;font-weight:850;margin-bottom:5px}
+#view>.prod-refined .prod-dept-focus h3{font-size:17px;letter-spacing:-.025em}
+#view>.prod-refined .prod-dept-tag{background:#f7f8f9;color:#63717d;border-color:#e0e4e7}
+#view>.prod-refined .prod-dept-kpis{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:16px}
+#view>.prod-refined .prod-dept-kpis>div{padding:0 10px 0 14px;border-left:1px solid #e5e8eb;min-width:0}
+#view>.prod-refined .prod-dept-kpis>div:first-child{border:0;padding-left:0}
+#view>.prod-refined .prod-dept-kpis span{font-size:10.5px;color:#7d8993}
+#view>.prod-refined .prod-dept-kpis strong{font-size:12.5px;color:#374450;font-weight:760;margin-top:6px;line-height:1.5}
+#view>.prod-refined .prod-operator-section,
+#view>.prod-refined .prod-record-workspace{background:#fff;border:1px solid #dfe4e8;border-radius:5px;overflow:hidden;box-shadow:0 2px 9px rgba(31,40,52,.024)}
+#view>.prod-refined .prod-section-header,
+#view>.prod-refined .prod-record-header{padding:15px 17px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #e6eaee;background:#f8f9fa}
+#view>.prod-refined .prod-section-eyebrow{font-weight:850;letter-spacing:.085em;color:#8a6479;font-size:9.5px;display:block;margin-bottom:4px}
+#view>.prod-refined .prod-section-header h3,
+#view>.prod-refined .prod-record-header h3{color:#2d3945;font-size:14px;letter-spacing:-.018em;font-weight:800}
+#view>.prod-refined .prod-section-header p,
+#view>.prod-refined .prod-record-header p{color:#7b8791;font-size:11px;margin-top:3px;line-height:1.5}
+#view>.prod-refined .prod-section-count,
+#view>.prod-refined .prod-record-scope{border:1px solid #dfe5e9;background:#fff;border-radius:3px;color:#677581;padding:6px 9px;font-size:10px;font-weight:780;white-space:nowrap}
+#view>.prod-refined .prod-operator-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:14px 15px}
+#view>.prod-refined .prod-operator{display:flex;flex-direction:column;gap:13px;padding:12px 13px 10px;border:1px solid #e0e5e9;border-radius:4px;box-shadow:none;background:#fff;text-align:left;width:100%;min-width:0}
+#view>.prod-refined .prod-operator:hover{border-color:#b89cae;background:#fdfbfd}
+#view>.prod-refined .prod-operator[aria-pressed=true]{border-color:#a57b93;box-shadow:inset 3px 0 #824262;background:#fcf9fb}
+#view>.prod-refined .prod-operator-head{display:flex;align-items:center;gap:9px;width:100%;min-width:0}
+#view>.prod-refined .prod-operator-avatar{flex:0 0 35px;width:35px;height:35px;background:#ece5ea;color:#713b58;border-radius:4px;display:grid;place-items:center;font-weight:830;font-size:11px}
+#view>.prod-refined .prod-operator-ident{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+#view>.prod-refined .prod-operator-ident strong{font-size:12.5px;color:#2e3c46;font-weight:780}
+#view>.prod-refined .prod-operator-ident small{font-size:10px;color:#7a8892;line-height:1.4}
+#view>.prod-refined .prod-operator-arrow{font-size:15px;color:#926d83}
+#view>.prod-refined .prod-operator-facts{display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;gap:6px 10px;width:100%;border-top:1px solid #eef0f2;padding-top:9px;font-size:10.5px;color:#7d8991}
+#view>.prod-refined .prod-operator-facts strong{font-size:11px;font-weight:800;color:#344452}
+#view>.prod-refined .prod-record-nav{display:flex;gap:7px;padding:10px 14px 0;border-bottom:1px solid #e1e5e9;background:#fff}
+#view>.prod-refined .prod-record-nav button{display:flex;align-items:center;gap:8px;min-height:40px;padding:10px 13px;border:0;border-bottom:3px solid transparent;background:transparent;border-radius:0;color:#75808b;font-size:12px;font-weight:710;cursor:pointer;margin-bottom:-1px;white-space:nowrap}
+#view>.prod-refined .prod-record-nav button:hover{color:#7a425d;background:#faf7f9}
+#view>.prod-refined .prod-record-nav button[aria-selected=true]{border-bottom-color:#813e5f;color:#493747;background:#fff;font-weight:830}
+#view>.prod-refined .prod-record-nav small{border:1px solid #e2e6e9;border-radius:4px;padding:2px 6px;font-size:9.5px;color:#778692;font-weight:700;background:#f8f9fa}
+#view>.prod-refined .prod-record-nav button[aria-selected=true] small{background:#f6ecf1;color:#7d4260;border-color:#ead8e1}
+#view>.prod-refined .prod-active-register{border:0;border-radius:0;box-shadow:none}
+#view>.prod-refined .prod-active-register .tab-panel-head{background:#fff;border-bottom:1px solid #ebedf0;padding:16px 17px;min-height:66px}
+#view>.prod-refined .prod-active-register .tab-panel-head::before{display:none}
+#view>.prod-refined .prod-active-register .tab-panel-head h3{font-size:13px;color:#34414d}
+#view>.prod-refined .prod-active-register .tab-panel-head p{font-size:10.5px}
+#view>.prod-refined .prod-clean-filters{display:grid;grid-template-columns:minmax(175px,1.7fr) repeat(3,minmax(115px,1fr));gap:9px;padding:12px 16px 13px;background:#f8f9fa;border-bottom:1px solid #e5e8eb}
+#view>.prod-refined .prod-clean-filters .prod-control{font-size:10.5px;font-weight:700;color:#62707c}
+#view>.prod-refined .prod-clean-filters .prod-control select,
+#view>.prod-refined .prod-clean-filters .prod-control input{height:35px;background:#fff;border-color:#d4dce2;border-radius:4px;font-size:11.5px;color:#344451}
+#view>.prod-refined .prod-filter-actions{background:#f8f9fa;padding-top:0}
+#view>.prod-refined .prod-active-register .prod-table-status{background:#fff;padding:10px 16px;font-size:10.5px}
+#view>.prod-refined .prod-active-register .prod-table th{font-size:10px;color:#62707c;background:#f2f4f6;padding:11px 13px}
+#view>.prod-refined .prod-active-register .prod-table td{font-size:11px;color:#41505b;padding:11px 13px}
+#view>.prod-refined .prod-active-register .prod-table tbody tr:hover{background:#faf6f8}
+#view>.prod-refined .prod-active-register .prod-origin-note{font-size:10.5px;line-height:1.55;color:#87919a;background:#fafbfc;padding:10px 15px}
+#view>.prod-refined .prod-refined-footnote{font-size:10.5px;line-height:1.5;color:#818b95;margin:1px 2px}
+@media(max-width:1260px){#view>.prod-refined .prod-operator-grid{grid-template-columns:repeat(auto-fit,minmax(185px,1fr))}#view>.prod-refined .prod-clean-filters{grid-template-columns:repeat(2,minmax(0,1fr))}#view>.prod-refined .prod-clean-filters .prod-control--search{grid-column:1/-1}}
+@media(max-width:980px){#view>.prod-refined .prod-dept-layout{grid-template-columns:148px minmax(0,1fr)}#view>.prod-refined .prod-dept-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#view>.prod-refined .prod-dept-kpis>div:nth-child(3){border:0;padding-left:0}}
+@media(max-width:850px){#view>.prod-refined .prod-dept-layout{grid-template-columns:1fr}#view>.prod-refined .prod-dept-rail{position:static;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}#view>.prod-refined .prod-dept-rail h3,#view>.prod-refined .prod-dept-rail .prod-dept-note{grid-column:1/-1}#view>.prod-refined .prod-dept-rail button{padding:9px}}
+@media(max-width:650px){#view>.prod-refined .prod-station-stats{grid-template-columns:1fr}#view>.prod-refined .prod-station-stat{padding:13px 15px}#view>.prod-refined .prod-dept-rail{grid-template-columns:repeat(2,minmax(0,1fr))}#view>.prod-refined .prod-operator-grid{grid-template-columns:1fr}#view>.prod-refined .prod-record-header,#view>.prod-refined .prod-section-header{align-items:flex-start}#view>.prod-refined .prod-clean-filters{grid-template-columns:repeat(2,minmax(0,1fr))}#view>.prod-refined .prod-record-nav{padding-left:8px}#view>.prod-refined .prod-record-nav button{padding:9px 10px;gap:5px}}
+@media(max-width:430px){#view>.prod-refined .prod-dept-kpis{grid-template-columns:1fr 1fr}#view>.prod-refined .prod-record-nav button{font-size:11px}#view>.prod-refined .prod-record-nav small{font-size:9px}#view>.prod-refined .prod-clean-filters{grid-template-columns:1fr}#view>.prod-refined .prod-clean-filters .prod-control--search{grid-column:auto}}
+@media print{#view>.prod-refined .prod-dept-rail{position:static}#view>.prod-refined .prod-operator{break-inside:avoid}}
 </style></body></html>
