@@ -68,7 +68,17 @@
           repairWelder:String(item.repairWelder||''),die:String(item.die||''),
           millWeldSpec:String(item.millWeldSpec||''),repairWeldSpec:String(item.repairWeldSpec||''),
           shipMethod:String(item.shipMethod||''),containerType:String(item.containerType||''),
-          notes:String(item.notes||'').slice(0,4000)
+          notes:String(item.notes||'').slice(0,4000),
+          materialGrade:String(item.materialGrade||''),partDimension:String(item.partDimension||''),
+          gage:String(item.gage||''),stripWidth:String(item.stripWidth||''),pattern:String(item.pattern||''),
+          holeSize:String(item.holeSize||''),centers:String(item.centers||''),
+          finishedLength:String(item.finishedLength||''),cutoffLength:String(item.cutoffLength||''),
+          requiredBlankLF:String(item.requiredBlankLF||''),requiredPerforatedLF:String(item.requiredPerforatedLF||''),
+          requiredMeshLF:String(item.requiredMeshLF||''),meshRequired:String(item.meshRequired||'no'),
+          setupNotes:String(item.setupNotes||'').slice(0,4000),
+          allocatedCoils:Array.isArray(item.allocatedCoils)?item.allocatedCoils.map(String):[],
+          allocatedMesh:Array.isArray(item.allocatedMesh)?item.allocatedMesh.map(String):[],
+          materialsConfirmed:!!item.materialsConfirmed,setupConfirmed:!!item.setupConfirmed
         };
         sample.push(clean);createdOrders.push(clean);
       }
@@ -80,9 +90,19 @@
     customer:'',po:'',part:'',description:'',quantity:'',unitPrice:'',
     ordered:todayDate(),due:'',shipDate:'',mill:'',millOp:'',cutoffOp:'',inspector:'',
     repairWelder:'',die:'',millWeldSpec:'',repairWeldSpec:'',shipMethod:'',
-    containerType:'',notes:''
+    containerType:'',notes:'',
+    materialGrade:'',partDimension:'',gage:'',stripWidth:'',pattern:'',holeSize:'',centers:'',
+    finishedLength:'',cutoffLength:'',requiredBlankLF:'',requiredPerforatedLF:'',
+    meshRequired:'no',requiredMeshLF:'',setupNotes:''
   });
-  let newOrder={draft:freshDraft(),step:'edit',errors:{},dirty:false};
+  const freshNewOrder=()=>({
+    draft:freshDraft(),step:'edit',errors:{},dirty:false,
+    allocatedCoils:new Set(),allocatedMesh:new Set(),
+    materialKind:'coil',materialSearch:'',materialType:'all',materialRole:'all',
+    materialCompatible:false,materialPage:1,materialPageSize:8,
+    materialsConfirmed:false,setupConfirmed:false
+  });
+  let newOrder=freshNewOrder();
   const newOptionList=(items,value,placeholder)=>'<option value="">'+esc(placeholder)+'</option>'+items.map(label=>
     '<option value="'+esc(label)+'" '+(label===value?'selected':'')+'>'+esc(label)+'</option>'
   ).join('');
@@ -228,7 +248,7 @@
     else window.scrollTo({top:0,behavior:'instant'});
   }
   function showNewOrder({fresh=false}={}){
-    if(fresh)newOrder={draft:freshDraft(),step:'edit',errors:{},dirty:false};
+    if(fresh)newOrder=freshNewOrder();
     const url=new URL(location.href);url.searchParams.set('view','new-order');url.searchParams.delete('job');
     history.replaceState(null,'',url);
     setHeaderListMode(true);
@@ -263,13 +283,13 @@
     };
     sample.push(order);createdOrders.push(order);persistPreviewCreated();
     ordersState.status='all';ordersState.search=id;ordersState.mill='all';ordersState.onlyPriority=false;ordersState.page=1;clearSelection();
-    newOrder={draft:freshDraft(),step:'edit',errors:{},dirty:false};
+    newOrder=freshNewOrder();
     showIndex();
     notify('Preview order #'+id+' created in this browser only.');
   }
   function discardNewOrder(){
     if(newOrder.dirty&&!window.confirm('Discard the unfinished preview order?'))return;
-    newOrder={draft:freshDraft(),step:'edit',errors:{},dirty:false};
+    newOrder=freshNewOrder();
     showIndex();
   }
   function inspectPreviewOrder(order){
