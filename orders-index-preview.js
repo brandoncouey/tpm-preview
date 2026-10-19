@@ -302,6 +302,7 @@
   function newMaterialsWorkspace(){
     return newMaterialSummary()+'<div class="new-material-confirm">'+
       '<label><input type="checkbox" data-new-material-confirm '+(newOrder.materialsConfirmed?'checked':'')+
+      (!(newRequirements().specsReady&&newRequirements().coverageReady)?' disabled':'')+
       '> I have checked the part specification, required footage, and selected material compatibility for this preview.</label>'+
       '<small>This acknowledgment is not a real material approval, inventory reservation, or stock availability check.</small></div>'+
       newMaterialCatalogHtml();
