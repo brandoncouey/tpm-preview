@@ -137,28 +137,43 @@
     if(!errors.ordered&&!errors.due&&newFieldValue('due')<newFieldValue('ordered'))errors.due='Due date must be on or after the order date.';
     if(newFieldValue('shipDate')&&newFieldValue('shipDate')<newFieldValue('ordered'))errors.shipDate='Planned ship date cannot be before the order date.';
     if(newFieldValue('shipDate')&&newFieldValue('due')&&newFieldValue('shipDate')>newFieldValue('due'))errors.shipDate='Planned ship date cannot be after the due date.';
+        for(const key of ['requiredBlankLF','requiredPerforatedLF','requiredMeshLF']){
+      const raw=newFieldValue(key);
+      if(raw&&(lfNumber(raw)===null||lfNumber(raw)>100000000))errors[key]='Enter a valid nonnegative length in LF.';
+    }
+    for(const key of ['stripWidth','gage','finishedLength','cutoffLength']){
+      const raw=newFieldValue(key);
+      if(raw&&(lfNumber(raw)===null||lfNumber(raw)===0))errors[key]='Enter a positive measurement.';
+    }
+    const r=newRequirements();
+    if(newFieldValue('mill')&&!r.setupReady)errors.mill='Complete the setup and allocation checklist before assigning a mill.';
     newOrder.errors=errors;
     return !Object.keys(errors).length;
   }
   function newOrderSummary(){
-    const d=newOrder.draft,q=Number(d.quantity)||0,p=Number(d.unitPrice)||0;
+    const d=newOrder.draft,q=Number(d.quantity)||0,p=Number(d.unitPrice)||0,r=newRequirements();
     const moneyValue=Number.isFinite(q*p)?money(q*p):'—';
     const filled=[!!newFieldValue('customer'),!!newFieldValue('po'),!!newFieldValue('part'),
       !!newFieldValue('description'),!!newFieldValue('quantity'),!!newFieldValue('unitPrice'),
       !!newFieldValue('ordered'),!!newFieldValue('due')];
     const complete=filled.filter(Boolean).length;
-    return '<div class="new-order-aside-top"><span class="new-order-mini">ORDER SUMMARY</span><h3>Draft details</h3><p>Values update as you complete the form.</p></div>'+
+    const coverage=(r.requested.blank||0)+(r.requested.perforated||0);
+    const allocatedSteel=r.allocated.blank+r.allocated.perforated;
+    return '<div class="new-order-aside-top"><span class="new-order-mini">ORDER & SETUP SUMMARY</span><h3>Draft details</h3><p>Live form values and material readiness.</p></div>'+
       '<div class="new-order-summary-list">'+[
-        ['Customer',d.customer||'Not selected'],
-        ['Part',d.part||'Not selected'],
+        ['Customer',d.customer||'Not selected'],['Part',d.part||'Not selected'],
         ['Quantity',q?formatInt(q)+' tubes':'Not entered'],
         ['Unit price',newFieldValue('unitPrice')?money(p):'Not entered'],
         ['Estimated order total',newFieldValue('quantity')&&newFieldValue('unitPrice')?moneyValue:'—'],
-        ['Due date',d.due?localDate(d.due):'Not set'],
-        ['Assigned mill',d.mill||'Unassigned']
+        ['Required steel LF',coverage>0?fmtLF(coverage):'Not entered'],
+        ['Selected steel LF',fmtLF(allocatedSteel)],
+        ['Mesh',r.meshRequired?'Required · '+r.mesh.length+' selected':'Not required'],
+        ['Setup',r.setupReady?'Confirmed in preview':'Not ready for mill assignment'],
+        ['Assigned mill',d.mill||'Unassigned'],
+        ['Due date',d.due?localDate(d.due):'Not set']
       ].map(([label,value],i)=>'<div class="'+(i===4?'new-order-summary-emph':'')+'"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong></div>').join('')+'</div>'+
-      '<div class="new-order-completion"><div><strong>'+complete+' of 8 required fields</strong><span>'+Math.round(complete/8*100)+'%</span></div><div class="new-order-completion-track"><span style="width:'+Math.round(complete/8*100)+'%"></span></div></div>'+
-      '<div class="new-order-aside-note"><strong>Preview only</strong><p>Submitting adds an unstarted sample order to this browser. It does not create a Laravel record or reserve materials.</p></div>';
+      '<div class="new-order-completion"><div><strong>'+complete+' of 8 order fields</strong><span>'+Math.round(complete/8*100)+'%</span></div><div class="new-order-completion-track"><span style="width:'+Math.round(complete/8*100)+'%"></span></div></div>'+
+      '<div class="new-order-aside-note"><strong>Preview only · Not started</strong><p>Required steel footage must be entered; the browser cannot calculate real shortage/weight from TPM. Mill assignment is unlocked after materials and setup are acknowledged.</p></div>';
   }
   function newOrderSection({number,title,description,content}){
     return '<section class="new-order-section" id="new-order-section-'+number+'">'+
@@ -190,8 +205,9 @@
     const needsSteel=!!((requested.blank||0)+(requested.perforated||0));
     const steelSatisfied=needsSteel &&
       (requested.blank===null||allocated.blank>=requested.blank)&&
-      (requested.perforated===null||allocated.perforated>=requested.perforated);
-    const meshSatisfied=!meshRequired||(requested.mesh!==null&&requested.mesh>0&&allocated.mesh>=requested.mesh);
+      (requested.perforated===null||allocated.perforated>=requested.perforated)&&
+      coil.every(newCompatibility);
+    const meshSatisfied=!meshRequired||(requested.mesh!==null&&requested.mesh>0&&allocated.mesh>=requested.mesh&&mesh.every(newCompatibility));
     const numericSpecifications=['stripWidth','gage','finishedLength','cutoffLength'].every(k=>lfNumber(d[k])>0);
     const specsReady=!!d.materialGrade.trim()&&numericSpecifications;
     const coverageReady=needsSteel&&steelSatisfied&&meshSatisfied;
@@ -394,30 +410,54 @@
       '</div>';
   }
   function newOrderReview(){
-    const d=newOrder.draft,q=Number(d.quantity)||0,p=Number(d.unitPrice)||0;
+    const d=newOrder.draft,q=Number(d.quantity)||0,p=Number(d.unitPrice)||0,r=newRequirements();
     const groups=[
       ['Customer & order',[
         ['Customer',d.customer],['Purchase order',d.po],['Part number',d.part],
         ['Description',d.description],['Quantity',formatInt(q)+' tubes'],
         ['Sales price per unit',money(p)],['Estimated total',money(q*p)]
       ]],
-      ['Production assignments',[
-        ['Mill',d.mill||'Not assigned'],['Die',d.die||'—'],
-        ['Mill operator',d.millOp||'Unassigned'],['Cutoff operator',d.cutoffOp||'Unassigned'],
-        ['Inspector',d.inspector||'Unassigned'],['Repair welder',d.repairWelder||'Unassigned'],
-        ['Mill weld spec',d.millWeldSpec||'—'],['Repair weld spec',d.repairWeldSpec||'—']
+      ['Part specifications',[
+        ['Material grade',d.materialGrade||'Not specified'],['Tube diameter / OD',d.partDimension||'—'],
+        ['Strip width',d.stripWidth?d.stripWidth+' in':'Not entered'],
+        ['Gage',d.gage?d.gage+' in':'Not entered'],
+        ['Finished length',d.finishedLength?d.finishedLength+' in':'Not entered'],
+        ['Cutoff setup',d.cutoffLength?d.cutoffLength+' in':'Not entered'],
+        ['Perforation',d.pattern||'—'],['Hole diameter',d.holeSize||'—'],['Centers',d.centers||'—'],
+        ['Die',d.die||'Not assigned'],['Mill WPS',d.millWeldSpec||'—'],
+        ['Repair WPS',d.repairWeldSpec||'—']
       ]],
-      ['Dates & shipping',[
+      ['Material planning & allocation',[
+        ['Blank required',r.requested.blank===null?'Not entered':fmtLF(r.requested.blank)],
+        ['Blank allocated',fmtLF(r.allocated.blank)],
+        ['Perforated required',r.requested.perforated===null?'Not entered':fmtLF(r.requested.perforated)],
+        ['Perforated allocated',fmtLF(r.allocated.perforated)],
+        ['Mesh required',r.meshRequired?'Yes':'No'],
+        ['Mesh LF required',r.meshRequired?(r.requested.mesh===null?'Not entered':fmtLF(r.requested.mesh)):'Not required'],
+        ['Mesh LF allocated',fmtLF(r.allocated.mesh)],
+        ['Coils selected',String(r.coil.length)],['Mesh rolls selected',String(r.mesh.length)],
+        ['Material check',newOrder.materialsConfirmed?'Acknowledged in preview':'Pending'],
+        ['Allocation coverage',r.coverageReady?'Covered in preview':'Pending / insufficient']
+      ]],
+      ['Production setup & mill',[
+        ['Setup checklist',newOrder.setupConfirmed?'Confirmed in preview':'Pending'],
+        ['Mill',d.mill||'Unassigned'],
+        ['Mill operator',d.millOp||'Unassigned'],['Cutoff operator',d.cutoffOp||'Unassigned'],
+        ['Inspector',d.inspector||'Unassigned'],['Repair welder',d.repairWelder||'Unassigned']
+      ]],
+      ['Schedule & shipping',[
         ['Order date',localDate(d.ordered)],['Due date',localDate(d.due)],
         ['Planned ship',d.shipDate?localDate(d.shipDate):'Not set'],
         ['Shipping method',d.shipMethod||'Not set'],['Container',d.containerType||'Not set']
       ]]
     ];
-    return '<div class="new-order-review"><div class="new-order-review-heading"><span class="new-order-mini">REVIEW BEFORE CREATION</span><h2>Confirm order details</h2><p>Review all information below. Creating this order only saves to your browser-based demo.</p></div>'+
+    const allocatedIds='Coils: '+(r.coil.map(x=>x.id).join(', ')||'None')+' · Mesh: '+(r.mesh.map(x=>x.id).join(', ')||'None');
+    return '<div class="new-order-review"><div class="new-order-review-heading"><span class="new-order-mini">REVIEW BEFORE CREATION</span><h2>Confirm manufacturing order</h2><p>Review the part setup, allocations, and mill assignment. This is a browser preview and does not reserve stock.</p></div>'+
       groups.map(([title,pairs])=>'<section class="new-order-review-group"><h3>'+esc(title)+'</h3><dl>'+
         pairs.map(([label,value])=>'<div><dt>'+esc(label)+'</dt><dd>'+esc(value)+'</dd></div>').join('')+'</dl></section>').join('')+
-      '<section class="new-order-review-group"><h3>Manufacturing instructions</h3><p class="new-order-review-notes">'+esc(d.notes||'No special instructions provided.')+'</p></section>'+
-      '<div class="new-order-review-warning"><strong>Status on creation: Not started.</strong> This is a UI-only preview; no real order number, customer association, material allocation, or production schedule is created in TPM.</div></div>';
+      '<section class="new-order-review-group"><h3>Selected inventory IDs</h3><p class="new-order-review-notes">'+esc(allocatedIds)+'</p></section>'+
+      '<section class="new-order-review-group"><h3>Setup notes / manufacturing instructions</h3><p class="new-order-review-notes">'+esc(d.setupNotes||'No setup-specific notes.')+'</p><p class="new-order-review-notes">'+esc(d.notes||'No additional manufacturing instructions.')+'</p></section>'+
+      '<div class="new-order-review-warning"><strong>New status: Not started.</strong> '+(r.setupReady?(d.mill?'Mill assigned in the browser preview.':'Setup checked, but no mill selected.'):'This is an unassigned draft with outstanding setup or material requirements.')+' No real TPM materials, mill schedule, customer record, or production data are changed.</div></div>';
   }
   function newOrderPage(){
     const review=newOrder.step==='review';
@@ -471,7 +511,14 @@
       shipDate:d.shipDate,millOp:d.millOp,cutoffOp:d.cutoffOp,inspector:d.inspector,
       repairWelder:d.repairWelder,die:d.die,millWeldSpec:d.millWeldSpec,
       repairWeldSpec:d.repairWeldSpec,shipMethod:d.shipMethod,containerType:d.containerType,
-      notes:d.notes
+      notes:d.notes,
+      materialGrade:d.materialGrade,partDimension:d.partDimension,gage:d.gage,
+      stripWidth:d.stripWidth,pattern:d.pattern,holeSize:d.holeSize,centers:d.centers,
+      finishedLength:d.finishedLength,cutoffLength:d.cutoffLength,
+      requiredBlankLF:d.requiredBlankLF,requiredPerforatedLF:d.requiredPerforatedLF,
+      requiredMeshLF:d.requiredMeshLF,meshRequired:d.meshRequired,setupNotes:d.setupNotes,
+      allocatedCoils:[...newOrder.allocatedCoils],allocatedMesh:[...newOrder.allocatedMesh],
+      materialsConfirmed:newOrder.materialsConfirmed,setupConfirmed:newOrder.setupConfirmed
     };
     sample.push(order);createdOrders.push(order);persistPreviewCreated();
     ordersState.status='all';ordersState.search=id;ordersState.mill='all';ordersState.onlyPriority=false;ordersState.page=1;clearSelection();
