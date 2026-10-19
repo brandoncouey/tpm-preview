@@ -209,7 +209,7 @@
   }
   function newOrderPage(){
     const review=newOrder.step==='review';
-    return '<div class="new-order-page"><header class="new-order-heading"><div><span class="new-order-mini">TPM / ORDERS / NEW ORDER</span>'+
+    return '<div class="new-order-page"><header class="new-order-heading"><div><button type="button" class="orders-mobile-menu" data-shell-open aria-label="Open TPM navigation">☰</button><span class="new-order-mini">TPM / ORDERS / NEW ORDER</span>'+
       '<h1>New order</h1><p>Create a manufacturing order using the same visual language as the redesigned TPM workspace.</p></div>'+
       '<div class="new-order-heading-actions"><span class="orders-demo-pill">PREVIEW ONLY · LOCAL BROWSER</span><button type="button" class="new-order-subtle" data-new-order-action="cancel">← All Orders</button></div></header>'+
       '<div class="new-order-step-strip"><span class="'+(!review?'is-current':'is-finished')+'"><b>1</b> Order details</span><span class="'+(review?'is-current':'')+'"><b>2</b> Review & confirm</span><span class="new-order-step-right">New orders start as <strong>Not started</strong></span></div>'+
