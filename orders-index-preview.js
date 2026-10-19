@@ -87,7 +87,6 @@
     const selectedInPage=rows.filter(o=>ordersState.selected.has(o.id)).length;
     const selectedCount=ordersState.selected.size;
     const totalQty=sample.reduce((total,r)=>total+r.quantity,0);
-    const unfulfilled=sample.filter(r=>r.status==='not_started'||r.status==='started').length;
     const inProduction=sample.filter(r=>r.status==='started').length;
     const finished=sample.filter(r=>r.status==='completed'||r.status==='shipped').length;
     const cards=[
@@ -97,7 +96,7 @@
       ['Completed / shipped',formatInt(finished),'Finished in the sample','completed']
     ];
     return '<div class="orders-index" aria-label="TPM Orders list">'
-      +'<header class="orders-list-head"><div class="orders-list-identity"><div class="orders-list-crumb">TPM / MANUFACTURING / ORDERS</div><h1>Orders <span class="orders-list-number">'+formatInt(sample.length)+'</span></h1><p>Manage manufacturing orders, find jobs quickly and work with multiple records in one view.</p></div>'
+      +'<header class="orders-list-head"><div class="orders-list-identity"><button type="button" class="orders-mobile-menu" data-shell-open aria-label="Open TPM sidebar">☰</button><div class="orders-list-crumb">TPM / MANUFACTURING / ORDERS</div><h1>Orders <span class="orders-list-number">'+formatInt(sample.length)+'</span></h1><p>Manage manufacturing orders, find jobs quickly and work with multiple records in one view.</p></div>'
       +'<div class="orders-list-head-actions"><span class="orders-demo-pill">DEMO DATA · NOT CONNECTED TO TPM</span>'
       +'<button type="button" class="orders-primary-button" data-orders-open="'+esc(j.job)+'">Open sample job <span aria-hidden="true">↗</span></button></div></header>'
       +'<section class="orders-list-metrics" aria-label="Order status summary">'+cards.map(([title,value,sub,status])=>
