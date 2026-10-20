@@ -70,7 +70,7 @@
      ['Attended',fmt(run.attended_seconds),'Gaps '+threshold(run.attended_gap_minutes),'Longer gap threshold; includes some time also counted as running.'],
      ['Setup',fmt(setup.changeover_seconds),'Start → tube 1','Available only when a source setup start was recorded.'],
      ['Ramp-up',fmt(setup.seconds),'Tube 1 → milled','Time from starting to the first good milled tube.'],
-     ['Stops',run.pause_count==null?'—':integer(run.pause_count),'Gaps over '+threshold(run.idle_gap_minutes),'Inferred gaps, not independently logged pause or downtime reasons.']
+     ['Stops',run.pause_count==null?'—':integer(run.pause_count),run.idle_gap_minutes==null?'Threshold not recorded':'Gaps over '+fmt(Number(run.idle_gap_minutes)*60),'Inferred gaps, not independently logged pause or downtime reasons.']
    ];
    return '<section class="prod-parity-timing" aria-label="Job production timing">'+
       '<div class="prod-parity-section-header"><div><span class="prod-section-eyebrow">PRODUCTION TIMING</span><h3>Time on this job</h3><p>Different timing definitions describe the same job. Values must not be added together.</p></div><span class="prod-parity-source-pill">JOB ROLL-UP · STATIC SAMPLE</span></div>'+
@@ -87,7 +87,7 @@
    const sessions=recorded.reduce((total,p)=>total+(Array.isArray(p.departments)?p.departments.reduce((n,d)=>n+(Array.isArray(d.sessions)?d.sessions.length:0),0):0),0);
    const tubeCredits=recorded.reduce((total,p)=>total+(Number(p.tubes)||0),0);
    const scrap=recorded.reduce((total,p)=>total+(Number(p.scrap_events)||0),0);
-   const cells=[['Workers with records',integer(recorded.length),'People with production activity'],
+   const cells=[['Workers',integer(people.length),'Includes assigned-only people when present'],
      ['Worker-stage tube credits',integer(tubeCredits),'May repeat across stations; not distinct tubes'],
      ['Work sessions',integer(sessions),'From source per-worker intervals'],
      ['Scrap events attributed',integer(scrap),'Not necessarily every job scrap event']];
