@@ -1,0 +1,60 @@
+/* TPM reports integration. Layout, fonts, tokens, navigation and header come from
+   overview-ops.html. These selectors only style new content inside that shell. */
+
+/* Same original header / tabs, switch content only when Reports is active. */
+#tpm-integrated-reports-hero,#tpm-report-tabs{display:none!important}
+body.tpm-report-mode #tpm-job-hero,body.tpm-report-mode #tpm-job-tabs{display:none!important}
+body.tpm-report-mode #tpm-integrated-reports-hero{display:grid!important}
+body.tpm-report-mode #tpm-report-tabs{display:flex!important}
+
+/* Reports is an expandable section of the ORIGINAL dark TPM sidebar. */
+.tpm-reports-subnav{display:none;margin:0 7px 5px 30px;padding:3px 0 4px 8px;border-left:1px solid rgba(238,190,218,.33)}
+body.tpm-report-mode .tpm-reports-subnav{display:flex;flex-direction:column;gap:1px}
+.tpm-reports-subnav button{display:block;width:100%;text-align:left;border:1px solid transparent;background:transparent;color:#e2bdcf;font-family:inherit;font-size:11.6px;line-height:1.35;padding:7px 9px;border-radius:5px;cursor:pointer}
+.tpm-reports-subnav button:hover,.tpm-reports-subnav button[aria-current=page]{color:#fff;background:rgba(255,255,255,.13);border-color:rgba(240,210,227,.12)}
+.tpm-reports-subnav button[aria-current=page]{font-weight:790}
+.tpm-reports-subnav button:focus-visible,.tpm-integrated-reports button:focus-visible,.tpm-integrated-reports a:focus-visible{outline:2px solid #cf8eb1;outline-offset:2px}
+.tpm-layout.sidebar-collapsed .tpm-reports-subnav{display:none}
+@media(max-width:930px){.tpm-layout.mobile-sidebar-open .tpm-reports-subnav{display:flex}}
+body.tpm-report-mode .c-crumbs strong{color:#fff}
+body.tpm-report-mode .tpm-integrated-reports-hero .compact-titleline h1{max-width:28ch;overflow-wrap:anywhere}
+
+/* All typography below inherits original preview's .tab-workspace/.tab-panel. */
+#view>.tpm-integrated-reports{gap:15px}
+.tpm-integrated-reports .tpm-ir-tools{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid #e0e3e8;background:#fff;border-radius:5px;padding:13px 16px}
+.tpm-ir-tools label{font-size:11px;font-weight:800;color:#4b5360;white-space:nowrap}
+.tpm-ir-tools input{flex:1 1 220px;max-width:610px;min-width:140px;background:#fff;border:1px solid #d1d6dd;border-radius:5px;color:#323a45;font:inherit;font-size:12px;padding:10px 12px;min-height:40px}
+.tpm-ir-tools input:focus-visible{outline:2px solid #b685a1;outline-offset:2px}
+.tpm-ir-tools span{font-size:11px;color:#7a7680;font-weight:740;margin-left:auto}
+.tpm-ir-sections{display:flex;flex-direction:column;gap:14px}
+.tpm-ir-section[hidden],.tpm-ir-item[hidden]{display:none!important}
+.tpm-ir-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;padding:15px}
+.tpm-ir-item{display:flex;align-items:center;gap:12px;text-align:left;font-family:inherit;background:#fff;border:1px solid #e0e3e8;border-radius:6px;min-height:86px;padding:13px 14px;cursor:pointer;color:#38404b}
+.tpm-ir-item:hover{border-color:#bca0b1;background:#fcf8fa;box-shadow:0 3px 10px rgba(40,30,37,.04)}
+.tpm-ir-icon{background:#f4eff2;color:#814664;border:1px solid #e8d8e1;border-radius:5px;width:34px;height:34px;flex:none;display:grid;place-items:center;font-size:16px}
+.tpm-ir-item-copy{display:flex;flex:1;flex-direction:column;gap:4px;min-width:0}
+.tpm-ir-item-copy strong{font-size:12px;font-weight:800;color:#353c47}
+.tpm-ir-item-copy small{font-size:11px;color:#797e88;line-height:1.5}
+.tpm-ir-item-next{flex:none;color:#986c83;font-size:21px}
+.tpm-ir-actions{display:flex;flex-wrap:wrap;gap:8px}
+.tpm-ir-actions .btn{font-size:11.6px;font-weight:730;border:1px solid #dce0e4;min-height:38px}
+.tpm-ir-actions a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.tpm-ir-actions a.btn.brand{background:#7d0040;color:#fff;border-color:#7d0040}
+.tpm-ir-filter-guide{display:flex;gap:8px;flex-wrap:wrap;padding:16px 16px 5px}
+.tpm-ir-filter-guide span{display:inline-flex;align-items:center;min-height:32px;color:#73556a;background:#faf7f9;border:1px solid #e8dbe3;border-radius:5px;padding:7px 10px;font-size:11px;font-weight:730}
+.tpm-ir-small{padding:2px 16px 15px;font-size:11px;line-height:1.6;color:#7d808c}
+.tpm-ir-table{width:100%;max-width:100%;overflow-x:auto;scrollbar-gutter:stable}
+.tpm-ir-table table{width:100%;min-width:760px;border-collapse:collapse}
+.tpm-ir-table th{text-align:left;white-space:nowrap;padding:13px 14px;font-size:10px;font-weight:780;color:#68717d;background:#f8f9fa;border-bottom:1px solid #e4e7ea}
+.tpm-ir-table td{border-bottom:1px solid #e5e7ea;padding:0}
+.tpm-ir-empty{text-align:center;padding:30px 22px;background:#fff;max-width:620px;margin:auto;color:#737e89}
+.tpm-ir-empty strong{display:block;font-size:13px;color:#35404a}
+.tpm-ir-empty p{font-size:11.5px;line-height:1.65;margin:8px 0 13px}
+.tpm-ir-empty a{display:inline-block;text-decoration:none;padding:10px 13px;font-size:11px;border-radius:5px;background:#f8f0f4;border:1px solid #e4d0dc;color:#7d0040;font-weight:800}
+.tpm-ir-definition-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:11px;padding:16px}
+.tpm-ir-definition-grid>div{display:flex;align-items:flex-start;gap:9px;border:1px solid #e4e6e9;border-radius:5px;background:#fff;padding:13px;color:#555d68}
+.tpm-ir-definition-grid span{flex:none;color:#7e4d67;font-size:12px;margin-top:1px}
+.tpm-ir-definition-grid p{font-size:11.5px;line-height:1.6}
+@media(max-width:930px){.tpm-layout.mobile-sidebar-open .tpm-reports-subnav{margin-left:28px}}
+@media(max-width:650px){body.tpm-report-mode #tpm-integrated-reports-hero{display:flex!important;flex-direction:column;align-items:stretch}body.tpm-report-mode #tpm-integrated-reports-hero .compact-facts{justify-content:flex-start;flex-wrap:wrap}.tpm-ir-list{grid-template-columns:1fr;padding:12px}.tpm-ir-tools{align-items:stretch}.tpm-ir-tools label{width:100%}.tpm-ir-tools span{margin-left:0;width:100%}.tpm-ir-definition-grid{grid-template-columns:1fr}.tpm-ir-actions>*{flex:1 1 auto}body.tpm-report-mode #tpm-report-tabs{overflow-x:auto!important}}
+@media print{.tpm-reports-subnav,.tpm-ir-tools,.tpm-ir-actions,#tpm-report-tabs{display:none!important}.tpm-ir-table{overflow:visible}}
