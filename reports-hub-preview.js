@@ -73,7 +73,7 @@
  function renderDepartments(){
    const list=departments.map(d=>{
      const amount=groups.reduce((sum,g)=>sum+g.entries.filter(entry=>{
-       const terms=query.toLowerCase().trim().split(/\\s+/).filter(Boolean);
+       const terms=query.toLowerCase().trim().split(/\s+/).filter(Boolean);
        const content=[entry.title,entry.desc,g.title,...(entry.former||[])].join(' ').toLowerCase();
        return (d.key==='all'||(reportAudiences[entry.title]||[]).includes(d.key))&&terms.every(word=>content.includes(word));
      }).length,0);
