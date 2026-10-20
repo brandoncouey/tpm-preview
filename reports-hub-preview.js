@@ -35,16 +35,52 @@
   ]}
  ];
  // PDF Generator is intentionally absent. Actual Reports.vue shows it to isAdmin users only.
- let active='all',query='';
+ let active='all',query='',department='all';
+ const departments=[
+  {key:'all',title:'All teams'},
+  {key:'orders',title:'Order desk'},
+  {key:'production',title:'Production'},
+  {key:'quality',title:'Quality'},
+  {key:'materials',title:'Materials'},
+  {key:'supervision',title:'Supervisors'},
+  {key:'people',title:'People & training'}
+ ];
+ // These are suggested working areas, not role permissions or new report destinations.
+ const reportAudiences={
+   'Order History':['orders','supervision'],
+   'Mill Performance':['production','supervision'],
+   'Shop Timing':['production','supervision','people'],
+   'Scrap Events':['quality','production','supervision'],
+   'Tube Scrap Summary':['quality','supervision'],
+   'Mesh Scrap Summary':['quality','materials'],
+   'Employee Report':['people','supervision'],
+   'Inspection Pass Rates':['quality','people'],
+   'Training Report':['people'],
+   'Steel Receive Report':['materials'],
+   'Audit Report':['materials','quality'],
+   'Standard Prices':['orders','supervision']
+ };
+ const reportLayoutLink={'Order History':'order-history','Shop Timing':'shop-timing'};
  const byId=id=>document.getElementById(id);
  const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function matchEntry(group,entry){
    const terms=query.toLowerCase().trim().split(/\s+/).filter(Boolean);
    const haystack=[entry.title,entry.desc,group.title,...(entry.former||[])].join(' ').toLowerCase();
-   return terms.every(term=>haystack.includes(term));
+   return (department==='all'||(reportAudiences[entry.title]||[]).includes(department))&&terms.every(term=>haystack.includes(term));
  }
  function matches(){return groups.map(g=>({...g,entries:g.entries.filter(e=>matchEntry(g,e))}));}
  const count=items=>items.reduce((n,g)=>n+g.entries.length,0);
+ function renderDepartments(){
+   const list=departments.map(d=>{
+     const amount=groups.reduce((sum,g)=>sum+g.entries.filter(entry=>{
+       const terms=query.toLowerCase().trim().split(/\\s+/).filter(Boolean);
+       const content=[entry.title,entry.desc,g.title,...(entry.former||[])].join(' ').toLowerCase();
+       return (d.key==='all'||(reportAudiences[entry.title]||[]).includes(d.key))&&terms.every(word=>content.includes(word));
+     }).length,0);
+     return '<button type="button" data-reports-department="'+escape(d.key)+'" aria-pressed="'+(department===d.key)+'" '+(amount===0&&d.key!=='all'?'disabled':'')+'>'+escape(d.title)+' <span>'+amount+'</span></button>';
+   }).join('');
+   byId('reports-departments').innerHTML=list;
+ }
  function renderTabs(filtered){
    const tabs=[{key:'all',title:'All reports',count:count(filtered)},...filtered.map(g=>({key:g.key,title:g.title,count:g.entries.length}))];
    byId('reports-tabs').innerHTML=tabs.map((t,i)=>
@@ -61,6 +97,7 @@
    const href=origin+entry.path;
    return '<article class="reports-card"><div class="reports-card-top"><h3><a href="'+escape(href)+'" target="_blank" rel="noopener noreferrer">'+escape(entry.title)+' <span aria-hidden="true">↗</span></a></h3><span class="reports-card-context">IN LOCAL TPM</span></div>'+
      '<p>'+escape(entry.desc)+'</p>'+
+     (reportLayoutLink[entry.title]?'<div class="reports-card-layout"><a href="./report-workspace-preview.html?report='+reportLayoutLink[entry.title]+'">Preview the report layout ↗</a><span>Design only</span></div>':'')+
      ((entry.former||[]).length?'<small class="reports-former">Previously: '+escape(entry.former.join(' · '))+'</small>':'')+
      (entry.note?'<small class="reports-card-note">'+escape(entry.note)+'</small>':'')+
      ((entry.presets||[]).length?'<div class="reports-card-presets"><span>Saved views</span><div>'+entry.presets.map(([title,path])=>
@@ -73,7 +110,7 @@
    byId('reports-search-count').textContent=shown+' of '+allCount+' report destinations'+(query.trim()?' match':'');
    byId('reports-search-clear').hidden=!query;
    if(!visible.length){
-     byId('reports-groups').innerHTML='<div class="reports-empty"><strong>No matching reports</strong><p>Try a single keyword such as mill, scrap, employee, timing or prices.</p><button type="button" data-reports-clear>Clear search</button></div>';
+     byId('reports-groups').innerHTML='<div class="reports-empty"><strong>No matching reports</strong><p>Try a keyword or select All teams to broaden the results.</p><button type="button" data-reports-clear>Clear search</button></div>';
      return;
    }
    byId('reports-groups').innerHTML=visible.map(g=>
@@ -87,6 +124,7 @@
  }
  function render(){
   const filtered=matches();
+  renderDepartments();
   if(active!=='all'&&!filtered.some(g=>g.key===active&&g.entries.length))active='all';
   renderTabs(filtered);renderGroups(filtered);
  }
@@ -94,9 +132,11 @@
  search.addEventListener('input',()=>{query=search.value;render()});
  byId('reports-search-clear').addEventListener('click',()=>{query='';search.value='';render();search.focus()});
  document.addEventListener('click',e=>{
+  const team=e.target.closest('[data-reports-department]');
+  if(team&&!team.disabled){department=team.dataset.reportsDepartment;active='all';render();return;}
   const b=e.target.closest('[data-reports-tab]');
   if(b&&!b.disabled){active=b.dataset.reportsTab;render();if(b.closest('.reports-tabs'))byId('reports-tabs').querySelector('[aria-selected="true"]')?.focus();return}
-  if(e.target.closest('[data-reports-clear]')){query='';search.value='';active='all';render();search.focus();}
+  if(e.target.closest('[data-reports-clear]')){query='';search.value='';active='all';department='all';render();search.focus();}
  });
  // Match the existing Vue report-tab arrow, Home/End behavior.
  byId('reports-tabs').addEventListener('keydown',e=>{
