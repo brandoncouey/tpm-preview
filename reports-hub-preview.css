@@ -86,3 +86,23 @@
 @media(max-width:870px){.reports-side{width:66px;padding:15px 7px}.reports-brand{margin-bottom:10px;padding:0}.reports-brand-box{width:42px;height:42px;flex:none}.reports-brand>span:last-child,.reports-side-label,.reports-side-groups,.reports-side-foot{display:none}.reports-sidebar-links a{font-size:0;justify-content:center;padding:13px 3px}.reports-sidebar-links a span{font-size:12px}.reports-topbar{padding:0 16px}.reports-tools{grid-template-columns:1fr 1fr}.reports-grid{grid-template-columns:repeat(auto-fit,minmax(205px,1fr))}}
 @media(max-width:650px){.reports-side{width:0;display:none}.reports-tools{grid-template-columns:1fr}.reports-content{padding:13px 12px 32px}.reports-topbar{padding:0 12px}.reports-top-label{display:none}.reports-hero{padding:18px 16px;flex-direction:column}.reports-hero h1{font-size:24px}.reports-tabs{flex-wrap:nowrap;overflow-x:auto;white-space:nowrap}.reports-tabs button{flex:none}.reports-grid{grid-template-columns:1fr}.reports-category-header{padding:13px}.reports-card p{min-height:0}}
 @media print{.reports-side,.reports-topbar,.reports-tools,.reports-tabs,.reports-card a,.reports-scope-note{display:none!important}.reports-shell-main{width:100%}.reports-content{padding:0}.reports-hero,.reports-category{break-inside:avoid}}
+
+
+/* Iteration 5: department-first report discovery and obvious design / live distinctions. */
+.reports-department-panel{margin-top:13px;background:#fff;border:1px solid #dfe5e9;border-radius:5px;padding:14px 16px}
+.reports-department-header{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.reports-department-header h2{font-size:12.6px;font-weight:850;color:#3c4c59}
+.reports-department-header p{font-size:10.6px;color:#7e8b96;line-height:1.6;margin-top:5px}
+.reports-department-header>span{font-size:9px;font-weight:790;color:#937187;background:#fbf7f9;border:1px solid #ecdee6;border-radius:3px;padding:5px 7px;white-space:nowrap}
+.reports-departments{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+.reports-departments button{border:1px solid #d9e0e5;border-radius:4px;background:#fff;color:#657481;font-size:10.5px;font-weight:760;padding:8px 10px;min-height:35px;display:inline-flex;align-items:center;gap:7px}
+.reports-departments button span{font-size:9px;padding:2px 5px;border-radius:3px;background:#f1f3f5;color:#82909a}
+.reports-departments button[aria-pressed=true]{background:#f8eff4;border-color:#d8bfce;color:#7d0040}
+.reports-departments button[aria-pressed=true] span{background:#eddde6;color:#7d0040}
+.reports-departments button:hover:not(:disabled){background:#faf3f7;border-color:#bd9fb0}
+.reports-departments button:disabled{opacity:.4;cursor:not-allowed}
+.reports-card-layout{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:12px}
+.reports-card-layout a{display:inline-block;border:1px solid #d8c1ce;color:#7d0040;background:#fcf8fa;border-radius:4px;padding:7px 10px;font-size:10px;font-weight:800}
+.reports-card-layout a:hover{background:#f7eaf1}
+.reports-card-layout span{color:#a0a9b0;font-size:9px}
+@media(max-width:650px){.reports-department-panel{padding:13px}.reports-department-header{flex-direction:column}.reports-department-header>span{display:none}.reports-departments{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.reports-departments button{justify-content:space-between;min-width:0}}
