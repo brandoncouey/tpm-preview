@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="TPM source-aligned Order History and Shop Timing report layouts.">
+<title>TPM · Reports · Department Preview</title>
+<link rel="stylesheet" href="./reports-hub-preview.css?v=20261020b">
+<link rel="stylesheet" href="./report-workspace-preview.css?v=20261020a">
+</head>
+<body>
+<div class="tpm-reports-shell">
+ <aside class="reports-side">
+  <a class="reports-brand" href="./overview-ops.html?view=overview"><span class="reports-brand-box">TPM</span><span><strong>Production Management</strong><small>Steel manufacturing operations</small></span></a>
+  <div class="reports-side-label">WORKSPACES</div>
+  <nav class="reports-sidebar-links" aria-label="Preview navigation">
+   <a href="./overview-ops.html?view=overview">Orders <span aria-hidden="true">↗</span></a>
+   <a href="./overview-ops.html?view=production&amp;job=990100">Production <span aria-hidden="true">↗</span></a>
+   <a href="./overview-ops.html?view=materials&amp;job=990100">Materials <span aria-hidden="true">↗</span></a>
+   <a class="is-current" href="./reports-preview.html">Reports <span aria-hidden="true">↗</span></a>
+  </nav>
+  <div class="reports-side-label">REPORT LAYOUTS</div>
+  <nav id="rwp-switch" class="rwp-switch" aria-label="Report layout selection"></nav>
+  <div class="reports-side-foot"><strong>Layout preview only</strong><span>Real queries, report calculations and permissions remain inside Laravel and Vue.</span></div>
+ </aside>
+ <div class="reports-shell-main">
+  <header class="reports-topbar"><div class="reports-crumb">Operations <span>/</span> <a href="./reports-preview.html">Reports</a> <span>/</span> <span id="rwp-crumb"></span></div><div><a href="./reports-preview.html">← Reports directory</a><span class="reports-top-label">STATIC PREVIEW</span></div></header>
+  <main class="reports-content">
+   <div class="rwp-switch" aria-label="Switch report layout"><a href="./report-workspace-preview.html?report=order-history">Order History</a><a href="./report-workspace-preview.html?report=shop-timing">Shop Timing</a></div>
+   <section class="reports-hero" id="rwp-hero"></section>
+   <div class="rwp-context" id="rwp-context"></div>
+   <div class="rwp-filters" id="rwp-filters" aria-label="Presentation-only filters"></div>
+   <nav class="reports-tabs rwp-tabs" id="rwp-tabs" role="tablist" aria-label="Report view"></nav>
+   <div id="rwp-body"></div>
+   <div class="reports-scope-note"><strong>Ready for Composition API translation.</strong> Replace the static controls with real report composables, retain API query parameter validation, role access, service calculations, empty/loading/errors, server pagination and export functions. Do not copy this HTML as a replacement for existing Vue components.</div>
+  </main>
+ </div>
+</div>
+<script src="./report-workspace-preview.js?v=20261020a" defer></script>
+</body>
+</html>
