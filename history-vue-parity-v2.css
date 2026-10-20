@@ -1,0 +1,77 @@
+/* TPM History parity v2 — reuses the same white, graphite, and plum production visual language. */
+#view>.history-parity-v2{display:flex;flex-direction:column;gap:13px;color:#32414e;font-size:12px;min-width:0}
+#view>.history-parity-v2 *{box-sizing:border-box}
+#view>.history-parity-v2 button,#view>.history-parity-v2 select,#view>.history-parity-v2 input{font-family:inherit}
+#view>.history-parity-v2 button:focus-visible,#view>.history-parity-v2 select:focus-visible,#view>.history-parity-v2 input:focus-visible{outline:2px solid #885172;outline-offset:2px}
+#view>.history-parity-v2 .history-v2-hero{background:linear-gradient(100deg,#fff,#fafbfc);border:1px solid #dfe5e9;border-radius:5px;padding:21px 23px;min-width:0}
+#view>.history-parity-v2 .history-v2-overline{font-size:9px;font-weight:830;letter-spacing:.1em;color:#8a4e6b}
+#view>.history-parity-v2 .history-v2-hero h1{font-size:23px;font-weight:850;letter-spacing:-.035em;color:#2e3d49;margin:7px 0 5px}
+#view>.history-parity-v2 .history-v2-hero p{color:#71818e;font-size:11px;line-height:1.55;max-width:77ch}
+#view>.history-parity-v2 .history-v2-hero-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+#view>.history-parity-v2 .history-v2-hero-actions button{border:1px solid #d9e0e5;border-radius:4px;background:#fff;color:#685063;padding:8px 12px;font-weight:790;font-size:10.5px}
+#view>.history-parity-v2 .history-v2-hero-actions button:hover{border-color:#ac849a;background:#fff9fc}
+#view>.history-parity-v2 .history-v2-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
+#view>.history-parity-v2 .history-v2-facts>div{display:flex;flex-direction:column;gap:7px;background:#fff;border:1px solid #dfe5e9;padding:14px 15px;border-radius:5px;min-width:0}
+#view>.history-parity-v2 .history-v2-facts>div>span{font-weight:760;font-size:10px;color:#71818d}
+#view>.history-parity-v2 .history-v2-facts>div>strong{font-size:20px;font-weight:860;color:#2e3c48;letter-spacing:-.025em;line-height:1.3;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+#view>.history-parity-v2 .history-v2-facts>div>small{font-size:9.7px;color:#88949e;line-height:1.4}
+#view>.history-parity-v2 .history-v2-panel{background:#fff;border:1px solid #dfe5e9;border-radius:5px;overflow:hidden;min-width:0}
+#view>.history-parity-v2 .history-v2-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:11px;background:#f5f7f9;border-bottom:1px solid #e2e7eb;padding:14px 17px}
+#view>.history-parity-v2 .history-v2-panel-head h2{font-weight:850;font-size:14px;letter-spacing:-.02em;color:#35434e}
+#view>.history-parity-v2 .history-v2-panel-head p{font-size:10.6px;color:#7f8b95;line-height:1.5;margin:5px 0 0}
+#view>.history-parity-v2 .history-v2-panel-count{font-size:9.7px;color:#745b6c;white-space:nowrap;font-weight:780;border:1px solid #e6dbe2;border-radius:3px;background:#fff;padding:5px 8px}
+#view>.history-parity-v2 .history-v2-journey{list-style:none;margin:0;padding:9px 18px 14px}
+#view>.history-parity-v2 .history-v2-journey li{display:grid;grid-template-columns:29px minmax(0,1fr) auto;gap:12px;align-items:start;border-left:1px solid #e3e7ea;margin-left:14px;padding:10px 0 15px 18px;position:relative;min-width:0}
+#view>.history-parity-v2 .history-v2-journey li:last-child{border-left-color:transparent;padding-bottom:5px}
+#view>.history-parity-v2 .history-v2-step{position:absolute;left:-14px;top:7px;width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#f7f2f5;border:1px solid #d6bdca;color:#80516b;font-size:10px;font-weight:830}
+#view>.history-parity-v2 .history-v2-journey li.is-complete .history-v2-step{color:#247b55;border-color:#cbe6d5;background:#e7f6ed}
+#view>.history-parity-v2 .history-v2-journey li>div{grid-column:2}
+#view>.history-parity-v2 .history-v2-journey strong{font-size:11.4px;color:#40505e}
+#view>.history-parity-v2 .history-v2-journey p{font-size:10.5px;color:#82909a;margin:4px 0 0;line-height:1.6}
+#view>.history-parity-v2 .history-v2-journey time{grid-column:3;font-size:10px;font-weight:720;color:#7c8993;padding-top:2px;text-align:right}
+#view>.history-parity-v2 .history-v2-journey li.is-pending time{color:#b27a32}
+#view>.history-parity-v2 .history-v2-filters{display:grid;grid-template-columns:minmax(200px,1.6fr) minmax(150px,.8fr);gap:12px;align-items:end;padding:13px 17px;background:#fafbfc;border-bottom:1px solid #e5e9ed}
+#view>.history-parity-v2 .history-v2-filters label,#view>.history-parity-v2 .history-v2-subsection label{display:flex;flex-direction:column;gap:6px;color:#5f6e7b;font-size:10.4px;font-weight:770;min-width:0}
+#view>.history-parity-v2 input,#view>.history-parity-v2 select{padding:9px 10px;border:1px solid #cfd8df;border-radius:4px;min-height:38px;min-width:0;background:#fff;color:#354550;font-size:11px}
+#view>.history-parity-v2 .history-v2-event-list{display:flex;flex-direction:column;padding:3px 15px}
+#view>.history-parity-v2 .history-v2-event{display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid #ebeff2;padding:12px 3px;min-width:0}
+#view>.history-parity-v2 .history-v2-event:last-child{border:0}
+#view>.history-parity-v2 .history-v2-event-mark{width:25px;height:25px;flex:none;border-radius:4px;background:#eaf0f6;color:#55728b;border:1px solid #dce5ed;display:grid;place-items:center;font-size:11px;font-weight:850}
+#view>.history-parity-v2 .history-v2-scrap .history-v2-event-mark{background:#fff5e9;color:#a2742e;border-color:#f0e0c8}
+#view>.history-parity-v2 .history-v2-milestone .history-v2-event-mark{background:#faf3f8;color:#8e5b7a;border-color:#eadbe4}
+#view>.history-parity-v2 .history-v2-event-main{flex:1;min-width:0}
+#view>.history-parity-v2 .history-v2-event-main>div{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+#view>.history-parity-v2 .history-v2-event-main strong{font-size:11.5px;color:#3d4c59;font-weight:790}
+#view>.history-parity-v2 .history-v2-event-main p{font-size:10.4px;color:#788692;line-height:1.6;margin-top:4px}
+#view>.history-parity-v2 .history-v2-tag{color:#78576d;background:#f8f4f7;border-radius:3px;padding:3px 6px;font-weight:740;font-size:9.5px}
+#view>.history-parity-v2 .history-v2-event time{font-size:9.8px;white-space:nowrap;color:#82919b;padding-top:4px}
+#view>.history-parity-v2 .history-v2-event-foot{border-top:1px solid #ebeff2;background:#fafbfc;font-size:10px;color:#81909a;padding:10px 17px}
+#view>.history-parity-v2 .history-v2-empty{padding:24px 14px;font-size:11px;color:#87949e;text-align:center}
+#view>.history-parity-v2 .history-v2-complete-actions{display:flex;align-items:center;gap:13px;flex-wrap:wrap;padding:15px 18px;border-bottom:1px solid #eef0f3}
+#view>.history-parity-v2 .history-v2-primary{background:#7d0040;border:1px solid #7d0040;color:#fff;border-radius:4px;padding:10px 15px;font-size:11px;font-weight:830;display:flex;align-items:center;gap:15px;justify-content:space-between}
+#view>.history-parity-v2 .history-v2-primary:hover{background:#621239}
+#view>.history-parity-v2 .history-v2-complete-actions>span{color:#84919a;font-size:10.3px;line-height:1.55}
+#view>.history-parity-v2 .history-v2-closed{color:#7e8a94;font-size:10.5px;padding:17px 18px;line-height:1.6;background:#fafbfc}
+#view>.history-parity-v2 .history-v2-complete-inner{display:flex;flex-direction:column;gap:14px;padding:14px;background:#f8fafb}
+#view>.history-parity-v2 .history-v2-export-note{padding:11px 12px;border-radius:4px;border:1px solid #e5d9e0;background:#fdf8fb;font-size:10.5px;color:#6c6170;line-height:1.65}
+#view>.history-parity-v2 .history-v2-export-note strong{color:#774666}
+#view>.history-parity-v2 .history-v2-subsection{background:#fff;border:1px solid #e0e6eb;border-radius:4px;overflow:hidden}
+#view>.history-parity-v2 .history-v2-subsection>header{padding:12px 14px;background:#f5f7f9;border-bottom:1px solid #e4e9ec;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+#view>.history-parity-v2 .history-v2-subsection h3{font-size:12px;color:#445260;font-weight:810}
+#view>.history-parity-v2 .history-v2-subsection header p{font-size:10px;color:#86929a;line-height:1.5;margin-top:4px;max-width:72ch}
+#view>.history-parity-v2 .history-v2-subsection header label{min-width:160px}
+#view>.history-parity-v2 .history-v2-table-wrap{overflow-x:auto;max-width:100%;min-width:0}
+#view>.history-parity-v2 .history-v2-table-wrap table{width:100%;border-collapse:collapse;min-width:680px;font-size:10.7px}
+#view>.history-parity-v2 .history-v2-table-wrap th{text-align:left;padding:10px 12px;font-weight:770;color:#637480;font-size:10px;background:#f6f8f9;border-bottom:1px solid #e3e8eb;white-space:nowrap}
+#view>.history-parity-v2 .history-v2-table-wrap td{padding:11px 12px;border-bottom:1px solid #edf1f3;color:#41515f;white-space:nowrap;font-variant-numeric:tabular-nums}
+#view>.history-parity-v2 .history-v2-table-wrap tr:nth-child(even){background:#fcfcfd}
+#view>.history-parity-v2 .history-v2-table-wrap .history-v2-cell-empty{padding:23px;text-align:center;color:#8997a0}
+#view>.history-parity-v2 .history-v2-not-recorded{padding:16px 14px;background:#fff}
+#view>.history-parity-v2 .history-v2-not-recorded strong{font-size:11.4px;color:#697783}
+#view>.history-parity-v2 .history-v2-not-recorded p{font-size:10.6px;color:#82919b;line-height:1.7;margin-top:6px}
+#view>.history-parity-v2 .history-v2-source-note,#view>.history-parity-v2 .history-v2-bottom-note{color:#83909b;font-size:10px;line-height:1.65;padding:0 3px;margin:0}
+#view>.history-parity-v2 .history-v2-bottom-note{padding:9px 2px 24px}
+@media(max-width:1100px){#view>.history-parity-v2 .history-v2-facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:670px){#view>.history-parity-v2 .history-v2-filters{grid-template-columns:1fr}#view>.history-parity-v2 .history-v2-journey li{grid-template-columns:20px minmax(0,1fr);padding-left:12px}#view>.history-parity-v2 .history-v2-journey li>div{grid-column:2}#view>.history-parity-v2 .history-v2-journey time{grid-column:2;text-align:left;margin-top:-3px}#view>.history-parity-v2 .history-v2-event{flex-wrap:wrap}#view>.history-parity-v2 .history-v2-event time{margin-left:36px}#view>.history-parity-v2 .history-v2-hero{padding:16px}#view>.history-parity-v2 .history-v2-hero h1{font-size:21px}}
+@media(max-width:400px){#view>.history-parity-v2 .history-v2-facts{grid-template-columns:1fr}#view>.history-parity-v2 .history-v2-panel-head{flex-wrap:wrap}}
+@media print{#view>.history-parity-v2 .history-v2-hero-actions,#view>.history-parity-v2 .history-v2-filters,#view>.history-parity-v2 .history-v2-primary{display:none!important}}
