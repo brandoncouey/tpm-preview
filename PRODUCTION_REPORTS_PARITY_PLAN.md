@@ -15,6 +15,30 @@
 6. **Medium — sampled rows not totals.** The job has stage-level totals but only five sampled tube records. A missing sample checkpoint is not a failed or incomplete order.
 7. **Not part of this view — real /reports.** In the user's archived Vue app, `pages/Reports.vue` is a report directory; the job report remains on the order job page. `ShopTimingPanel.vue`, `MillComparisonPanel.vue`, `ScrapExplorer.vue`, `InspectionReport.vue` and employee/detail views own their own APIs. Do not duplicate their aggregate data or claim this single-job fixture represents shop-wide metrics.
 
+
+## Direct check against the archived Vue source (2026-10-20)
+
+The user-provided \`Archive(1).zip\` contains these real app files, inspected after the first preview pass:
+
+- \`resources/js/pages/Orders.vue\` routes job sections into existing slots \`#production\`, \`#scrap\`, \`#materials\`, \`#report\`, \`#history\`. These should not be replaced by the static preview shell.
+- \`resources/js/components/job/JobHubTabs.vue\` lazily mounts each tab the first time it is opened, keeps visited tabs mounted, and delegates view routing to the parent URL. **Keep lazy-mount/cache behavior.**
+- \`resources/js/components/job/JobProductionTab.vue\` owns \`JobTimingStrip\`, required \`JobStageFunnel\`, optional stages in a collapsed \`JobSection\`, and \`JobPeopleList\`. Uses \`useJobHistory\`; error/retry and loading state are present. **Production does not own the full tube register.**
+- \`resources/js/components/job/JobHistoryTab.vue\` owns journey, key-events digest, and a lazy \`Complete activity\` disclosure, which loads \`JobHistoryFeed\` and \`JobTubeTables\` only when requested. **Full tube tables and their CSV/Excel/Print controls belong here.**
+- \`resources/js/components/job/JobReportTab.vue\` is the printable consolidated job report.
+- \`resources/js/components/JobStageFunnel.vue\` shows \`stage.applies === false\` as N/A and never represents it as 0-of-N failed work; exact counts may exceed the ordered quantity, while the bar is capped. Preserve both behaviors.
+
+**Migration decision:** In the static preview the tube/session explorer stays visible as an interaction prototype, explicitly labeled as such. In the real Vue merge, carry table styling to \`JobHistoryTab.vue\` / \`JobTubeTables.vue\`, and apply station/time/operator design to \`JobProductionTab.vue\` without moving exports or creating duplicate data loads. Do not collapse optional, unneeded stages into actual required work.
+
+### Detailed Vue acceptance tests to preserve
+
+1. \`useJobHistory\` one shared source; loaders and retry on an error remain correct; empty data must not become 0.
+2. Tab changes keep deep-link/back behavior through \`Orders.vue\`; visited panels stay mounted as before.
+3. Required vs optional \`applies\` stage classification and N/A rendering are unchanged.
+4. Worker assignments without tube events must not count as tube-production credit.
+5. Complete activity loads only after disclosure; unmounting/reopening does not eagerly download 10k-tube jobs.
+6. CSV, Excel, and print remain attached to existing \`JobTubeTables\` implementation and its golden tests.
+7. Shop-wide Reports controls remain under their own app owners; no fake shop aggregation or duplicate job current-mill attribution.
+
 ## Confirmed report contract (from user source and archived code)
 
 | Area | Production view may show | Reports owner / nuance |
