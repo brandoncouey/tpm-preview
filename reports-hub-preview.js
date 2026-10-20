@@ -9,10 +9,8 @@
  const groups=[
   {key:'jobs',title:'Jobs & orders',question:'Where is a job, and what has the shop run?',label:'01',entries:[
    {title:'Order History',desc:'Every order with mill, customer, operator, inspector and dates. Narrow and total the records.',path:'/reports/order-history',former:['Mill Reports','Customer Reports','Mill Operator Reports','Mill Inspector Reports','Order Status'],presets:[
-     ['Open orders','/reports/order-history?status=not_shipped&sort=customer'],
-     ['In progress','/reports/order-history?status=has_started'],
-     ['Shipped','/reports/order-history?status=has_shipped']
-   ],note:'The In progress and Shipped presets may require a second narrowing filter in the real current code.'}
+     ['Open orders','/reports/order-history?status=not_shipped&sort=customer']
+   ],note:'To view In progress or Shipped orders, open Order History and select additional filters as required by the current report validation.'}
   ]},
   {key:'production',title:'Production',question:'What are the mills doing, and how did they do?',label:'02',entries:[
     {title:'Mill Performance',desc:'Compare mills over a selected range: tubes milled, scrap, timing, and who ran them.',path:'/reports/mill-performance',former:['Mill Reports']},
