@@ -38,7 +38,7 @@
     const sections=order.map((category,i)=>{
       const entries=reports.filter(r=>r.category===category);
       return '<div data-ir-section class="tpm-ir-section">'+
-        tabPanel('bars',category,entries.length+' existing '+(entries.length===1?'report':'reports')+
+        tabPanel('side-bars',category,entries.length+' existing '+(entries.length===1?'report':'reports')+
           ' · select a report to view its layout.',
           '<div class="tpm-ir-list">'+entries.map(pageButton).join('')+'</div>',
           {flush:true,right:String(i+1).padStart(2,'0')})+'</div>';
@@ -63,8 +63,8 @@
     return '<div class="tab-workspace tpm-integrated-reports">'+
       tabIntro(r.category+' / Report',r.title,r.description,'Source-aligned layout')+
       '<div class="tpm-ir-actions"><button type="button" class="btn" data-report-directory>← All reports</button><a class="btn brand" target="_blank" rel="noopener noreferrer" href="'+origin+r.path+'">Open original report ↗</a></div>'+
-      tabPanel('settings','Report controls','Original filters remain connected to the real TPM report.',filterText)+
-      tabPanel('list','Report register','The same compact table presentation used across the original preview.',data,{flush:true})+
+      tabPanel('side-settings','Report controls','Original filters remain connected to the real TPM report.',filterText)+
+      tabPanel('side-list','Report register','The same compact table presentation used across the original preview.',data,{flush:true})+
       tabPanel('check','How this report is used','Relevant questions for this part of the company.',defs)+
       '<p class="tab-footline">'+esc(r.definition)+' Full data, exports, permission checks and backend calculations remain unchanged in the original application.</p></div>';
   }
