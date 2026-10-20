@@ -18,16 +18,15 @@
    var steel=totals.feet===null||totals.feet===undefined?'Not recorded':Number(totals.feet).toFixed(1)+' LF';
    var eventCount=totals.events==null?'Not recorded':num(totals.events);
    var tubeCount=totals.tubes==null?'Not recorded':num(totals.tubes);
-   var runValue=run.active_seconds==null?'Not recorded':dur(run.active_seconds);
-   var attendValue=run.attended_seconds==null?'Not recorded':dur(run.attended_seconds);
+   var mesh=totals.mesh_feet===null||totals.mesh_feet===undefined?(s.has_mesh?'Not recorded':'Not applicable'):Number(totals.mesh_feet).toFixed(1)+' LF';
    return '<section class="prod-report-crosswalk" aria-label="Job reporting data and definitions">'+
      '<div class="prod-report-crosswalk-head"><div><span class="prod-section-eyebrow">SOURCE RECONCILIATION</span><h3>Production data & related reports</h3><p>Job-wide values stay constant when filtering a work center or employee.</p></div>'+
      '<span class="prod-report-source">SAMPLED JOB DATA · NOT LIVE</span></div>'+
      '<div class="prod-report-stat-grid">'+
-       stat('Running time',runValue,'Tube timestamp gaps ≤20 min')+
-       stat('Attended time',attendValue,'Tube timestamp gaps ≤270 min')+
-       stat('Scrap events',eventCount,'Event records, not unique tubes')+
-       stat('Steel scrapped',steel,'Lost footage, not a rate')+
+       stat('Scrap events',eventCount,'Events, not unique tubes')+
+       stat('Distinct scrap tubes',tubeCount,'Tube count, not event count')+
+       stat('Steel scrapped',steel,'LF lost · not a scrap rate')+
+       stat('Mesh scrapped',mesh,'Separate from steel loss')+
      '</div>'+
      '<div class="prod-report-nav"><span>Open job details</span>'+
        nav('Job report','report')+nav('Scrap & quality','scrap')+
