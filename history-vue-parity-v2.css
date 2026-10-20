@@ -75,3 +75,6 @@
 @media(max-width:670px){#view>.history-parity-v2 .history-v2-filters{grid-template-columns:1fr}#view>.history-parity-v2 .history-v2-journey li{grid-template-columns:20px minmax(0,1fr);padding-left:12px}#view>.history-parity-v2 .history-v2-journey li>div{grid-column:2}#view>.history-parity-v2 .history-v2-journey time{grid-column:2;text-align:left;margin-top:-3px}#view>.history-parity-v2 .history-v2-event{flex-wrap:wrap}#view>.history-parity-v2 .history-v2-event time{margin-left:36px}#view>.history-parity-v2 .history-v2-hero{padding:16px}#view>.history-parity-v2 .history-v2-hero h1{font-size:21px}}
 @media(max-width:400px){#view>.history-parity-v2 .history-v2-facts{grid-template-columns:1fr}#view>.history-parity-v2 .history-v2-panel-head{flex-wrap:wrap}}
 @media print{#view>.history-parity-v2 .history-v2-hero-actions,#view>.history-parity-v2 .history-v2-filters,#view>.history-parity-v2 .history-v2-primary{display:none!important}}
+
+#view>.history-parity-v2 .history-v2-hero-actions a.history-v2-external-link{border:1px solid #d9e0e5;border-radius:4px;background:#fff;color:#685063;padding:8px 12px;font-weight:790;font-size:10.5px;text-decoration:none}
+#view>.history-parity-v2 .history-v2-hero-actions a.history-v2-external-link:hover{border-color:#ac849a;background:#fff9fc}
