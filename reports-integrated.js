@@ -30,28 +30,50 @@
   const originalCrumbs=crumbs?.innerHTML||'';
   const originalFlag=previewFlag?.innerHTML||'';
 
-  const pageButton = r => '<button type="button" class="tpm-ir-item" data-report-page="'+esc(r.id)+'" data-ir-item data-ir-category="'+esc(r.category)+'">'+
-    '<span class="tpm-ir-icon" aria-hidden="true">▤</span><span class="tpm-ir-item-copy"><strong>'+esc(r.title)+'</strong><small>'+esc(r.description)+'</small></span>'+
+  // Question-first landing: keep the 12 real destinations, but don't display all 12 at once.
+  const startingQuestions=[
+    {title:'How much are we producing?',sub:'Compare mill output and production trends',report:'mill-performance',icon:'▥'},
+    {title:'Where are we losing time?',sub:'Investigate setup, running and idle hours',report:'shop-timing',icon:'◷'},
+    {title:"What’s causing scrap?",sub:'Track exceptions, lost steel and recurring patterns',report:'scrap-events',icon:'!'},
+    {title:'Are orders shipping on time?',sub:'Review order volume and delivery trends',report:'order-history',icon:'↗'}
+  ];
+  const quickLinks=[
+    {label:'Steel receiving',report:'steel-receive'},
+    {label:'Inspection pass rates',report:'inspection'},
+    {label:'Employee activity',report:'employee-report'}
+  ];
+  const pageButton = r => '<button type="button" class="tpm-ir-item" data-report-page="'+esc(r.id)+'" data-ir-item>'+
+    '<span class="tpm-ir-item-copy"><strong>'+esc(r.title)+'</strong><small>'+esc(r.description)+'</small></span>'+
     '<span class="tpm-ir-item-next" aria-hidden="true">›</span></button>';
 
-  function directory() {
-    const sections=order.map((category,i)=>{
+  function directory(){
+    const featured='<div class="tpm-ir-featured-grid">'+startingQuestions.map((x,i)=>
+      '<button type="button" class="tpm-ir-feature" data-report-page="'+esc(x.report)+'">'+
+      '<span class="tpm-ir-feature-icon" aria-hidden="true">'+esc(x.icon)+'</span>'+
+      '<span class="tpm-ir-feature-body"><strong>'+esc(x.title)+'</strong><small>'+esc(x.sub)+'</small></span>'+
+      '<span class="tpm-ir-feature-arrow" aria-hidden="true">↗</span></button>').join('')+'</div>';
+    const categories=order.map(category=>{
       const entries=reports.filter(r=>r.category===category);
-      return '<div data-ir-section class="tpm-ir-section">'+
-        tabPanel('side-bars',category,entries.length+' existing '+(entries.length===1?'report':'reports')+
-          ' · select a report to view its layout.',
-          '<div class="tpm-ir-list">'+entries.map(pageButton).join('')+'</div>',
-          {flush:true,right:String(i+1).padStart(2,'0')})+'</div>';
+      return '<details class="tpm-ir-category" data-ir-section>'+
+        '<summary><strong>'+esc(category)+'</strong><span>'+entries.length+' '+(entries.length===1?'report':'reports')+'</span><span class="tpm-ir-chevron" aria-hidden="true">⌄</span></summary>'+
+        '<div class="tpm-ir-list">'+entries.map(pageButton).join('')+'</div></details>';
     }).join('');
-    return '<div class="tab-workspace tpm-integrated-reports">'+
-      tabIntro('Reports / Shop-wide','Reports','Browse company reports or investigate manufacturing trends using clearly labeled sample data.','12 report destinations')+
-      (window.TPMDemoAnalytics?.overview()||'')+
-      '<div class="tpm-ir-tools"><label for="tpm-ir-search">Find a report</label><input id="tpm-ir-search" type="search" placeholder="Search order, mill, timing, scrap, employee…" autocomplete="off"><span id="tpm-ir-count" role="status" aria-live="polite">12 reports</span></div>'+
-      '<div class="tpm-ir-sections">'+sections+'</div>'+
-      '<p class="tab-footline">All values in the sample analytics are fictional. Production reports, their formulas, user permissions and exports remain owned by the original Laravel/Vue application.</p>'+
+    return '<div class="tab-workspace tpm-integrated-reports tpm-ir-directory">'+
+      tabIntro('Reports / Shop-wide','Reports','You don’t need to know a report name. Start with what you want to understand.','Fictional demo data')+
+      tabPanel('side-bars','What do you need to understand?','Choose a question to open its report and explore daily, weekly, monthly or quarterly trends.',featured,{flush:true})+
+      '<div class="tpm-ir-shortcuts"><span>Other common tasks</span>'+
+        quickLinks.map(x=>'<button type="button" data-report-page="'+esc(x.report)+'">'+esc(x.label)+' <span aria-hidden="true">↗</span></button>').join('')+'</div>'+
+      '<div class="tpm-ir-find"><label for="tpm-ir-search">Looking for something specific?</label>'+
+        '<div class="tpm-ir-find-controls"><input id="tpm-ir-search" type="search" placeholder="Search reports by name, team or topic…" autocomplete="off" aria-controls="tpm-ir-catalog">'+
+        '<span id="tpm-ir-count" role="status" aria-live="polite">12 reports available</span></div></div>'+
+      '<details class="tpm-ir-catalog" id="tpm-ir-catalog"><summary><span><strong>Browse all reports</strong><small>Full directory, organized by work area</small></span><span class="tpm-ir-catalog-count">12 reports <span aria-hidden="true">⌄</span></span></summary>'+
+        '<div class="tpm-ir-categories">'+categories+'</div>'+
+        '<p class="tpm-ir-no-results" id="tpm-ir-empty" hidden>No reports match that search. Try “mill”, “quality” or “employee”.</p>'+
+      '</details>'+
+      '<p class="tab-footline">This is a design preview using fictional manufacturing data. Official report values, calculations, permissions and exports remain in TPM.</p>'+
     '</div>';
   }
-  function reportPage(){
+    function reportPage(){
     const id=new URLSearchParams(location.search).get('report');
     const r=byId(id)||reports[0];
     const defs='<div class="tpm-ir-definition-grid">'+r.uses.map(x=>'<div><span aria-hidden="true">✓</span><p>'+esc(x)+'</p></div>').join('')+'</div>';
@@ -117,20 +139,31 @@
   });
   document.addEventListener('input',e=>{
     if(e.target.id!=='tpm-ir-search')return;
-    const words=e.target.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
-    let visible=0;
+    const words=e.target.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    const catalog=document.getElementById('tpm-ir-catalog');
+    if(!catalog)return;
+    if(words.length)catalog.open=true;
+    let total=0;
     document.querySelectorAll('[data-ir-section]').forEach(section=>{
-      let count=0;
+      let matches=0;
+      const name=section.querySelector('summary strong')?.textContent.toLowerCase()||'';
       section.querySelectorAll('[data-ir-item]').forEach(item=>{
-        const show=words.every(word=>item.textContent.toLowerCase().includes(word));
-        item.hidden=!show;if(show)count++;
+        const searchable=name+' '+item.textContent.toLowerCase();
+        const show=words.every(word=>searchable.includes(word));
+        item.hidden=!show;
+        if(show)matches++;
       });
-      section.hidden=!count;visible+=count;
+      section.hidden=matches===0;
+      if(words.length)section.open=matches>0;
+      else section.open=false;
+      total+=matches;
     });
-    const n=document.getElementById('tpm-ir-count');
-    if(n)n.textContent=visible+' of '+reports.length+' reports';
+    const count=document.getElementById('tpm-ir-count');
+    if(count)count.textContent=words.length?total+' matching '+(total===1?'report':'reports'):'12 reports available';
+    const empty=document.getElementById('tpm-ir-empty');
+    if(empty)empty.hidden=total!==0;
   });
-  window.TPMReportsShell={render,sync,go};
+    window.TPMReportsShell={render,sync,go};
   const requested=new URLSearchParams(location.search).get('view');
   if(requested==='reports'||requested==='report-detail')navigate(requested);
   else sync(requested||'overview');
