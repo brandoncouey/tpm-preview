@@ -31,6 +31,7 @@
      '<div class="prod-report-nav"><span>Open job details</span>'+
        nav('Job report','report')+nav('Scrap & quality','scrap')+
        nav('Materials','materials')+nav('History','history')+
+       '<a class="prod-report-nav-link" href="./reports-preview.html">Shop-wide reports <span aria-hidden="true">↗</span></a>'+
      '</div>'+
      '<details class="prod-report-explainer"><summary>How job figures relate to shop-wide Reports and conditional checks <span aria-hidden="true">⌄</span></summary>'+
      '<div class="prod-report-explainer-grid">'+
