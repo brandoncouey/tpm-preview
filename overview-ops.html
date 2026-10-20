@@ -2664,12 +2664,15 @@ prodPeopleResults=function(){
 prodCards=function(){
  const people=prodScopedPeople();
  return `<div class="prod-operator-grid">${people.map(p=>{
-  const dept=p.departments.find(d=>prodState.stationView==='all'||d.name===prodState.stationView)||p.departments[0];
-  const initials=p.person.split(' ').map(x=>x[0]).join('');
+  const departments=Array.isArray(p.departments)?p.departments:[];
+  const dept=departments.find(d=>prodState.stationView==='all'||d.name===prodState.stationView)||departments[0]||{name:'Office assignment',sessions:[],seconds:null};
+  const sessions=Array.isArray(dept.sessions)?dept.sessions:[];
+  const attachedOnly=!!p.attached_only;
+  const initials=String(p.person||'?').split(' ').map(x=>x[0]).join('');
   const selected=prodState.person===p.person;
   return `<button type="button" class="prod-person prod-operator ${selected?'is-selected':''}" data-prod-person="${safe(p.person)}" aria-pressed="${selected}">
-   <span class="prod-operator-head"><span class="prod-operator-avatar">${safe(initials)}</span><span class="prod-operator-ident"><strong>${safe(p.person)}</strong><small>${safe(dept.name)} · ${num(dept.sessions.length)} source sessions</small></span><span class="prod-operator-arrow" aria-hidden="true">↗</span></span>
-   <span class="prod-operator-facts"><span><strong>${num(p.tubes)}</strong> tubes recorded</span><span><strong>${dur(dept.seconds)}</strong> recorded time</span></span>
+   <span class="prod-operator-head"><span class="prod-operator-avatar">${safe(initials)}</span><span class="prod-operator-ident"><strong>${safe(p.person)}</strong><small>${attachedOnly?'Assigned · no tubes of their own':safe(dept.name)+' · '+num(sessions.length)+' source sessions'}${p.is_named===false?' · no linked employee record':''}</small></span><span class="prod-operator-arrow" aria-hidden="true">↗</span></span>
+   <span class="prod-operator-facts">${attachedOnly?'<span>Office assignment only — no recorded tube production</span>':`<span><strong>${num(p.tubes)}</strong> tubes recorded</span><span><strong>${dur(dept.seconds)}</strong> recorded time</span>`}</span>
   </button>`;
  }).join('')}</div>`;
 };
@@ -2677,8 +2680,9 @@ function prodDeptStats(){
  return `<div class="prod-station-stats" aria-label="Station completion comparison">${h.stages.map(st=>`<button type="button" class="prod-station-stat" data-dept="${safe(st.label)}" aria-pressed="${prodState.stationView===st.label?'true':'false'}"><span class="prod-station-stat-label">${safe(st.label)} <small>${pct(st.done,j.quantity)}% complete</small></span><span class="prod-station-stat-value">${num(st.done)} <small>/ ${num(j.quantity)} tubes</small></span><span class="prod-station-progress" aria-hidden="true"><span style="width:${pct(st.done,j.quantity)}%"></span></span><span class="prod-station-stat-foot"><span><strong>${num(Math.max(0,j.quantity-st.done))}</strong> remaining</span><span>View station ↗</span></span></button>`).join('')}</div>`;
 }
 function prodDeptSidebar(){
- const choices=[{label:'All stations',value:'all'},...h.stages.map(st=>({label:st.label,value:st.label,done:st.done}))];
- return `<nav class="prod-dept-rail" aria-label="Production station filter"><h3>Work centers</h3>${choices.map(ch=>`<button type="button" data-dept="${safe(ch.value)}" aria-current="${prodState.stationView===ch.value?'true':'false'}"><strong>${safe(ch.label)}</strong><small>${ch.value==='all'?'3':pct(ch.done,j.quantity)+'%'}</small></button>`).join('')}<p class="prod-dept-note">Station filters control both operator sessions and tube checkpoints. One page scroll.</p></nav>`;
+ const required=h.stages.filter(stage=>stage.applies!==false);
+ const choices=[{label:'All stations',value:'all'},...required.map(st=>({label:st.label,value:st.label,done:st.done}))];
+ return `<nav class="prod-dept-rail" aria-label="Production station filter"><h3>Work centers</h3>${choices.map(ch=>`<button type="button" data-dept="${safe(ch.value)}" aria-current="${prodState.stationView===ch.value?'true':'false'}"><strong>${safe(ch.label)}</strong><small>${ch.value==='all'?String(required.length):pct(ch.done,j.quantity)+'%'}</small></button>`).join('')}<p class="prod-dept-note">Station filters control both operator sessions and tube checkpoints. One page scroll.</p></nav>`;
 }
 function prodDeptFocus(){
  const st=prodChosenStage(),people=prodScopedPeople();
@@ -2750,7 +2754,7 @@ function prodDeptWorkspace(){
    <div class="prod-dept-content">
     ${prodDeptFocus()}
     <section class="prod-operator-section" aria-label="Station operators">
-      <div class="prod-section-header"><div><span class="prod-section-eyebrow">STAFF & ACTIVITY</span><h3>${st?safe(st.label+' workers'):'Workers & assignments'}</h3><p>Activity is attributed from recorded tube work; office-only assignments must not be counted as production. Select a worker to inspect sessions.</p></div><span class="prod-section-count">${people.length} assigned</span></div>
+      <div class="prod-section-header"><div><span class="prod-section-eyebrow">STAFF & ACTIVITY</span><h3>${st?safe(st.label+' workers'):'Workers & assignments'}</h3><p>Activity is attributed from recorded tube work; office-only assignments must not be counted as production. Select a worker to inspect sessions.</p></div><span class="prod-section-count">${people.length} in view</span></div>
       ${window.TPMProductionParityV1?window.TPMProductionParityV1.workersSummary({people,num,safe}):''}
       ${prodCards()}
     </section>
