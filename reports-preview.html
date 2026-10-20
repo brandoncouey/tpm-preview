@@ -5,7 +5,7 @@
  <meta name="viewport" content="width=device-width, initial-scale=1">
  <meta name="description" content="TPM Reports directory design preview. Actual reports stay in the Laravel/Vue app.">
  <title>TPM · Reports · Design Preview</title>
- <link rel="stylesheet" href="./reports-hub-preview.css?v=20261020a">
+ <link rel="stylesheet" href="./reports-hub-preview.css?v=20261020b">
 </head>
 <body>
  <div class="tpm-reports-shell">
@@ -33,12 +33,16 @@
        <div class="reports-search-box"><label for="reports-search">Search reports</label><div><input id="reports-search" type="search" placeholder="Scrap rate, mill time, customer reports…" autocomplete="off" aria-describedby="reports-search-count"><button id="reports-search-clear" type="button" aria-label="Clear search" hidden>Clear</button></div><small id="reports-search-count" aria-live="polite"></small></div>
        <form id="reports-open-job" class="reports-open-job" novalidate><label for="reports-job-number">Open a job</label><div><input id="reports-job-number" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 9775"><button type="submit">Open ↗</button></div><small id="reports-job-help">Opens the real job hub on your local TPM server.</small></form>
      </div>
+     <section class="reports-department-panel" aria-labelledby="reports-department-heading">
+      <div class="reports-department-header"><div><h2 id="reports-department-heading">Find reports for your team</h2><p>Start with the work you do. These suggestions only organize the directory; they do not grant access to restricted reports.</p></div><span>BY WORK AREA</span></div>
+      <div class="reports-departments" id="reports-departments" role="group" aria-label="Filter reports by team"></div>
+     </section>
      <nav class="reports-tabs" id="reports-tabs" role="tablist" aria-label="Report categories"></nav>
      <div class="reports-groups" id="reports-groups" aria-live="polite"></div>
      <div class="reports-scope-note"><strong>Live-report behavior stays in Vue.</strong> This page reproduces the report directory layout and search only. Date filters, API metrics, print exports, pagination, employee selection, and permissions remain in the actual reports and are not simulated here.</div>
    </main>
   </div>
  </div>
- <script src="./reports-hub-preview.js?v=20261020a" defer></script>
+ <script src="./reports-hub-preview.js?v=20261020b" defer></script>
 </body>
 </html>
