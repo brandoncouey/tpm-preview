@@ -2743,13 +2743,15 @@ function prodDeptWorkspace(){
  const intro=tabIntro('Production / Work centers','Production','Stage totals, recorded operator sessions and sampled tube checks; full job results are kept distinct from sampled evidence.',num(j.quantity)+' ordered tubes');
  return `<div class="tab-workspace prod-v2 prod-refined">
   ${intro}
-  <section class="prod-top-stats" aria-label="Station completion">${prodDeptStats()}</section>
+  ${window.TPMProductionParityV1?window.TPMProductionParityV1.timingStrip({timing:t,dur,safe}):''}
+  <section class="prod-top-stats" aria-label="Station completion">${window.TPMProductionParityV1?window.TPMProductionParityV1.stagePanel({stages:h.stages,quantity:j.quantity,selected:prodState.stationView,stamp,dur,lastTubeAt:h.timing?.last_tube_at}):prodDeptStats()}</section>
   <div class="prod-dept-layout">
    ${prodDeptSidebar()}
    <div class="prod-dept-content">
     ${prodDeptFocus()}
     <section class="prod-operator-section" aria-label="Station operators">
-      <div class="prod-section-header"><div><span class="prod-section-eyebrow">STAFF & ACTIVITY</span><h3>${st?safe(st.label+' operators'):'Assigned operators'}</h3><p>Click an operator to filter their work sessions.</p></div><span class="prod-section-count">${people.length} assigned</span></div>
+      <div class="prod-section-header"><div><span class="prod-section-eyebrow">STAFF & ACTIVITY</span><h3>${st?safe(st.label+' workers'):'Workers & assignments'}</h3><p>Activity is attributed from recorded tube work; office-only assignments must not be counted as production. Select a worker to inspect sessions.</p></div><span class="prod-section-count">${people.length} assigned</span></div>
+      ${window.TPMProductionParityV1?window.TPMProductionParityV1.workersSummary({people,num,safe}):''}
       ${prodCards()}
     </section>
     <section class="prod-record-workspace" aria-label="Tube and operator record explorer">
