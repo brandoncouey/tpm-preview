@@ -2754,8 +2754,8 @@ function prodDeptWorkspace(){
     </section>
     <section class="prod-record-workspace" aria-label="Tube and operator record explorer">
       <div class="prod-record-header">
-       <div><span class="prod-section-eyebrow">TRACEABILITY & HISTORY</span><h3>Production records</h3><p>Choose a record type; the current station filter applies to both.</p></div>
-       <span class="prod-record-scope">${st?safe(st.label):'All stations'}</span>
+       <div><span class="prod-section-eyebrow">TRACEABILITY & HISTORY</span><h3>Activity explorer · preview</h3><p>Sampled tube checks and operator sessions for layout testing. The real Vue app keeps its complete activity, per-tube exports and heavy records under History.</p></div>
+       <div class="prod-report-record-tools"><span class="prod-record-scope">${st?safe(st.label):'All stations'}</span><button type="button" class="prod-record-history-link" data-route="history">Full history & exports ↗</button></div>
       </div>
       ${prodDeptRecordNav()}
       <div id="prod-record-region" role="tabpanel">${prodDeptRecordPanel()}</div>
