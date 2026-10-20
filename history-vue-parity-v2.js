@@ -129,7 +129,7 @@
    return '<div class="tab-workspace history-parity-v2">'+
      '<div class="history-v2-hero"><span class="history-v2-overline">ORDER HISTORY / JOB #'+safe(j.job)+'</span><h1>Job history & milestones</h1>'+
       '<p>Know where the job stands, see the important exceptions, and open full activity when investigating specific tubes or workers.</p>'+
-      '<div class="history-v2-hero-actions"><button data-route="production" type="button">Production overview ↗</button><button data-route="scrap" type="button">Scrap & quality ↗</button><button data-route="report" type="button">Job report ↗</button><a class="history-v2-external-link" href="./reports-preview.html">Reports directory ↗</a></div></div>'+
+      '<div class="history-v2-hero-actions"><button data-route="production" type="button">Production overview ↗</button><button data-route="scrap" type="button">Scrap & quality ↗</button><button data-route="report" type="button">Job report ↗</button><button type="button" class="history-v2-external-link" data-route="reports">Reports directory ↗</button></div></div>'+
      '<section class="history-v2-facts" aria-label="Recorded history totals">'+recent.map(([label,value,desc])=>
        '<div><span>'+safe(label)+'</span><strong>'+safe(value)+'</strong><small>'+safe(desc)+'</small></div>').join('')+'</section>'+
      journeyView()+digestView()+fullActivityView()+
