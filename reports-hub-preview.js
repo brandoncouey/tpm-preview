@@ -58,7 +58,7 @@
    'Audit Report':['materials','quality'],
    'Standard Prices':['orders','supervision']
  };
- const reportLayoutLink={'Order History':'order-history','Shop Timing':'shop-timing'};
+ const reportLayoutLink={'Order History':'order-history','Shop Timing':'shop-timing','Scrap Events':'scrap-events','Steel Receive Report':'steel-receive','Employee Report':'employee-report'};
  const byId=id=>document.getElementById(id);
  const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function matchEntry(group,entry){
