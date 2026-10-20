@@ -1874,6 +1874,7 @@ window.addEventListener('popstate',()=>navigate(new URLSearchParams(location.sea
     const nav=e.target.closest('[data-shell-nav]');if(!nav)return;
     const page=nav.dataset.shellNav;
     if(page==='Orders'){navigate('overview');if(mobile.matches)shell.classList.remove('mobile-sidebar-open');sync();return}
+    if(page==='Reports'){window.location.assign('./overview-ops.html?view=reports');return}
     if(typeof toast==='function')toast(`${page} is included for shell preview only. This mockup stays on the Orders workspace.`,'warning');
   });
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&shell.classList.contains('mobile-sidebar-open')){shell.classList.remove('mobile-sidebar-open');sync()}});
