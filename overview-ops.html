@@ -1889,7 +1889,7 @@ function renderDetailsEditor(){const cards=[...document.querySelectorAll('.premi
 function enhanceStages(){document.querySelectorAll('.premium-stage').forEach((st,i)=>{st.setAttribute('role','button');st.setAttribute('tabindex','0');st.setAttribute('aria-label',`${h.stages[i].label} station: view progress breakdown`);st.dataset.station=h.stages[i].key;const below=st.querySelector('.premium-stage-below');if(below&&!st.querySelector('.stage-detail-link'))below.insertAdjacentHTML('afterend','<span class="stage-detail-link">View station details ↗</span>')});}
 function previewTooling(){const v=document.querySelector('#view');if(!v)return;v.insertAdjacentHTML('beforeend',`<details class="preview-tools"><summary>Preview tools · test other statuses and reset mock data</summary><div><p style="margin:0 0 10px">Test the original TPM action conditions without changing production quantities. Sample availability/roles are illustrative, not real permissions.</p><div class="actions"><label for="preview-status-select">Simulate job status</label><select id="preview-status-select" aria-label="Simulated job status">${['not_started','started','completed','shipped'].map(x=>`<option value="${x}" ${previewStatus===x?'selected':''}>${statusLabel(x)}</option>`).join('')}</select><button type="button" class="btn sm" data-op="reset">Reset fictional job</button></div></div></details>`);
 }
-function enhanceC(){updateHero();if(document.querySelector('.premium-quick'))installQuickActions();if(document.querySelector('.premium-info-card'))renderDetailsEditor();enhanceStages();previewTooling();}
+function enhanceC(){updateHero();if(document.querySelector('.premium-quick'))installQuickActions();if(document.querySelector('.premium-info-card'))renderDetailsEditor();enhanceStages();if(!document.querySelector('#view > .prod-refined'))previewTooling();}
 function modal(title,subtitle,body,footer){const d=document.getElementById('preview-dialog');d.innerHTML=`<div class="dialog-head"><div><h2>${safe(title)}</h2><p>${safe(subtitle)}</p></div><button type="button" class="dialog-close" data-op="close-dialog" aria-label="Close dialog">×</button></div><div class="dialog-inner">${body}</div><div class="dialog-actions">${footer}</div>`;if(!d.open)d.showModal();}
 function closeModal(){const d=document.getElementById('preview-dialog');if(d.open)d.close();}
 function opFooter(confirmAction,label='Save change'){return `<button class="btn" data-op="close-dialog">Cancel</button><button class="btn ${/^save/i.test(label)?'save-action':'brand'}" data-op="${confirmAction}">${safe(label)}</button>`}
@@ -2269,7 +2269,7 @@ if(new URLSearchParams(location.search).get('view')==='materials')navigate('mate
 <script>
 // Production scale testing. Original source records are preserved and never mutated.
 // All additional rows are explicitly marked synthetic demonstration entries.
-const prodState={person:'J. Morales',dataset:'demo',search:'',sort:'newest',page:1,pageSize:25,stage:'all',stageDataset:'demo',stageCheck:'all',stageSearch:'',stageSort:'newest',stagePage:1,stageSize:25};
+const prodState={person:'all',dataset:'original',search:'',sort:'newest',page:1,pageSize:25,stage:'all',stageDataset:'original',stageCheck:'all',stageSearch:'',stageSort:'newest',stagePage:1,stageSize:25};
 const prodOriginal=h.people.flatMap((person)=>person.departments.flatMap((department)=>department.sessions.map((session,index)=>({
  id:`REC-${person.person.replace(/[^A-Z]/gi,'').toUpperCase()}-${index+1}`,person:person.person,stage:department.name,from:session.from,to:session.to,tubes:session.tubes,seconds:session.seconds,kind:'original'
 }))));
@@ -2330,10 +2330,10 @@ const prodSortRows=(rows,sort)=>rows.sort((a,b)=>{
  return sort==='oldest'?new Date(a.from)-new Date(b.from):new Date(b.from)-new Date(a.from);
 });
 function prodPeopleRows(){const records=prodState.dataset==='original'?prodOriginal:prodDemoPeople;
- return prodSortRows(records.filter(r=>(prodState.person==='all'||r.person===prodState.person)&&prodQueryMatch(r,prodState.search)),prodState.sort);
+ return prodSortRows(records.filter(r=>(prodState.stationView==='all'||r.stage===prodState.stationView)&&(prodState.person==='all'||r.person===prodState.person)&&prodQueryMatch(r,prodState.search)),prodState.sort);
 }
 function prodStageRows(){const records=prodState.stageDataset==='original'?prodOriginalChecks:prodDemoStages;
- return prodSortRows(records.filter(r=>(prodState.stage==='all'||r.stage===prodState.stage)&&
+ return prodSortRows(records.filter(r=>(prodState.stationView==='all'||r.stage===prodState.stationView)&&(prodState.stage==='all'||r.stage===prodState.stage)&&
   (prodState.stageCheck==='all'||(prodState.stageCheck==='recorded'?r.checked:!r.checked))&&
   prodQueryMatch(r,prodState.stageSearch)),prodState.stageSort);
 }
@@ -2678,7 +2678,7 @@ function prodDeptStats(){
 }
 function prodDeptSidebar(){
  const choices=[{label:'All stations',value:'all'},...h.stages.map(st=>({label:st.label,value:st.label,done:st.done}))];
- return `<nav class="prod-dept-rail" aria-label="Production station filter"><h3>Departments</h3>${choices.map(ch=>`<button type="button" data-dept="${safe(ch.value)}" aria-current="${prodState.stationView===ch.value?'true':'false'}"><strong>${safe(ch.label)}</strong><small>${ch.value==='all'?'3':pct(ch.done,j.quantity)+'%'}</small></button>`).join('')}<p class="prod-dept-note">Station filters control both operator sessions and tube checkpoints. One page scroll.</p></nav>`;
+ return `<nav class="prod-dept-rail" aria-label="Production station filter"><h3>Work centers</h3>${choices.map(ch=>`<button type="button" data-dept="${safe(ch.value)}" aria-current="${prodState.stationView===ch.value?'true':'false'}"><strong>${safe(ch.label)}</strong><small>${ch.value==='all'?'3':pct(ch.done,j.quantity)+'%'}</small></button>`).join('')}<p class="prod-dept-note">Station filters control both operator sessions and tube checkpoints. One page scroll.</p></nav>`;
 }
 function prodDeptFocus(){
  const st=prodChosenStage(),people=prodScopedPeople();
@@ -2702,8 +2702,8 @@ prodState.recordView='tubes';
 function prodDeptRecordPanel(){
  const st=prodChosenStage(),isTubes=prodState.recordView==='tubes',name=st?st.label+' ':'';
  const counts=isTubes?
-  [prodOriginalChecks.filter(r=>prodState.stationView==='all'||r.stage===prodState.stationView).length,prodDemoStages.filter(r=>prodState.stationView==='all'||r.stage===prodState.stationView).length]:
-  [prodOriginal.filter(r=>prodState.stationView==='all'||r.stage===prodState.stationView).length,prodDemoPeople.filter(r=>prodState.stationView==='all'||r.stage===prodState.stationView).length];
+  [prodOriginalChecks.filter(r=>prodState.stationView==='all'||r.stage===prodState.stationView).length]:
+  [prodOriginal.filter(r=>prodState.stationView==='all'||r.stage===prodState.stationView).length];
  return isTubes?`
  <section class="tab-panel prod-register prod-active-register" aria-label="Tube stage check register">
   <div class="tab-panel-head"><div class="tab-panel-ident"><span class="tab-panel-icon">${icon('factory')}</span><div><h3>${safe(name)}Tube records</h3><p>Individual tube checkpoints for the selected station.</p></div></div><span class="tab-header-side">${counts[0]} source checks</span></div>
@@ -2711,10 +2711,10 @@ function prodDeptRecordPanel(){
    <label class="prod-control prod-control--search">Search tubes<input type="search" data-prod-input="stage-search" value="${safe(prodState.stageSearch)}" placeholder="Tube ID, field, operator…" autocomplete="off" aria-label="Search tube stage checks"></label>
    <label class="prod-control">Stage check<select data-prod-select="stage-check">${prodSelect([['all','All results'],['recorded','Recorded'],['not_recorded','Not recorded']],prodState.stageCheck)}</select></label>
    <label class="prod-control">Sort by<select data-prod-select="stage-sort">${prodSelect([['newest','Newest first'],['oldest','Oldest first'],['tube-id','Tube ID']],prodState.stageSort)}</select></label>
-   <label class="prod-control">Records<select data-prod-select="stage-dataset">${prodSelect([['original','Original fixture'],['demo','Scale-test examples']],prodState.stageDataset)}</select></label>
+
   </div>
   <div id="prod-station-results">${prodStationResults()}</div>
-  <div class="prod-origin-note">Source includes five sampled tubes, not all ${num(j.quantity)} ordered tubes. A missing check does not imply failure or rejection. Ring and weld checkpoints have no supplied tube records in this fixture.</div>
+  <div class="prod-origin-note">Source includes five sampled tubes rather than every ordered tube. Missing sample checks do not establish a failed inspection. Applicability and results for ring, tack-weld and final-inspection operations must come from real process records.</div>
  </section>`:`
  <section class="tab-panel prod-register prod-active-register" aria-label="Employee work sessions">
   <div class="tab-panel-head"><div class="tab-panel-ident"><span class="tab-panel-icon">${icon('users')}</span><div><h3>${safe(name)}Work sessions</h3><p>Operator activity and recorded working periods for this station.</p></div></div><span class="tab-header-side">${counts[0]} source sessions</span></div>
@@ -2722,11 +2722,11 @@ function prodDeptRecordPanel(){
    <label class="prod-control prod-control--search">Search sessions<input type="search" data-prod-input="search" value="${safe(prodState.search)}" placeholder="Employee, date, session…" autocomplete="off" aria-label="Search employee work sessions"></label>
    <label class="prod-control">Operator<select data-prod-select="person">${prodSelect([['all','All operators'],...prodScopedPeople().map(p=>[p.person,p.person])],prodState.person)}</select></label>
    <label class="prod-control">Sort by<select data-prod-select="sort">${prodSelect([['newest','Newest first'],['oldest','Oldest first'],['tubes','Most tubes']],prodState.sort)}</select></label>
-   <label class="prod-control">Records<select data-prod-select="dataset">${prodSelect([['original','Original fixture'],['demo','Scale-test examples']],prodState.dataset)}</select></label>
+
   </div>
   <div class="prod-filter-actions"><button type="button" class="prod-row-link" data-prod-act="people-reset">Reset filters</button></div>
   <div id="prod-people-results">${prodPeopleResults()}</div>
-  <div class="prod-origin-note">Sessions are computed from source activity; gaps above 20 minutes define new sessions. Scale-test records are available only if selected.</div>
+  <div class="prod-origin-note">Sessions are reconstructed from source activity, not employee time-clock punches. Gaps above 20 minutes separate sample sessions; they do not prove a recorded break.</div>
  </section>`;
 }
 function prodDeptRecordNav(){
@@ -2740,7 +2740,7 @@ function prodDeptRecordNav(){
 function prodDeptWorkspace(){
  const st=prodChosenStage(),people=prodScopedPeople();
  const stats=tm.map((r,i)=>tabStat(r[0],r[1],r[2],['wine','slate','teal','amber','slate','wine'][i])).join('');
- const intro=tabIntro('Production / Work centers','Production','Station progress, operators and per-tube processing records in one workspace.',num(j.quantity)+' ordered tubes');
+ const intro=tabIntro('Production / Work centers','Production','Stage totals, recorded operator sessions and sampled tube checks; full job results are kept distinct from sampled evidence.',num(j.quantity)+' ordered tubes');
  return `<div class="tab-workspace prod-v2 prod-refined">
   ${intro}
   <section class="prod-top-stats" aria-label="Station completion">${prodDeptStats()}</section>
@@ -2760,6 +2760,7 @@ function prodDeptWorkspace(){
       ${prodDeptRecordNav()}
       <div id="prod-record-region" role="tabpanel">${prodDeptRecordPanel()}</div>
     </section>
+    ${window.TPMProductionCrosswalk?window.TPMProductionCrosswalk({j,h,t,s,m,num,dur,safe}):''}
     ${!st?`<div class="prod-timing"><details><summary><span>Job-wide timing measurements <span class="prod-muted">· 6 measures · not department specific</span></span><span aria-hidden="true">⌄</span></summary><div class="prod-timing-inner"><div class="tab-stat-grid three">${stats}</div><div class="tab-timing-note">Running, attended and elapsed represent different time concepts and must not be summed.</div></div></details></div>`:''}
     <p class="prod-refined-footnote">Station counts are job-level rollups. The detailed fixture contains a smaller sample of individual tube records and work sessions. No live TPM database writes.</p>
    </div>
