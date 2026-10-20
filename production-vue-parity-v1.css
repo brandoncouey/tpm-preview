@@ -1,0 +1,66 @@
+/* Iteration 1 — Vue JobProductionTab presentation parity.
+ * No source metrics or permission rules are computed here.
+ */
+#view>.prod-refined .prod-parity-timing,#view>.prod-refined .prod-parity-funnel,#view>.prod-refined .prod-parity-workers{
+ min-width:0;background:#fff;border:1px solid #dce3e8;border-radius:5px;overflow:hidden;box-shadow:0 2px 8px rgba(36,44,54,.025);
+}
+#view>.prod-refined .prod-parity-timing{margin-bottom:14px}
+#view>.prod-refined .prod-parity-section-header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 17px;background:#f7f8fa;border-bottom:1px solid #e3e8ed;flex-wrap:wrap}
+#view>.prod-refined .prod-parity-section-header h3{font-size:14px;letter-spacing:-.02em;font-weight:840;color:#2d3b46;margin:4px 0 2px}
+#view>.prod-refined .prod-parity-section-header p{color:#71818f;font-size:10.7px;line-height:1.6;max-width:80ch}
+#view>.prod-refined .prod-parity-last{font-size:10px;color:#6e7b85;background:#fff;border:1px solid #e2e7ec;border-radius:4px;padding:6px 10px;font-weight:690}
+#view>.prod-refined .prod-parity-source-pill{font-size:9px;letter-spacing:.04em;font-weight:800;color:#84617a;border:1px solid #e9dae3;border-radius:3px;background:#fffbfd;padding:6px 9px}
+#view>.prod-refined .prod-parity-timing-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr))}
+#view>.prod-refined .prod-parity-time-cell{display:flex;flex-direction:column;gap:6px;padding:16px 12px;border-right:1px solid #e6eaee;min-width:0}
+#view>.prod-refined .prod-parity-time-cell:last-child{border:0}
+#view>.prod-refined .prod-parity-time-cell>span{font-size:10px;color:#6b7b89;font-weight:790}
+#view>.prod-refined .prod-parity-time-cell>strong{font-size:18px;font-weight:860;letter-spacing:-.025em;color:#293a47;line-height:1.2;white-space:normal;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+#view>.prod-refined .prod-parity-time-cell>small{font-size:9.6px;color:#84929d;line-height:1.4;min-height:27px}
+#view>.prod-refined .prod-parity-timing-definitions{border-top:1px solid #e7eaef}
+#view>.prod-refined .prod-parity-timing-definitions>summary{font-size:10.5px;font-weight:750;color:#6b7883;padding:11px 15px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+#view>.prod-refined .prod-parity-timing-definitions>summary::-webkit-details-marker{display:none}
+#view>.prod-refined .prod-parity-timing-definitions>summary:hover{background:#fafbfc}
+#view>.prod-refined .prod-parity-timing-definitions dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;padding:14px 15px;border-top:1px solid #edf0f2}
+#view>.prod-refined .prod-parity-timing-definitions dl>div{border:1px solid #e6ebee;border-radius:4px;padding:11px;background:#fafbfc;min-width:0}
+#view>.prod-refined .prod-parity-timing-definitions dt{font-size:10.5px;font-weight:800;color:#4c5c69}
+#view>.prod-refined .prod-parity-timing-definitions dd{font-size:10px;color:#7b8993;margin:5px 0 0;line-height:1.6}
+#view>.prod-refined .prod-parity-timing-definitions p{font-size:10px;color:#7c8993;margin:0;padding:0 15px 13px;line-height:1.6}
+#view>.prod-refined .prod-parity-funnel{margin:0}
+#view>.prod-refined .prod-top-stats:has(.prod-parity-funnel){display:block}
+#view>.prod-refined .prod-parity-stage-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:10px;padding:14px}
+#view>.prod-refined .prod-parity-stage{display:flex;flex-direction:column;gap:10px;text-align:left;background:#fff;border:1px solid #dce3e7;border-radius:5px;padding:14px;min-width:0;color:#364551;min-height:165px}
+#view>.prod-refined .prod-parity-stage-active{cursor:pointer}
+#view>.prod-refined .prod-parity-stage-active:hover{background:#fffafd;border-color:#ba9aaa;box-shadow:0 3px 10px #6926470a}
+#view>.prod-refined .prod-parity-stage-active.is-current{border-color:#995a7c;background:#fffafb;box-shadow:inset 0 2px #813955}
+#view>.prod-refined .prod-parity-stage-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px}
+#view>.prod-refined .prod-parity-stage-head strong{font-weight:820;color:#44525e}
+#view>.prod-refined .prod-parity-stage-head>span{font-size:10px;font-weight:760;color:#7b455f}
+#view>.prod-refined .prod-parity-stage-count{font-size:11px;color:#7b8993;line-height:1.2}
+#view>.prod-refined .prod-parity-stage-count>strong{font-weight:850;color:#31434f;font-size:23px;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+#view>.prod-refined .prod-parity-stage-count>small{font-size:10px;color:#8a959e}
+#view>.prod-refined .prod-parity-stage-track{height:7px;border-radius:20px;background:#e9edf1;overflow:hidden;display:block}
+#view>.prod-refined .prod-parity-stage-track>span{display:block;height:100%;background:#82536e;border-radius:20px}
+#view>.prod-refined .prod-parity-stage-details{display:flex;flex-direction:column;gap:4px;color:#768691;font-size:9.8px;line-height:1.5}
+#view>.prod-refined .prod-parity-stage-details>em{font-style:normal;font-weight:740;color:#5b7181}
+#view>.prod-refined .prod-parity-stage-na{background:#f9fafb;border-style:dashed;border-color:#e1e6ea}
+#view>.prod-refined .prod-parity-stage-na-main{font-size:23px;font-weight:830;color:#85939d}
+#view>.prod-refined .prod-parity-stage-na p{color:#88959f;font-size:10.5px;line-height:1.6}
+#view>.prod-refined .prod-parity-empty{color:#86929b;font-size:11px;padding:12px}
+#view>.prod-refined .prod-parity-stage-foot{font-size:10px;line-height:1.6;color:#7a8994;padding:1px 15px 14px}
+#view>.prod-refined .prod-parity-stage-foot code{font-size:10px;color:#835470}
+#view>.prod-refined .prod-parity-optional{border-top:1px solid #e7ebef}
+#view>.prod-refined .prod-parity-optional summary{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:780;font-size:11px;color:#697984;cursor:pointer}
+#view>.prod-refined .prod-parity-optional summary span{font-size:10px;color:#83909a}
+#view>.prod-refined .prod-parity-workers{border-color:#e4e9ed;margin:12px 0}
+#view>.prod-refined .prod-parity-worker-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:10px}
+#view>.prod-refined .prod-parity-worker-grid>div{display:flex;flex-direction:column;gap:5px;padding:12px 14px;border-right:1px solid #e5eaee}
+#view>.prod-refined .prod-parity-worker-grid>div:last-child{border:0}
+#view>.prod-refined .prod-parity-worker-grid>div>span{font-size:10px;color:#788792;font-weight:770}
+#view>.prod-refined .prod-parity-worker-grid>div>strong{font-size:19px;font-weight:850;letter-spacing:-.03em;color:#344653;font-variant-numeric:tabular-nums}
+#view>.prod-refined .prod-parity-worker-grid>div>small{font-size:9.6px;color:#8a96a0;line-height:1.5}
+#view>.prod-refined .prod-parity-workers>p{padding:0 15px 12px;color:#7b8993;font-size:10.4px}
+@media(max-width:1530px){#view>.prod-refined .prod-parity-timing-grid{grid-template-columns:repeat(3,minmax(0,1fr))}#view>.prod-refined .prod-parity-time-cell:nth-child(3){border-right:0}#view>.prod-refined .prod-parity-time-cell:nth-child(n+4){border-top:1px solid #e6eaee}}
+@media(max-width:1060px){#view>.prod-refined .prod-parity-timing-definitions dl{grid-template-columns:repeat(2,minmax(0,1fr))}#view>.prod-refined .prod-parity-worker-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#view>.prod-refined .prod-parity-worker-grid>div:nth-child(2){border-right:0}#view>.prod-refined .prod-parity-worker-grid>div:nth-child(n+3){border-top:1px solid #e5eaee}}
+@media(max-width:670px){#view>.prod-refined .prod-parity-stage-grid{grid-template-columns:1fr}#view>.prod-refined .prod-parity-timing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#view>.prod-refined .prod-parity-time-cell:nth-child(3){border-right:1px solid #e6eaee}#view>.prod-refined .prod-parity-time-cell:nth-child(even){border-right:0}#view>.prod-refined .prod-parity-time-cell:nth-child(n+3){border-top:1px solid #e6eaee}#view>.prod-refined .prod-parity-timing-definitions dl{grid-template-columns:1fr}#view>.prod-refined .prod-parity-worker-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){#view>.prod-refined .prod-parity-worker-grid{grid-template-columns:1fr}#view>.prod-refined .prod-parity-worker-grid>div{border-right:0;border-top:1px solid #e5eaee}#view>.prod-refined .prod-parity-worker-grid>div:first-child{border-top:0}#view>.prod-refined .prod-parity-section-header{padding:12px}#view>.prod-refined .prod-parity-time-cell{padding:12px}}
+@media print{#view>.prod-refined .prod-parity-timing-definitions,#view>.prod-refined .prod-parity-optional:not([open]){display:none}}
