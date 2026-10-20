@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta name="description" content="TPM Reports directory design preview. Actual reports stay in the Laravel/Vue app.">
+ <title>TPM · Reports · Design Preview</title>
+ <link rel="stylesheet" href="./reports-hub-preview.css?v=20261020a">
+</head>
+<body>
+ <div class="tpm-reports-shell">
+  <aside class="reports-side">
+   <a class="reports-brand" href="./overview-ops.html?view=overview"><span class="reports-brand-box">TPM</span><span><strong>Production Management</strong><small>Steel manufacturing operations</small></span></a>
+   <div class="reports-side-label">WORKSPACES</div>
+   <nav class="reports-sidebar-links" aria-label="Preview navigation">
+     <a href="./overview-ops.html?view=overview">Orders <span aria-hidden="true">↗</span></a>
+     <a href="./overview-ops.html?view=production&amp;job=990100">Production <span aria-hidden="true">↗</span></a>
+     <a href="./overview-ops.html?view=materials&amp;job=990100">Materials <span aria-hidden="true">↗</span></a>
+     <a class="is-current" href="./reports-preview.html" aria-current="page">Reports <span aria-hidden="true">›</span></a>
+   </nav>
+   <div class="reports-side-label">REPORT FAMILIES</div>
+   <div class="reports-side-groups" id="reports-side-groups"></div>
+   <div class="reports-side-foot"><strong>Design preview only</strong><span>This is a static, source-aligned navigation prototype. No shop database is connected.</span></div>
+  </aside>
+  <div class="reports-shell-main">
+   <header class="reports-topbar"><div class="reports-crumb">Operations <span>/</span> Reports <span>/</span> Directory</div><div><a href="./overview-ops.html?view=report&amp;job=990100">Sample job report ↗</a><span class="reports-top-label">STATIC PREVIEW</span></div></header>
+   <main class="reports-content" id="reports-content">
+     <section class="reports-hero">
+       <div class="reports-hero-copy"><span class="reports-eyebrow">OPERATIONS / REPORTS</span><h1>Find a report.</h1><p>Every report the shop uses, organized around the questions it answers. Search the report name—or the name it used to have.</p></div>
+       <span class="reports-hero-source">ACTUAL TPM ROUTES · PRESENTATION ONLY</span>
+     </section>
+     <div class="reports-tools">
+       <div class="reports-search-box"><label for="reports-search">Search reports</label><div><input id="reports-search" type="search" placeholder="Scrap rate, mill time, customer reports…" autocomplete="off" aria-describedby="reports-search-count"><button id="reports-search-clear" type="button" aria-label="Clear search" hidden>Clear</button></div><small id="reports-search-count" aria-live="polite"></small></div>
+       <form id="reports-open-job" class="reports-open-job" novalidate><label for="reports-job-number">Open a job</label><div><input id="reports-job-number" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 9775"><button type="submit">Open ↗</button></div><small id="reports-job-help">Opens the real job hub on your local TPM server.</small></form>
+     </div>
+     <nav class="reports-tabs" id="reports-tabs" role="tablist" aria-label="Report categories"></nav>
+     <div class="reports-groups" id="reports-groups" aria-live="polite"></div>
+     <div class="reports-scope-note"><strong>Live-report behavior stays in Vue.</strong> This page reproduces the report directory layout and search only. Date filters, API metrics, print exports, pagination, employee selection, and permissions remain in the actual reports and are not simulated here.</div>
+   </main>
+  </div>
+ </div>
+ <script src="./reports-hub-preview.js?v=20261020a" defer></script>
+</body>
+</html>
