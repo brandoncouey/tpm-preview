@@ -44,10 +44,11 @@
           {flush:true,right:String(i+1).padStart(2,'0')})+'</div>';
     }).join('');
     return '<div class="tab-workspace tpm-integrated-reports">'+
-      tabIntro('Reports / Shop-wide','Reports','Select an existing report. All new layouts share the original Orders and Production navigation and panel styling.','12 report destinations')+
+      tabIntro('Reports / Shop-wide','Reports','Browse company reports or investigate manufacturing trends using clearly labeled sample data.','12 report destinations')+
+      (window.TPMDemoAnalytics?.overview()||'')+
       '<div class="tpm-ir-tools"><label for="tpm-ir-search">Find a report</label><input id="tpm-ir-search" type="search" placeholder="Search order, mill, timing, scrap, employee…" autocomplete="off"><span id="tpm-ir-count" role="status" aria-live="polite">12 reports</span></div>'+
       '<div class="tpm-ir-sections">'+sections+'</div>'+
-      '<p class="tab-footline">This preview extends the original TPM shell. Actual shop-wide report rows, calculations, permissions and exports are only available in your Laravel/Vue application.</p>'+
+      '<p class="tab-footline">All values in the sample analytics are fictional. Production reports, their formulas, user permissions and exports remain owned by the original Laravel/Vue application.</p>'+
     '</div>';
   }
   function reportPage(){
@@ -61,12 +62,13 @@
       '<tbody><tr><td colspan="'+r.headers.length+'"><div class="tpm-ir-empty"><strong>No shop-wide database loaded</strong><p>Open the original TPM report for actual rows, filtering, sorting, and export actions. The design preview does not interpret missing data as zero.</p>'+
       '<a href="'+origin+r.path+'" target="_blank" rel="noopener noreferrer">Open in local TPM ↗</a></div></td></tr></tbody></table></div>';
     return '<div class="tab-workspace tpm-integrated-reports">'+
-      tabIntro(r.category+' / Report',r.title,r.description,'Source-aligned layout')+
+      tabIntro(r.category+' / Report',r.title,r.description,'Interactive sample analysis')+
       '<div class="tpm-ir-actions"><button type="button" class="btn" data-report-directory>← All reports</button><a class="btn brand" target="_blank" rel="noopener noreferrer" href="'+origin+r.path+'">Open original report ↗</a></div>'+
-      tabPanel('side-settings','Report controls','Original filters remain connected to the real TPM report.',filterText)+
-      tabPanel('side-list','Report register','The same compact table presentation used across the original preview.',data,{flush:true})+
-      tabPanel('check','How this report is used','Relevant questions for this part of the company.',defs)+
-      '<p class="tab-footline">'+esc(r.definition)+' Full data, exports, permission checks and backend calculations remain unchanged in the original application.</p></div>';
+      (window.TPMDemoAnalytics?.render(r)||
+        tabPanel('side-settings','Report controls','Open the original TPM report for live data.',filterText)+
+        tabPanel('side-list','Report register','No live shop records are loaded in this prototype.',data,{flush:true}))+
+      tabPanel('check','Department context','What this report helps the company answer.',defs)+
+      '<p class="tab-footline">'+esc(r.definition)+' Actual data, official calculations, exports and authorization remain unchanged in the original application.</p></div>';
   }
   function render(route){return route==='report-detail'?reportPage():directory();}
   function sync(route){
