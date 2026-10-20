@@ -5,7 +5,7 @@
 (function(){
  'use strict';
  if(typeof renderers==='undefined'||!renderers.C)return;
- const state={complete:false,query:'',category:'all',tubeQuery:''};
+ const state={complete:false,query:'',category:'all',tubeQuery:'',tubePage:1,tubePageSize:10,tubeSort:'id',tubeDirection:'asc'};
  const safe=v=>String(v===null||v===undefined?'—':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const n=v=>v===null||v===undefined?'—':Number(v).toLocaleString('en-US');
  const time=v=>v?stamp(v):'Not recorded';
@@ -20,7 +20,8 @@
  const tubeList=()=>{
    const records=Array.isArray(m.tube_data)?m.tube_data:[];
    const query=state.tubeQuery.trim().toLowerCase();
-   return records.filter(x=>!query||[x.id,x.coil,x.mill_time,x.cutoff_time,x.insp_time].some(y=>String(y??'').toLowerCase().includes(query)));
+   return records.filter(x=>!query||[x.id,x.coil,x.mill_time,x.cutoff_time,x.insp_time].some(y=>String(y??'').toLowerCase().includes(query)))
+    .sort((a,b)=>{const key=state.tubeSort,av=String(a[key]??''),bv=String(b[key]??'');const cmp=av.localeCompare(bv,undefined,{numeric:true,sensitivity:'base'});return state.tubeDirection==='desc'?-cmp:cmp;});
  };
  const previewStatus=x=>x===1||x==='1'||x===true?'Recorded':'Not recorded';
  const facts=()=> {
@@ -73,13 +74,26 @@
       '<tr><td colspan="'+cols.length+'" class="history-v2-cell-empty">'+safe(empty)+'</td></tr>')+
       '</tbody></table></div>';
  };
+ const tubeColumns=['Tube ID','Coil','Mill check','Mill time','Cutoff check','Cutoff time','Inspection check','Inspection time'];
+ const tubeCells=row=>[row.id,row.coil,previewStatus(row.mill_check),time(row.mill_time),previewStatus(row.cutoff_check),time(row.cutoff_time),previewStatus(row.insp_check),time(row.insp_time)];
+ function tubeRegister(){
+   const rows=tubeList(),pages=Math.max(1,Math.ceil(rows.length/state.tubePageSize));
+   state.tubePage=Math.min(Math.max(1,state.tubePage),pages);
+   const start=(state.tubePage-1)*state.tubePageSize,visible=rows.slice(start,start+state.tubePageSize);
+   return '<div class="history-v3-register-toolbar"><span role="status">'+n(rows.length)+' of '+n(m.tube_data?.length||0)+' supplied tube records · '+(rows.length?n(start+1)+'–'+n(start+visible.length):'0')+' displayed</span>'+
+    '<div class="history-v3-register-options"><label>Sort by <select data-history-tube-sort>'+
+    [['id','Tube ID'],['coil','Coil'],['mill_time','Mill time'],['cutoff_time','Cutoff time'],['insp_time','Inspection time']].map(([key,label])=>'<option value="'+key+'"'+(state.tubeSort===key?' selected':'')+'>'+label+'</option>').join('')+
+    '</select></label><label>Direction <select data-history-tube-direction><option value="asc"'+(state.tubeDirection==='asc'?' selected':'')+'>Ascending</option><option value="desc"'+(state.tubeDirection==='desc'?' selected':'')+'>Descending</option></select></label>'+
+    '<label>Rows <select data-history-tube-size>'+[10,25,50,100].map(v=>'<option value="'+v+'"'+(state.tubePageSize===v?' selected':'')+'>'+v+'</option>').join('')+'</select></label></div></div>'+
+    table(tubeColumns,visible.map(tubeCells),'No sampled tubes match the search.')+
+    '<div class="history-v3-pager"><span>Page '+n(state.tubePage)+' of '+n(pages)+' · source sample only, not the job total</span><div>'+
+    '<button type="button" data-history-tube-page="prev"'+(state.tubePage===1?' disabled':'')+'>← Previous</button>'+
+    '<button type="button" data-history-tube-page="next"'+(state.tubePage>=pages?' disabled':'')+'>Next →</button></div></div>';
+ }
  function completeTubes(){
-   const rows=tubeList();
-   return '<div class="history-v2-subsection"><header><div><h3>Tube timeline · sampled source</h3><p>These are the '+n(m.tube_data?.length||0)+' tube snapshots supplied with the preview. The real app loads all job tube records only on demand.</p></div>'+
+   return '<div class="history-v2-subsection" id="history-tubes"><header><div><h3>Tube timeline · sampled source</h3><p>These are the '+n(m.tube_data?.length||0)+' tube snapshots supplied with the preview. The real app loads all job tube records only on demand.</p></div>'+
    '<label>Search sampled tubes<input type="search" data-history-tube-query placeholder="Tube or coil…" value="'+safe(state.tubeQuery)+'"></label></header>'+
-   '<div id="history-v2-tubes">'+table(['Tube ID','Coil','Mill check','Mill time','Cutoff check','Cutoff time','Inspection check','Inspection time'],
-     rows.map(row=>[row.id,row.coil,previewStatus(row.mill_check),time(row.mill_time),previewStatus(row.cutoff_check),time(row.cutoff_time),previewStatus(row.insp_check),time(row.insp_time)]),
-     'No sampled tubes match the search.')+'</div></div>';
+   '<div id="history-v2-tubes">'+tubeRegister()+'</div></div>';
  }
  function completeView(){
    if(!state.complete)return '<div class="history-v2-closed">The full activity feed and per-tube tables are intentionally loaded on request in the real application, particularly for large jobs. Open below to inspect the available static preview records.</div>';
@@ -92,12 +106,13 @@
    const scrapEvents=table(['Source group','Station','Reason','Events','Distinct tubes','Last event','Steel LF'],lost.map(e=>[e.title,e.stage_label,e.reason,n(e.events),n(e.distinct_tubes),time(e.last_at),e.lost_steel_lf==null?'Not recorded':n(e.lost_steel_lf)]),'No grouped scrap events in snapshot.');
    const totals=(h.people||[]).flatMap(p=>(p.departments||[]).flatMap(d=>(d.sessions||[]).map(sess=>[p.person,d.name,time(sess.from),time(sess.to),n(sess.tubes),sess.seconds==null?'Not recorded':dur(sess.seconds)])));
    return '<div class="history-v2-complete-inner">'+
-     '<div class="history-v2-export-note"><strong>Full CSV · Excel · Print remain in TPM.</strong> They belong to <code>JobTubeTables.vue</code> and are intentionally not simulated or exported from five sampled rows here.</div>'+
-     '<div class="history-v2-subsection"><header><div><h3>Activity feed · sampled sessions</h3><p>'+n(totals.length)+' worker-session intervals are supplied; this is not the full event feed.</p></div></header>'+
+     '<div class="history-v2-export-note"><strong>Full CSV · Excel · Print remain in TPM.</strong> They belong to <code>JobTubeTables.vue</code> and are intentionally not simulated or exported from five sampled rows here. <a href="http://localhost:8000/orders?job='+encodeURIComponent(j.job)+'" target="_blank" rel="noopener noreferrer">Open live job in TPM ↗</a></div>'+
+     '<nav class="history-v3-section-nav" aria-label="Complete activity sections"><a href="#history-activity-sessions">Worker sessions</a><a href="#history-general">General information</a><a href="#history-mesh">Mesh timeline</a><a href="#history-scrap">Scrap timeline</a><a href="#history-tubes">Tube timeline</a></nav>'+
+     '<div class="history-v2-subsection" id="history-activity-sessions"><header><div><h3>Worker sessions · production</h3><p>'+n(totals.length)+' worker-session intervals are supplied; this is not the full event feed.</p></div></header>'+
        table(['Worker','Station','Started','Finished','Tube-stage credits','Recorded time'],totals,'No source sessions supplied.')+'</div>'+
-     '<div class="history-v2-subsection"><header><div><h3>General information</h3><p>Job identity and scheduled order dates.</p></div></header>'+general+'</div>'+
-     '<div class="history-v2-subsection"><header><div><h3>Mesh timeline</h3><p>The real History tab retains this section even if there are no source rows.</p></div></header>'+meshSummary+'</div>'+
-     '<div class="history-v2-subsection"><header><div><h3>Scrap timeline · grouped source</h3><p>Not raw per-scrap records; inspect the Scrap tab for the job-level details.</p></div></header>'+scrapEvents+'</div>'+
+     '<div class="history-v2-subsection" id="history-general"><header><div><h3>General information · order desk</h3><p>Job identity and scheduled order dates.</p></div></header>'+general+'</div>'+
+     '<div class="history-v2-subsection" id="history-mesh"><header><div><h3>Mesh timeline · materials</h3><p>The real History tab retains this section even if there are no source rows.</p></div></header>'+meshSummary+'</div>'+
+     '<div class="history-v2-subsection" id="history-scrap"><header><div><h3>Scrap timeline · quality</h3><p>Not raw per-scrap records; inspect the Scrap tab for the job-level details.</p></div></header>'+scrapEvents+'</div>'+
      completeTubes()+
      '<p class="history-v2-source-note">In Laravel, this disclosure mounts the existing <code>JobHistoryFeed</code> and <code>JobTubeTables</code> lazily and preserves their server pagination, retry states, four tables, CSV, Excel and Print. This GitHub Pages view is only a source-limited presentation sample.</p>'+
      '</div>';
@@ -123,6 +138,9 @@
  function redraw(){const view=document.getElementById('view');if(!view)return;const current=window.scrollY;view.innerHTML=historyHtml();window.scrollTo({top:current,behavior:'instant'});}
  renderers.C.history=historyHtml;
  document.addEventListener('click',e=>{
+   const page=e.target.closest('[data-history-tube-page]');
+   if(page){e.preventDefault();e.stopImmediatePropagation();state.tubePage+=page.dataset.historyTubePage==='next'?1:-1;
+     const region=document.getElementById('history-v2-tubes');if(region)region.innerHTML=tubeRegister();return;}
    const toggle=e.target.closest('[data-history-toggle]');if(!toggle)return;
    e.preventDefault();e.stopImmediatePropagation();
    state.complete=!state.complete;redraw();
@@ -131,13 +149,16 @@
    const search=e.target.closest('[data-history-search], [data-history-tube-query]');
    if(!search)return;
    const isTube=search.hasAttribute('data-history-tube-query');
-   if(isTube){state.tubeQuery=search.value;const region=document.getElementById('history-v2-tubes');if(region){
-     const rows=tubeList();region.innerHTML=table(['Tube ID','Coil','Mill check','Mill time','Cutoff check','Cutoff time','Inspection check','Inspection time'],
-       rows.map(row=>[row.id,row.coil,previewStatus(row.mill_check),time(row.mill_time),previewStatus(row.cutoff_check),time(row.cutoff_time),previewStatus(row.insp_check),time(row.insp_time)]),'No sampled tubes match the search.');}
+   if(isTube){state.tubeQuery=search.value;state.tubePage=1;const region=document.getElementById('history-v2-tubes');if(region)region.innerHTML=tubeRegister();
    }else{state.query=search.value;const region=document.getElementById('history-v2-digest-results');if(region)region.innerHTML=digestRows();}
  },true);
  document.addEventListener('change',e=>{
-  const filter=e.target.closest('[data-history-filter]');if(!filter)return;
+  const tb=e.target.closest('[data-history-tube-size],[data-history-tube-sort],[data-history-tube-direction]');
+   if(tb){if(tb.hasAttribute('data-history-tube-size'))state.tubePageSize=Number(tb.value)||10;
+     if(tb.hasAttribute('data-history-tube-sort'))state.tubeSort=tb.value;
+     if(tb.hasAttribute('data-history-tube-direction'))state.tubeDirection=tb.value;
+     state.tubePage=1;const region=document.getElementById('history-v2-tubes');if(region)region.innerHTML=tubeRegister();return;}
+   const filter=e.target.closest('[data-history-filter]');if(!filter)return;
   state.category=filter.value;const region=document.getElementById('history-v2-digest-results');if(region)region.innerHTML=digestRows();
  },true);
  if(new URLSearchParams(location.search).get('view')==='history' && typeof navigate==='function')navigate('history');
